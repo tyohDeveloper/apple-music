@@ -1,8 +1,8 @@
 # Apple Music Library Manager
 
-Maintain an Apple Music library as a curated catalog — intentional albums, distinct recordings, and performers with their names and relationships — kept in a datastore of its own and synchronized with Apple Music.
+A web application for maintaining an Apple Music library as a curated catalog — intentional albums, distinct recordings, and performers with their names and relationships — kept in a datastore of its own and synchronized with Apple Music.
 
-**Status:** Phase 0, plan checkpoint. The application is not runnable yet; see [the plan of record](docs/PLAN.md).
+**Status:** version 0.1.0.0, Phase 1 (foundation): owner sign-in, libraries, and the full build and CI pipeline. The catalog arrives in Phase 2; see [the plan of record](docs/PLAN.md). There is no deployed instance yet.
 
 ## What it is for
 
@@ -25,12 +25,39 @@ Maintain an Apple Music library as a curated catalog — intentional albums, dis
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Role and path mapping, boundaries, contracts |
 | [docs/CODING-STANDARDS.md](docs/CODING-STANDARDS.md) | Adopted Engineering Standards release and enforcement matrix |
 | [docs/adr/](docs/adr/) | Architecture decision records |
+| [docs/ops/backup.md](docs/ops/backup.md) | Backup, restore and restore rehearsals |
 | [wiki/](wiki/README.md) | Source of the project wiki, published to the GitHub Wiki |
 | [AGENTS.md](AGENTS.md) | Contract for coding agents working in this repository |
 
 ## Quickstart
 
-Available from Phase 1. Until then the repository holds the plan and the design.
+Requires Node.js 24 and PostgreSQL 18. Once per environment, a database administrator creates the owner role and the database:
+
+```sql
+CREATE ROLE apple_music_owner LOGIN CREATEROLE PASSWORD '<owner password>';
+CREATE DATABASE apple_music_dev OWNER apple_music_owner;
+```
+
+Then:
+
+```sh
+npm install
+cp .env.example .env   # database URLs, BETTER_AUTH_SECRET and OWNER_* (see comments in the file)
+npm run db:bootstrap   # creates the application and authentication roles
+npm run seed           # applies migrations, creates the owner account and an empty library
+npm run dev            # http://localhost:5173
+```
+
+## Build
+
+```sh
+npm run build          # typecheck, standards, dead code, migrations, unit and integration tests,
+                       # bundle, mandated bindings, artifact verification
+npm run test:e2e       # end-to-end tests against the built server
+npm start              # serves the built application on HOST:PORT
+```
+
+Integration and end-to-end tests read `.env.test`, which points at a separate test database (for example `apple_music_test`, created the same way). CI runs the same commands against a disposable PostgreSQL ([build workflow](.github/workflows/build.yml)).
 
 ## License
 

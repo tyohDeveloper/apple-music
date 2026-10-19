@@ -15,17 +15,15 @@ Inspect the code before choosing tools or patterns; do not import conventions fr
 
 ## Commands
 
-Available from Phase 1.
-
 | Command | Purpose |
 |---|---|
 | `npm ci` | Install exactly what `package-lock.json` pins |
 | `npm run dev` | Server and client with reload against the development database |
-| `npm run build` | Typecheck, standards check, unit tests, integration tests, bundle, artifact verification; stops at the first failure |
-| `npm run test:e2e` | End-to-end suite against the built server and the Apple Music fake |
+| `npm run build` | Typecheck, standards check, dead-code check, migrations check, unit tests, integration tests, bundle, mandated bindings, artifact verification; stops at the first failure |
+| `npm run test:e2e` | End-to-end suite against the built server (and, from Phase 3, the Apple Music fake) |
 | `npm run db:bootstrap` | Create the database roles for an environment (once, with the owner connection) |
 | `npm run db:generate -- --name <description>` | Generate a migration from schema changes |
-| `npm run seed` | Create the owner account and an empty library |
+| `npm run seed` | Apply migrations, create the owner account and an empty library |
 
 ## Rules that are easy to break
 
