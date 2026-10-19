@@ -6,7 +6,7 @@
     {"role": "CONTROLLER", "paths": ["src/server/**", "src/browser/controllers/**"], "maxFileLines": 150},
     {"role": "STATE", "paths": ["src/browser/state/**"], "maxFileLines": 150},
     {"role": "PURE-CORE", "paths": ["src/credits/**", "src/names/**", "src/editions/**"], "maxFileLines": 100},
-    {"role": "PURE", "paths": ["src/library-sync/**", "src/partial-dates/**", "src/localization/**", "src/taxonomies/**", "src/routing/**", "src/metrics/**", "src/contracts/**"], "maxFileLines": 150},
+    {"role": "PURE", "paths": ["src/library-sync/**", "src/partial-dates/**", "src/localization/**", "src/taxonomies/**", "src/routing/**", "src/metrics/**", "src/forms/**", "src/contracts/**"], "maxFileLines": 150},
     {"role": "DATA", "paths": ["data/**"]},
     {"role": "PLATFORM-PURE", "paths": [], "allowlist": "platform-pure-allowlist.json", "maxFileLines": 100},
     {"role": "PLATFORM-AMBIENT", "paths": ["src/platform/**"], "maxFileLines": 150},
