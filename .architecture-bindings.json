@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "description": "Mandated bindings (standards §18.2, §18.3): standing policy, separate from .architecture-exceptions.json. Each entry has an owner, a policy reference and an annual review date; entries do not expire. npm run check:bindings resolves every org-mandated binding per deployment target in the installed dependency tree and the built server, and fails on any mismatch.",
+  "bindings": [
+    {
+      "id": "BND-0001",
+      "capability": "Password hashing",
+      "authority": "org-mandated",
+      "owner": "@tyohDeveloper",
+      "policyReference": "Hosted-Postgres profile (programming Project wiki, concepts/coding-standards-hosted-postgres): password hashing via the mandated argon2 binding; docs/standards/hosted-postgres-profile.md",
+      "reviewOn": "2027-10-19",
+      "targets": [
+        {
+          "target": "server",
+          "specifier": "argon2",
+          "version": "0.45.1",
+          "integrity": "sha512-skm+/WCjkGqCQxF7FG1LuZXM5yvbFjgbfiCGsud2oLgaDhh6b6dbH0b1EkghbM+xx4Bj8Ape+KKgixoIlWZicQ==",
+          "importedBy": ["src/platform/hashPassword.ts", "src/platform/verifyPassword.ts"]
+        }
+      ]
+    },
+    {
+      "id": "BND-0002",
+      "capability": "Authentication and sessions",
+      "authority": "org-mandated",
+      "owner": "@tyohDeveloper",
+      "policyReference": "Hosted-Postgres profile (programming Project wiki, concepts/coding-standards-hosted-postgres): Better Auth; ADR-0006, ADR-0008",
+      "reviewOn": "2027-10-19",
+      "targets": [
+        {
+          "target": "server",
+          "specifier": "better-auth",
+          "version": "1.7.11",
+          "integrity": "sha512-V4OMDdoFvOuAGbOb/mjNzX/iFJoC3hEF1rpL8vdI5eTR24dMJr7AWJuuhr6dE1ib/CBECzegt64ehS3/ngKYpQ==",
+          "importedBy": ["src/server/auth/createAuth.ts"]
+        }
+      ]
+    }
+  ]
+}
