@@ -29,6 +29,13 @@
       "when": 1792451848250,
       "tag": "20261019231728_catalog_scope",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792451870084,
+      "tag": "20261019231750_performers",
+      "breakpoints": true
     }
   ]
 }
