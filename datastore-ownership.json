@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "datastores": [
+    {
+      "id": "apple-music-postgres",
+      "description": "Curated catalog, Apple mirror, sync runs, change outbox and authentication tables",
+      "schemaOwner": "tyohDeveloper/apple-music",
+      "writers": ["tyohDeveloper/apple-music"],
+      "readers": ["tyohDeveloper/apple-music"],
+      "contractVersion": "migrations in drizzle/",
+      "role": "MODEL",
+      "paths": ["src/db/**", "drizzle/**"]
+    },
+    {
+      "id": "apple-music-library",
+      "description": "The user's Apple Music library, owned by Apple and reached through the Apple Music API",
+      "schemaOwner": "Apple Inc.",
+      "writers": ["Apple Inc.", "tyohDeveloper/apple-music (through published API operations only)"],
+      "readers": ["tyohDeveloper/apple-music"],
+      "contractVersion": "Apple Music API v1",
+      "role": "REMOTE",
+      "paths": ["src/apple-music/**"]
+    },
+    {
+      "id": "apple-music-http-api",
+      "description": "This server's HTTP API, consumed by the browser single-page application",
+      "schemaOwner": "tyohDeveloper/apple-music",
+      "writers": ["tyohDeveloper/apple-music"],
+      "readers": ["tyohDeveloper/apple-music (browser)"],
+      "contractVersion": "src/contracts/**",
+      "role": "REMOTE",
+      "paths": ["src/browser/server-api/**"]
+    }
+  ]
+}
