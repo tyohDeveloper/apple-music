@@ -1,0 +1,36 @@
+# Publishes wiki/ to the GitHub Wiki (ADR-0007). The wiki repository exists only
+# after its first page is created on GitHub; until then the publish step is skipped.
+name: wiki
+
+on:
+  push:
+    branches: [main]
+    paths: ["wiki/**", ".github/workflows/wiki.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wiki
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: probe
+        name: Check that the wiki repository exists
+        run: |
+          if git ls-remote "https://github.com/${GITHUB_REPOSITORY}.wiki.git" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Wiki not initialized. Create one page on GitHub (Wiki tab, Create the first page), then re-run this workflow."
+          fi
+      - if: steps.probe.outputs.exists == 'true'
+        uses: Andrew-Chen-Wang/github-wiki-action@1bbb4280446f9630e8e21a18012cbacf3b0f992e # v5.0.6
+        with:
+          path: wiki/
+          preprocess: true
