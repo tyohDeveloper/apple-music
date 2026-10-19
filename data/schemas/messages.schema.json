@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Message catalog",
+  "description": "One translation domain for one locale (§15.5): keys to text.",
+  "type": "object",
+  "propertyNames": { "pattern": "^[A-Za-z0-9]+([.-][A-Za-z0-9]+)*$" },
+  "additionalProperties": { "type": "string", "minLength": 1 }
+}

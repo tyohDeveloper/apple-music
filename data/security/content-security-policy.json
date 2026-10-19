@@ -1,0 +1,42 @@
+{
+  "directives": {
+    "default-src": [
+      "'self'"
+    ],
+    "base-uri": [
+      "'self'"
+    ],
+    "script-src": [
+      "'self'",
+      "https://js-cdn.music.apple.com"
+    ],
+    "style-src": [
+      "'self'"
+    ],
+    "img-src": [
+      "'self'",
+      "data:",
+      "https://*.mzstatic.com"
+    ],
+    "connect-src": [
+      "'self'",
+      "https://api.music.apple.com",
+      "https://*.apple.com"
+    ],
+    "frame-src": [
+      "https://*.apple.com"
+    ],
+    "font-src": [
+      "'self'"
+    ],
+    "object-src": [
+      "'none'"
+    ],
+    "form-action": [
+      "'self'"
+    ],
+    "frame-ancestors": [
+      "'none'"
+    ]
+  }
+}

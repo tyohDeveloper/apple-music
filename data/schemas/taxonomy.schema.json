@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Taxonomy",
+  "description": "A declared taxonomy (§5.5). Every entry has a display name under <taxonomy>.<id> in each locale's display-names.json.",
+  "type": "object",
+  "required": ["taxonomy", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "taxonomy": { "type": "string", "pattern": "^[a-z][A-Za-z0-9]*$" },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+          "symmetric": { "type": "boolean" },
+          "family": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
+        }
+      }
+    }
+  }
+}

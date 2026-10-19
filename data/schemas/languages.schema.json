@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Supported languages",
+  "description": "The canonical supported-language list (§15.2) with the base locale and the right-to-left set (§15.12).",
+  "type": "object",
+  "required": ["base", "supported", "rightToLeft"],
+  "additionalProperties": false,
+  "properties": {
+    "base": { "type": "string" },
+    "supported": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+    "rightToLeft": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+  }
+}

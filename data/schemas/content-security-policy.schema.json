@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Content-Security-Policy",
+  "description": "Directives for the hosted target (docs/CODING-STANDARDS.md LI-1). Apple origins serve MusicKit on the Web, the Apple Music API and artwork.",
+  "type": "object",
+  "required": ["directives"],
+  "additionalProperties": false,
+  "properties": {
+    "directives": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z]+(-[a-z]+)*$" },
+      "additionalProperties": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+    }
+  }
+}
