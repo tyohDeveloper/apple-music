@@ -4,6 +4,8 @@ import type { FastifyInstance } from "fastify";
 import { registerPerformerNameRoutes } from "./performers/registerPerformerNameRoutes.ts";
 import { registerPerformerRelationRoutes } from "./performers/registerPerformerRelationRoutes.ts";
 import { registerPerformerRoutes } from "./performers/registerPerformerRoutes.ts";
+import { registerRecordingCreditRoutes } from "./recordings/registerRecordingCreditRoutes.ts";
+import { registerRecordingRoutes } from "./recordings/registerRecordingRoutes.ts";
 import { withTypeBox } from "./typedRoutes.ts";
 
 export function registerCatalogRoutes(scope: FastifyInstance, db: NodePgDatabase): void {
@@ -11,4 +13,6 @@ export function registerCatalogRoutes(scope: FastifyInstance, db: NodePgDatabase
   registerPerformerRoutes(app, db);
   registerPerformerNameRoutes(app, db);
   registerPerformerRelationRoutes(app, db);
+  registerRecordingRoutes(app, db);
+  registerRecordingCreditRoutes(app, db);
 }
