@@ -15,6 +15,13 @@
       "when": 1792449379010,
       "tag": "20261019223619_auth_and_libraries",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792449399145,
+      "tag": "20261019223639_library_scope_functions",
+      "breakpoints": true
     }
   ]
 }
