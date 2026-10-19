@@ -1,12 +1,11 @@
-// The performer search screen: the current search, one page of results, and creation.
-import type { PerformerSummary } from "../../../contracts/performers/performerSummarySchema.ts";
-import type { PerformerListAction } from "./performerListActions.ts";
+// A catalog list screen: the current search, one page of results, and creation.
+import type { CatalogListAction } from "./catalogListActions.ts";
 
-export type PerformerListState = {
+export type CatalogListState<T> = {
   readonly status: "idle" | "loading" | "loaded" | "failed";
   readonly query: string;
   readonly offset: number;
-  readonly items: readonly PerformerSummary[];
+  readonly items: readonly T[];
   readonly total: number;
   readonly failure: string | null;
   readonly creating: boolean;
@@ -15,7 +14,7 @@ export type PerformerListState = {
 
 export type PageRange = { readonly from: number; readonly to: number; readonly total: number; readonly hasPrevious: boolean; readonly hasNext: boolean };
 
-export const initialPerformerListState: PerformerListState = {
+export const initialCatalogListState: CatalogListState<never> = {
   status: "idle",
   query: "",
   offset: 0,
@@ -26,25 +25,25 @@ export const initialPerformerListState: PerformerListState = {
   createFailure: null,
 };
 
-export function performerListReducer(state: PerformerListState, action: PerformerListAction): PerformerListState {
+export function catalogListReducer<T>(state: CatalogListState<T>, action: CatalogListAction<T>): CatalogListState<T> {
   switch (action.type) {
-    case "performer-list/requested":
+    case "catalog-list/requested":
       return { ...state, status: "loading", query: action.query, offset: action.offset, failure: null };
-    case "performer-list/loaded":
+    case "catalog-list/loaded":
       return { ...state, status: "loaded", items: action.page.items, total: action.page.total };
-    case "performer-list/failed":
+    case "catalog-list/failed":
       return { ...state, status: "failed", failure: action.failure };
-    case "performer-list/create-started":
+    case "catalog-list/create-started":
       return { ...state, creating: true, createFailure: null };
-    case "performer-list/create-failed":
+    case "catalog-list/create-failed":
       return { ...state, creating: false, createFailure: action.failure };
-    case "performer-list/created":
+    case "catalog-list/created":
       return { ...state, creating: false };
   }
 }
 
 // The 1-based range of results on screen, for "1–25 of 340" and the paging buttons.
-export function pageRangeOf(state: PerformerListState): PageRange {
+export function pageRangeOf<T>(state: CatalogListState<T>): PageRange {
   const to = state.offset + state.items.length;
   return { from: state.items.length === 0 ? 0 : state.offset + 1, to, total: state.total, hasPrevious: state.offset > 0, hasNext: to < state.total };
 }

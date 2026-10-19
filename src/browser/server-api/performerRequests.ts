@@ -3,19 +3,18 @@ import type { CreatePerformerNameRequest } from "../../contracts/performers/crea
 import type { CreatePerformerRelationRequest } from "../../contracts/performers/createPerformerRelationRequestSchema.ts";
 import type { CreatePerformerRequest } from "../../contracts/performers/createPerformerRequestSchema.ts";
 import type { PerformerDetail } from "../../contracts/performers/performerDetailSchema.ts";
-import type { PerformerPage } from "../../contracts/performers/performerPageSchema.ts";
+import type { PerformerSummary } from "../../contracts/performers/performerSummarySchema.ts";
 import type { UpdatePerformerNameRequest } from "../../contracts/performers/updatePerformerNameRequestSchema.ts";
 import type { UpdatePerformerRequest } from "../../contracts/performers/updatePerformerRequestSchema.ts";
+import type { CatalogPage } from "../../contracts/catalog/catalogPage.ts";
+import { fetchCatalogPage } from "./catalogPageRequest.ts";
 import { requestJson, type ApiResult } from "./requestJson.ts";
-
-export const performerPageSize = 25;
 
 const performers = (libraryId: string): string => `/api/libraries/${libraryId}/performers`;
 const performer = (libraryId: string, performerId: string): string => `${performers(libraryId)}/${performerId}`;
 
-export function fetchPerformerPage(libraryId: string, query: string, offset: number): Promise<ApiResult<PerformerPage>> {
-  const search = new URLSearchParams({ query, offset: String(offset), limit: String(performerPageSize) });
-  return requestJson<PerformerPage>(`${performers(libraryId)}?${search.toString()}`);
+export function fetchPerformerPage(libraryId: string, query: string, offset: number): Promise<ApiResult<CatalogPage<PerformerSummary>>> {
+  return fetchCatalogPage<PerformerSummary>(performers(libraryId), query, offset);
 }
 
 export function postPerformer(libraryId: string, body: CreatePerformerRequest): Promise<ApiResult<PerformerDetail>> {

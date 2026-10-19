@@ -1,7 +1,8 @@
 import { formValuesOf } from "../controllers/formValuesOf.ts";
 import type { Messages } from "../controllers/useMessages.ts";
 import type { PerformerListControls } from "../controllers/usePerformerList.ts";
-import { pageRangeOf } from "../state/performers/performerListReducer.ts";
+import { pageRangeOf } from "../state/catalog/catalogListReducer.ts";
+import { CatalogPager } from "./CatalogPager.tsx";
 import { PerformerCreateForm } from "./PerformerCreateForm.tsx";
 
 type PerformersViewProps = {
@@ -31,19 +32,7 @@ function PerformerResults({ messages, controls, onOpen }: Omit<PerformersViewPro
           </li>
         ))}
       </ul>
-      {range.total > 0 && (
-        <div class="pager">
-          <button type="button" class="secondary" disabled={!range.hasPrevious} data-testid="button-performers-previous" onClick={controls.showPrevious}>
-            {t("pager.previous")}
-          </button>
-          <span data-testid="display-performers-range">
-            {t("pager.range", { from: messages.number(range.from), to: messages.number(range.to), total: messages.number(range.total) })}
-          </span>
-          <button type="button" class="secondary" disabled={!range.hasNext} data-testid="button-performers-next" onClick={controls.showNext}>
-            {t("pager.next")}
-          </button>
-        </div>
-      )}
+      <CatalogPager messages={messages} range={range} onPrevious={controls.showPrevious} onNext={controls.showNext} />
     </>
   );
 }
