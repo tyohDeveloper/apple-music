@@ -1,0 +1,12 @@
+{
+  "description": "Third-party code shipped in the browser bundle (standards §10.3). Server dependencies are not distributed with the bundle.",
+  "packages": [
+    {
+      "name": "preact",
+      "version": "11.0.1",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2015-present Jason Miller",
+      "source": "https://github.com/preactjs/preact"
+    }
+  ]
+}

@@ -1,4 +1,24 @@
 {
   "schemaVersion": 1,
-  "exceptions": []
+  "exceptions": [
+    {
+      "id": "EXC-0001",
+      "section": "§9.2",
+      "policyVersion": "2.2",
+      "scope": "Runtime library preact 11.0.1 (preact, preact/hooks, preact/jsx-runtime) in the browser bundle dist/client",
+      "rationale": "Preact is the smallest maintained component library that keeps the form-heavy editing interface declarative (ADR-0006). Its measured marginal cost is 5,350 bytes gzip, 350 bytes over the 5,000-byte per-library ceiling. Plain DOM code would replace it with more application code (§9.4).",
+      "measurement": {
+        "method": "vite build of the client with and without preact externalized; gzip level 9 over dist/client/assets/*.js; 2026-10-19",
+        "beforeGzipBytes": 4155,
+        "afterGzipBytes": 9505,
+        "deltaGzipBytes": 5350,
+        "deltaMinifiedBytes": 13117
+      },
+      "owner": "@tyohDeveloper",
+      "approved": "2026-10-19",
+      "expires": "2027-04-19",
+      "removal": "Remove when a Preact release or a replacement renderer measures at or under 5,000 bytes gzip by the same method; otherwise renew with a fresh measurement.",
+      "enforcement": "npm run check:standards fails after the expiry date; npm run verify:build holds the whole bundle to scripts/build-baseline.json × 1.05."
+    }
+  ]
 }

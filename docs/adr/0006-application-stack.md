@@ -19,7 +19,7 @@ The application must be TypeScript (R-7), a web application first (R-26), on the
 | Datastore access | Drizzle ORM, Drizzle Kit, node-postgres | Schema-first TypeScript; row-level-security policies and composite foreign keys in the schema; generated SQL migrations with timestamp prefixes |
 | Authentication | Better Auth, password hashing through `argon2` | Named by the hosted-Postgres profile; `argon2` is the mandated hashing binding |
 | Developer-token signing | `jose` | Maintained, dependency-free JWT and ES256 implementation |
-| Browser UI | Preact with Vite | Preact's runtime fits the 5 kB per-library budget; Vite is its maintained build tool and adds nothing to the bundle |
+| Browser UI | Preact with Vite | The smallest maintained component library with hooks; Vite is its maintained build tool and adds nothing to the bundle |
 | Tests | Vitest for unit and integration tests; Playwright for end-to-end tests against the built server | |
 | Dead-code scan | Knip | Unused files, exports and dependencies (§3.6) |
 | Data validation | Ajv, at build time only | JSON Schema validation of `data/**` (§5.2) |
@@ -49,6 +49,10 @@ The browser bundle imports only Preact at runtime; contract types are imported a
 ## Evidence and approval
 
 Owner request of 2026-10-19; standards §9.
+
+## Corrections
+
+2026-10-19: the original Browser UI row said Preact's runtime fits the 5 kB per-library budget. Measured in the Phase 1 bundle, Preact adds 5,350 bytes gzip (9,505 with it, 4,155 without), over the ceiling. The choice stands under exception [EXC-0001](../../.architecture-exceptions.json), which records the measurement and expires 2027-04-19.
 
 ## Supersession
 
