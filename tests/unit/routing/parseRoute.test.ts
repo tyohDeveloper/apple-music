@@ -10,6 +10,12 @@ describe("parseRoute", () => {
   });
   it("reads a library id", () => expect(parseRoute(`/libraries/${id}`)).toEqual({ name: "library", libraryId: id }));
   it("recognizes sign-in", () => expect(parseRoute("/sign-in")).toEqual({ name: "sign-in" }));
+  it("reads the performer list and one performer", () => {
+    const performerId = "5f0c2a9e-8f6d-4c3b-9a1e-2d7b6c4e1f00";
+    expect(parseRoute(`/libraries/${id}/performers`)).toEqual({ name: "performers", libraryId: id });
+    expect(parseRoute(`/libraries/${id}/performers/${performerId}/`)).toEqual({ name: "performer", libraryId: id, performerId });
+    expect(parseRoute(`/libraries/${id}/performers/not-a-uuid`)).toEqual({ name: "not-found" });
+  });
   it("rejects malformed ids and unknown paths", () => {
     expect(parseRoute("/libraries/not-a-uuid")).toEqual({ name: "not-found" });
     expect(parseRoute("/elsewhere")).toEqual({ name: "not-found" });

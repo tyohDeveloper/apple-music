@@ -1,4 +1,4 @@
 {
-  "note": "2026-10-19, Phase 1: sign-in, library list and library home on Preact 11.0.1 (EXC-0001). Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
-  "gzipBytes": { "js": 9505, "css": 949 }
+  "note": "2026-10-19, Phase 2 slice A: performer search, editor, names and relations screens added 4,985 bytes of JS and 259 bytes of CSS (gzip) to the Phase 1 shell of 9,505 and 949; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
+  "gzipBytes": { "js": 14490, "css": 1208 }
 }

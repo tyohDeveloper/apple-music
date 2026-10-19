@@ -9,6 +9,10 @@ export function formatRoutePath(route: Route): string {
       return "/libraries";
     case "library":
       return `/libraries/${route.libraryId}`;
+    case "performers":
+      return `/libraries/${route.libraryId}/performers`;
+    case "performer":
+      return `/libraries/${route.libraryId}/performers/${route.performerId}`;
     case "not-found":
       return "/not-found";
   }

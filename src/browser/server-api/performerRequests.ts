@@ -1,0 +1,64 @@
+// Requests for performers, their names and their relations (docs/design/catalog.md, slice A).
+import type { CreatePerformerNameRequest } from "../../contracts/performers/createPerformerNameRequestSchema.ts";
+import type { CreatePerformerRelationRequest } from "../../contracts/performers/createPerformerRelationRequestSchema.ts";
+import type { CreatePerformerRequest } from "../../contracts/performers/createPerformerRequestSchema.ts";
+import type { PerformerDetail } from "../../contracts/performers/performerDetailSchema.ts";
+import type { PerformerPage } from "../../contracts/performers/performerPageSchema.ts";
+import type { UpdatePerformerNameRequest } from "../../contracts/performers/updatePerformerNameRequestSchema.ts";
+import type { UpdatePerformerRequest } from "../../contracts/performers/updatePerformerRequestSchema.ts";
+import { requestJson, type ApiResult } from "./requestJson.ts";
+
+export const performerPageSize = 25;
+
+const performers = (libraryId: string): string => `/api/libraries/${libraryId}/performers`;
+const performer = (libraryId: string, performerId: string): string => `${performers(libraryId)}/${performerId}`;
+
+export function fetchPerformerPage(libraryId: string, query: string, offset: number): Promise<ApiResult<PerformerPage>> {
+  const search = new URLSearchParams({ query, offset: String(offset), limit: String(performerPageSize) });
+  return requestJson<PerformerPage>(`${performers(libraryId)}?${search.toString()}`);
+}
+
+export function postPerformer(libraryId: string, body: CreatePerformerRequest): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(performers(libraryId), { method: "POST", body });
+}
+
+export function fetchPerformer(libraryId: string, performerId: string): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(performer(libraryId, performerId));
+}
+
+export function patchPerformer(libraryId: string, performerId: string, body: UpdatePerformerRequest): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(performer(libraryId, performerId), { method: "PATCH", body });
+}
+
+export function deletePerformer(libraryId: string, performerId: string): Promise<ApiResult<unknown>> {
+  return requestJson(performer(libraryId, performerId), { method: "DELETE" });
+}
+
+export function postPerformerName(libraryId: string, performerId: string, body: CreatePerformerNameRequest): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(`${performer(libraryId, performerId)}/names`, { method: "POST", body });
+}
+
+export function patchPerformerName(
+  libraryId: string,
+  performerId: string,
+  nameId: string,
+  body: UpdatePerformerNameRequest,
+): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(`${performer(libraryId, performerId)}/names/${nameId}`, { method: "PATCH", body });
+}
+
+export function deletePerformerName(libraryId: string, performerId: string, nameId: string): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(`${performer(libraryId, performerId)}/names/${nameId}`, { method: "DELETE" });
+}
+
+export function postPerformerRelation(
+  libraryId: string,
+  performerId: string,
+  body: CreatePerformerRelationRequest,
+): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(`${performer(libraryId, performerId)}/relations`, { method: "POST", body });
+}
+
+export function deletePerformerRelation(libraryId: string, performerId: string, relationId: string): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(`${performer(libraryId, performerId)}/relations/${relationId}`, { method: "DELETE" });
+}

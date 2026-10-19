@@ -16,6 +16,8 @@ export type Messages = {
   readonly t: Translate;
   readonly displayName: (taxonomy: string, entryId: string) => string;
   readonly errorMessage: (code: string) => string;
+  readonly list: (items: readonly string[]) => string;
+  readonly number: (value: number) => string;
 };
 
 const interfaceCatalogs = indexCatalogsByLocale(
@@ -38,6 +40,8 @@ function messagesFor(locale: string): Messages {
     t,
     displayName: (taxonomy, entryId) => names(displayNameKey(taxonomy, entryId)),
     errorMessage: (code) => t(errorMessageKey(code)),
+    list: (items) => new Intl.ListFormat(locale, { type: "conjunction" }).format(items),
+    number: (value) => new Intl.NumberFormat(locale).format(value),
   };
 }
 
