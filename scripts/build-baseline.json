@@ -1,0 +1,4 @@
+{
+  "note": "2026-10-19, Phase 1: sign-in, library list and library home on Preact 11.0.1 (EXC-0001). Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
+  "gzipBytes": { "js": 9505, "css": 949 }
+}
