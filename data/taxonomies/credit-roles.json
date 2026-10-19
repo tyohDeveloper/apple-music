@@ -1,0 +1,18 @@
+{
+  "taxonomy": "creditRole",
+  "entries": [
+    { "id": "primary", "family": "performer" },
+    { "id": "featured", "family": "performer" },
+    { "id": "soloist", "family": "performer" },
+    { "id": "accompanist", "family": "performer" },
+    { "id": "conductor", "family": "performer" },
+    { "id": "orchestra", "family": "performer" },
+    { "id": "choir", "family": "performer" },
+    { "id": "ensemble", "family": "performer" },
+    { "id": "composer", "family": "writer" },
+    { "id": "lyricist", "family": "writer" },
+    { "id": "arranger", "family": "writer" },
+    { "id": "producer", "family": "production" },
+    { "id": "remixer", "family": "production" }
+  ]
+}

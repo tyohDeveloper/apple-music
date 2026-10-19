@@ -1,0 +1,15 @@
+{
+  "taxonomy": "recordingKind",
+  "entries": [
+    { "id": "studio" },
+    { "id": "live" },
+    { "id": "demo" },
+    { "id": "rehearsal" },
+    { "id": "alternate-take" },
+    { "id": "remix" },
+    { "id": "edit" },
+    { "id": "session" },
+    { "id": "interview" },
+    { "id": "spoken-word" }
+  ]
+}
