@@ -2,9 +2,11 @@
 // listening so integration tests can use inject().
 import Fastify, { type FastifyInstance } from "fastify";
 import type { DatabasePools } from "../../db/createDatabasePools.ts";
+import { isPartialDate } from "../../partial-dates/isPartialDate.ts";
 import { createAuth } from "../auth/createAuth.ts";
 import { registerAuthRoutes } from "../auth/registerAuthRoutes.ts";
 import { registerSessionGuard } from "../auth/registerSessionGuard.ts";
+import { registerCatalogRoutes } from "../catalog/registerCatalogRoutes.ts";
 import type { ServerConfig } from "../config/readServerConfig.ts";
 import { registerLibraryRoutes } from "../libraries/registerLibraryRoutes.ts";
 import { registerObservability } from "../observability/registerObservability.ts";
@@ -20,7 +22,12 @@ export type ServerDependencies = {
 };
 
 export async function buildServer(deps: ServerDependencies): Promise<FastifyInstance> {
-  const app = Fastify({ logger: deps.logRequests, requestIdHeader: "x-request-id", trustProxy: deps.config.production });
+  const app = Fastify({
+    logger: deps.logRequests,
+    requestIdHeader: "x-request-id",
+    trustProxy: deps.config.production,
+    ajv: { customOptions: { formats: { "partial-date": isPartialDate } } },
+  });
   registerErrorReplies(app);
   await registerSecurity(app);
   registerObservability(app, deps.pools.app);
@@ -29,6 +36,7 @@ export async function buildServer(deps: ServerDependencies): Promise<FastifyInst
   await app.register(async (scope) => {
     registerSessionGuard(scope, auth);
     registerLibraryRoutes(scope, deps.pools.app);
+    registerCatalogRoutes(scope, deps.pools.app);
   });
   if (deps.serveClientAssets) await registerClientAssets(app, deps.config.clientAssetsDir);
   return app;
