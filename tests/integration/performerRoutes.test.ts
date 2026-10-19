@@ -93,6 +93,8 @@ describe("performer access", () => {
     expect((await stranger.call("GET", `${base}/${performer.id}`)).status).toBe(404);
     expect((await stranger.call("GET", base)).body).toEqual({ items: [], total: 0 });
     expect((await stranger.call("POST", base, { kind: "person", name: "Intruder" })).status).toBe(403);
+    expect((await stranger.call("PATCH", `${base}/${performer.id}`, { area: "Elsewhere" })).status).toBe(403);
+    expect((await stranger.call("DELETE", `${base}/${performer.id}`)).status).toBe(403);
   });
 
   it("lets a viewer read but not write", async () => {
@@ -102,5 +104,10 @@ describe("performer access", () => {
     await queryAsRole(testConfig().database.adminUrl, grant, [libraryId, viewer.userId]);
     expect((await viewer.call("GET", base)).body.total).toBeGreaterThan(0);
     expect((await viewer.call("POST", base, { kind: "person", name: "Viewer write" })).status).toBe(403);
+    const performer = await createPerformer({ kind: "person", name: "Odetta" });
+    expect((await viewer.call("PATCH", `${base}/${performer.id}`, { area: "Birmingham" })).status).toBe(403);
+    expect((await viewer.call("POST", `${base}/${performer.id}/names`, { name: "Odetta Holmes", kind: "birth" })).status).toBe(403);
+    expect((await viewer.call("DELETE", `${base}/${performer.id}`)).status).toBe(403);
+    expect((await viewer.call("GET", `${base}/${performer.id}`)).body.area).toBeNull();
   });
 });

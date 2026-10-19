@@ -11,7 +11,7 @@ import { updatePerformerRequestSchema } from "../../../contracts/performers/upda
 import { CatalogRefusal, requireFound } from "../../../db/catalog/catalogRefusal.ts";
 import { getPerformerDetail, listPerformers } from "../../../db/catalog/performers/performerQueries.ts";
 import { createPerformer, deletePerformer, updatePerformer, type PerformerFields } from "../../../db/catalog/performers/performerWrites.ts";
-import { runInLibrary } from "../../../db/catalog/runInLibrary.ts";
+import { runInLibrary, writeInLibrary } from "../../../db/catalog/runInLibrary.ts";
 import { libraryScopeOf, pageRequestOf, type CatalogApp } from "../typedRoutes.ts";
 
 const collection = "/api/libraries/:libraryId/performers";
@@ -34,7 +34,7 @@ function registerCreate(app: CatalogApp, db: NodePgDatabase): void {
   app.post(collection, { schema }, async (request, reply) => {
     const scope = libraryScopeOf(request, request.params);
     const name = { name: request.body.name, sortName: request.body.sortName ?? null, kind: "primary", locale: null, validFrom: null, validTo: null };
-    const detail = await runInLibrary(db, scope, async (tx) => {
+    const detail = await writeInLibrary(db, scope, async (tx) => {
       const id = await createPerformer(tx, scope.libraryId, fieldsOf(request.body), name);
       return requireFound(await getPerformerDetail(tx, id));
     });
@@ -52,7 +52,7 @@ function registerRead(app: CatalogApp, db: NodePgDatabase): void {
 function registerUpdate(app: CatalogApp, db: NodePgDatabase): void {
   const schema = { params: performerParamsSchema, body: updatePerformerRequestSchema, response: { 200: performerDetailSchema } };
   app.patch(item, { schema }, (request) =>
-    runInLibrary(db, libraryScopeOf(request, request.params), async (tx) => {
+    writeInLibrary(db, libraryScopeOf(request, request.params), async (tx) => {
       if (!(await updatePerformer(tx, request.params.performerId, request.body))) throw new CatalogRefusal("not-found");
       return requireFound(await getPerformerDetail(tx, request.params.performerId));
     }),
@@ -62,7 +62,7 @@ function registerUpdate(app: CatalogApp, db: NodePgDatabase): void {
 function registerDelete(app: CatalogApp, db: NodePgDatabase): void {
   app.delete(item, { schema: { params: performerParamsSchema } }, async (request, reply) => {
     const scope = libraryScopeOf(request, request.params);
-    const deleted = await runInLibrary(db, scope, (tx) => deletePerformer(tx, request.params.performerId), "conflict-in-use");
+    const deleted = await writeInLibrary(db, scope, (tx) => deletePerformer(tx, request.params.performerId), "conflict-in-use");
     if (!deleted) throw new CatalogRefusal("not-found");
     return reply.status(204).send();
   });
