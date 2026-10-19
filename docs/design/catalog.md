@@ -8,8 +8,8 @@ Each slice is migrations, MODEL functions, contracts, routes, client screens and
 
 | Slice | Contents | Status |
 |---|---|---|
-| A | Performers, names, relations | in progress |
-| B | Recordings and recording credits | planned |
+| A | Performers, names, relations | done 2026-10-19 |
+| B | Recordings and recording credits | next |
 | C | Albums, album credits, intended track lists, editions, edition tracks | planned |
 | D | Genres, aliases and assignments; external identifiers | planned |
 | E | JSON export of a library | planned |
@@ -24,12 +24,12 @@ All paths are under `/api/libraries/{libraryId}` and require a session. Lists ta
 | `POST /performers` | Create a performer with its preferred name | A |
 | `GET /performers/{id}` | Performer with names and relations in both directions | A |
 | `PATCH /performers/{id}` | Edit kind, dates, area, disambiguation, notes | A |
-| `DELETE /performers/{id}` | Delete; `409` while credited or related | A |
-| `POST /performers/{id}/names` | Add a name | A |
-| `PATCH /performers/{id}/names/{nameId}` | Edit a name or make it preferred | A |
+| `DELETE /performers/{id}` | Delete with its names and relations; `409` while credited (from slice B) | A |
+| `POST /performers/{id}/names` | Add a name; answers with the performer | A |
+| `PATCH /performers/{id}/names/{nameId}` | Edit a name or make it preferred; answers with the performer | A |
 | `DELETE /performers/{id}/names/{nameId}` | Remove a name; `409` if preferred or credited | A |
-| `POST /performers/{id}/relations` | Relate this performer (subject) to another (object) | A |
-| `DELETE /performers/{id}/relations/{relationId}` | Remove a relation | A |
+| `POST /performers/{id}/relations` | Relate this performer (subject) to another (object); answers with the performer | A |
+| `DELETE /performers/{id}/relations/{relationId}` | Remove a relation; answers with the performer | A |
 | `GET /recordings`, `POST /recordings`, `GET`/`PATCH`/`DELETE /recordings/{id}` | Recordings | B |
 | `PUT /recordings/{id}/credits` | Replace the ordered credit list | B |
 | `GET /albums`, `POST /albums`, `GET`/`PATCH`/`DELETE /albums/{id}` | Albums | C |
@@ -40,7 +40,7 @@ All paths are under `/api/libraries/{libraryId}` and require a session. Lists ta
 | `PUT /{albums,editions,recordings,performers}/{id}/external-ids` | Replace external identifiers | D |
 | `GET /export` | The library as one JSON document (`data/schemas/library-export.schema.json`) | E |
 
-Errors use the Phase 1 envelope `{ error: { code } }`; new codes are `conflict-in-use`, `conflict-preferred-name` and `forbidden`.
+Errors use the Phase 1 envelope `{ error: { code } }`; new codes are `conflict-in-use`, `conflict-duplicate`, `conflict-preferred-name` (409) and `forbidden` (403, a viewer or non-member writing). A foreign key that names a missing row answers `404 not-found`.
 
 ## Screens
 

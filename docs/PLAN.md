@@ -2,7 +2,7 @@
 
 This file is the durable plan for the Apple Music Library Manager. It is updated at each phase boundary; decisions are recorded as ADRs in [docs/adr/](adr/) and referenced here.
 
-**Active phase:** Phase 2 — curated catalog. Phase 1 (foundation) was completed 2026-10-19 as version 0.1.0.0; see the phase log below.
+**Active phase:** Phase 2 — curated catalog, built in slices ([docs/design/catalog.md](design/catalog.md)); slice A (performers) is done. Phase 1 (foundation) was completed 2026-10-19 as version 0.1.0.0; see the phase log below.
 
 ## Requirements
 
@@ -50,6 +50,7 @@ Each requirement traces to the owner's request of 2026-10-19. IDs are stable; la
 | D-6 | Node 24 LTS, TypeScript 6, Fastify 5, Drizzle, Better Auth, Preact and Vite | [ADR-0006](adr/0006-application-stack.md) |
 | D-7 | The wiki is authored in `wiki/` and published to the GitHub Wiki by a workflow | [ADR-0007](adr/0007-wiki-published-from-repository.md) |
 | D-8 | Public MIT repository; the running application requires sign-in; sign-up closed until multi-user | [ADR-0008](adr/0008-access-model.md) |
+| D-9 | Taxonomy values are enforced by request schemas built from the taxonomy files; writes need the owner or editor role in row-level security; ordered lists are replaced whole; referenced entities are not deleted | [ADR-0009](adr/0009-catalog-integrity.md) |
 
 ## Phases
 
