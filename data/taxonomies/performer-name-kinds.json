@@ -1,0 +1,14 @@
+{
+  "taxonomy": "performerNameKind",
+  "entries": [
+    { "id": "primary" },
+    { "id": "legal" },
+    { "id": "birth" },
+    { "id": "stage" },
+    { "id": "alias" },
+    { "id": "spelling-variant" },
+    { "id": "former" },
+    { "id": "transliteration" },
+    { "id": "abbreviation" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "taxonomy": "performerKind",
+  "entries": [
+    { "id": "person" },
+    { "id": "group" },
+    { "id": "duo" },
+    { "id": "orchestra" },
+    { "id": "choir" },
+    { "id": "ensemble" },
+    { "id": "other" }
+  ]
+}

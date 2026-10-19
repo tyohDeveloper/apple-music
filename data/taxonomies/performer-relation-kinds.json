@@ -1,0 +1,12 @@
+{
+  "taxonomy": "performerRelationKind",
+  "entries": [
+    { "id": "member-of" },
+    { "id": "conductor-of" },
+    { "id": "music-director-of" },
+    { "id": "subgroup-of" },
+    { "id": "persona-of" },
+    { "id": "successor-of" },
+    { "id": "collaborator-with", "symmetric": true }
+  ]
+}
