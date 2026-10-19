@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "adopting",
+  "status": "adopted",
   "applicationRepository": "tyohDeveloper/apple-music",
   "policyVersion": "2.2",
   "sourceRepository": "https://github.com/tyohDeveloper/engineering-standards",
@@ -11,13 +11,15 @@
   "standardsDocument": "docs/CODING-STANDARDS.md",
   "exceptionsDocument": ".architecture-exceptions.json",
   "checks": [
-    { "requirement": "§1 roles, imports, purity; §3 limits, naming, barrels; §4 identifiers; §5 data; §11 exceptions", "command": "npm run check:standards", "enforcement": "automated" },
+    { "requirement": "§0 role mapping coverage; §1 roles, import direction, purity and ambient identifiers; §3 function and file limits, one export per PURE file, naming, barrels; §4.1–§4.3 test identifiers; §5.2 data schemas; §5.6 and §15 localization; §8.1, §8.2 test coverage scans; §10 license and attributions; §11 exception expiry", "command": "npm run check:standards", "enforcement": "automated" },
+    { "requirement": "Strict TypeScript across server, client, scripts and tests", "command": "npm run typecheck", "enforcement": "automated" },
     { "requirement": "§3.6 dead code", "command": "npm run check:dead-code", "enforcement": "automated" },
-    { "requirement": "§8.1, §8.2 unit and reducer tests", "command": "npm run test:unit", "enforcement": "automated" },
-    { "requirement": "Hosted profile: migrations and row-level security", "command": "npm run test:integration", "enforcement": "automated" },
-    { "requirement": "§7.6, §4.3 artifact verification", "command": "npm run verify:build", "enforcement": "automated" },
-    { "requirement": "§8.3 end-to-end flows", "command": "npm run test:e2e", "enforcement": "automated" },
+    { "requirement": "Hosted profile: migration names, rollback blocks, immutability, one migration per commit", "command": "npm run check:migrations", "enforcement": "automated" },
+    { "requirement": "§8.1, §8.2 unit and reducer tests; standards checker controls", "command": "npm run test:unit", "enforcement": "automated" },
+    { "requirement": "Hosted profile: migrations and row-level security against Postgres", "command": "npm run test:integration", "enforcement": "automated" },
     { "requirement": "§18 mandated bindings", "command": "npm run check:bindings", "enforcement": "automated" },
-    { "requirement": "§1.6, §2, §12, §13 single-sourcing, state discipline, repository and documentation conventions", "command": null, "enforcement": "manual-review" }
+    { "requirement": "§7.6 gzip baseline; §4.3, §4.4 test identifiers in the artifact; hosted profile: CSP, inline script, secrets", "command": "npm run verify:build", "enforcement": "automated" },
+    { "requirement": "§8.3 end-to-end flows against the built server", "command": "npm run test:e2e", "enforcement": "automated" },
+    { "requirement": "§1.6, §1.9 ports, §2, §6, §9 library selection, §12, §13 single-sourcing, state discipline, positions, repository and documentation conventions", "command": null, "enforcement": "manual-review" }
   ]
 }
