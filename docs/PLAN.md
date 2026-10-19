@@ -2,7 +2,7 @@
 
 This file is the durable plan for the Apple Music Library Manager. It is updated at each phase boundary; decisions are recorded as ADRs in [docs/adr/](adr/) and referenced here.
 
-**Active phase:** Phase 0 — plan checkpoint.
+**Active phase:** Phase 2 — curated catalog. Phase 1 (foundation) was completed 2026-10-19 as version 0.1.0.0; see the phase log below.
 
 ## Requirements
 
@@ -66,6 +66,13 @@ Each phase ends with `npm run build` and the end-to-end suite green locally and 
 | 6 — Other databases | MusicBrainz lookup through a rate-limited REMOTE adapter; match suggestions; external identifiers | Lookups covered against a recorded fake |
 | 7 — Depth | Works and compositions; edit history; Sign in with Apple; opening sign-up for more users | Per feature |
 | 8+ — Reach | Other streaming services through their own adapters; native wrappers per the native-wrappers profile | Per target |
+
+## Phase log
+
+| Phase | Completed | Notes |
+|---|---|---|
+| 0 | 2026-10-19 | Plan, domain model, architecture, ADR-0001 to ADR-0008, wiki source |
+| 1 | 2026-10-19 | Standards checker with planted-violation controls; migrations, bindings and artifact checks; three database roles with row-level security on `library` and `library_member`; owner sign-in with Better Auth and argon2; localized Preact shell with library list and creation; health, metrics, rate limits, CSP; CI with PostgreSQL 18.6; backup runbook with a rehearsed restore. Preact's measured 5,350-byte gzip cost exceeds the §9.2 per-library ceiling and is recorded as EXC-0001 (expires 2027-04-19). The MusicKit script binding is added with the Apple Music work in Phase 3. |
 
 ## Open questions for the owner
 
