@@ -43,6 +43,13 @@
       "when": 1792451878998,
       "tag": "20261019231758_performer_preferred_name",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792453386775,
+      "tag": "20261019234306_performer_name_owner_key",
+      "breakpoints": true
     }
   ]
 }

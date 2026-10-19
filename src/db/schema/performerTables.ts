@@ -2,7 +2,7 @@
 // (library_id, id) and every reference is composite, so no row can point outside its
 // library (invariant 1). Taxonomy keys are text validated by request schemas (ADR-0009).
 import { sql } from "drizzle-orm";
-import { boolean, check, foreignKey, index, pgTable, primaryKey, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, check, foreignKey, index, pgTable, primaryKey, text, unique, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { instant, libraryIdColumn, partialDate } from "./columns.ts";
 import { libraryRowPolicies } from "./libraryRowPolicies.ts";
 
@@ -34,6 +34,7 @@ export const performerName = pgTable("performer_name", {
 }, (t) => [
   primaryKey({ columns: [t.libraryId, t.id] }),
   foreignKey({ columns: [t.libraryId, t.performerId], foreignColumns: [performer.libraryId, performer.id] }).onDelete("cascade"),
+  unique("performer_name_of_performer").on(t.libraryId, t.performerId, t.id),
   uniqueIndex("performer_name_one_preferred").on(t.libraryId, t.performerId).where(sql`${t.isPreferred}`),
   index("performer_name_performer").on(t.libraryId, t.performerId),
   index("performer_name_match_key").on(t.libraryId, t.matchKey),
