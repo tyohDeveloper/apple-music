@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "policyVersion": "2.2",
+  "edition": "portable",
+  "copies": [
+    {
+      "path": "docs/standards/portable-v2.2.md",
+      "sourceRepository": "https://github.com/tyohDeveloper/engineering-standards",
+      "sourceCommit": "f30e6e09b436024a00bbc4f89982db3696fb97c3",
+      "sourcePath": "references/source-snapshots/history-and-prehistory/CODING-STANDARDS.md",
+      "sha256": "f5d3916eb6877ce8e7d0e4d1108b4707e7579f74643906194faced62abdad2f2",
+      "byteIdentical": true,
+      "originUrl": "https://github.com/tyohDeveloper/history-and-prehistory/blob/62c721d9b269bd6b25e202d0dbc8d94edf1e5d3b/docs/CODING-STANDARDS.md",
+      "originCommit": "62c721d9b269bd6b25e202d0dbc8d94edf1e5d3b",
+      "bytes": 39655
+    }
+  ],
+  "companionProfiles": [
+    {
+      "page": "concepts/coding-architecture-standards",
+      "updatedAt": "2026-08-16T20:41:00+00:00",
+      "readOn": "2026-10-19"
+    },
+    {
+      "page": "concepts/coding-standards-hosted-postgres",
+      "updatedAt": "2026-08-16T21:06:00+00:00",
+      "readOn": "2026-10-19"
+    },
+    {
+      "page": "concepts/coding-standards-platform-model-remote",
+      "updatedAt": "2026-08-16T21:06:00+00:00",
+      "readOn": "2026-10-19"
+    },
+    {
+      "page": "concepts/coding-standards-data-layer",
+      "updatedAt": "2026-08-08T12:24:00+00:00",
+      "readOn": "2026-10-19"
+    },
+    {
+      "page": "concepts/coding-standards-localization",
+      "updatedAt": "2026-08-08T12:24:00+00:00",
+      "readOn": "2026-10-19"
+    },
+    {
+      "page": "concepts/repository-conventions",
+      "updatedAt": "2026-08-08T17:51:00+00:00",
+      "readOn": "2026-10-19"
+    },
+    {
+      "page": "concepts/architecture-review-lessons",
+      "updatedAt": "2026-08-08T12:24:00+00:00",
+      "readOn": "2026-10-19"
+    }
+  ]
+}

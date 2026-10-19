@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "status": "adopting",
+  "applicationRepository": "tyohDeveloper/apple-music",
+  "policyVersion": "2.2",
+  "sourceRepository": "https://github.com/tyohDeveloper/engineering-standards",
+  "sourceCommit": "f30e6e09b436024a00bbc4f89982db3696fb97c3",
+  "approvedBy": "tyohDeveloper",
+  "adoptedOn": "2026-10-19",
+  "roleMappingDocument": "docs/ARCHITECTURE.md",
+  "standardsDocument": "docs/CODING-STANDARDS.md",
+  "exceptionsDocument": ".architecture-exceptions.json",
+  "checks": [
+    { "requirement": "§1 roles, imports, purity; §3 limits, naming, barrels; §4 identifiers; §5 data; §11 exceptions", "command": "npm run check:standards", "enforcement": "automated" },
+    { "requirement": "§3.6 dead code", "command": "npm run check:dead-code", "enforcement": "automated" },
+    { "requirement": "§8.1, §8.2 unit and reducer tests", "command": "npm run test:unit", "enforcement": "automated" },
+    { "requirement": "Hosted profile: migrations and row-level security", "command": "npm run test:integration", "enforcement": "automated" },
+    { "requirement": "§7.6, §4.3 artifact verification", "command": "npm run verify:build", "enforcement": "automated" },
+    { "requirement": "§8.3 end-to-end flows", "command": "npm run test:e2e", "enforcement": "automated" },
+    { "requirement": "§18 mandated bindings", "command": "npm run check:bindings", "enforcement": "automated" },
+    { "requirement": "§1.6, §2, §12, §13 single-sourcing, state discipline, repository and documentation conventions", "command": null, "enforcement": "manual-review" }
+  ]
+}
