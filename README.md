@@ -1,0 +1,37 @@
+# Apple Music Library Manager
+
+Maintain an Apple Music library as a curated catalog — intentional albums, distinct recordings, and performers with their names and relationships — kept in a datastore of its own and synchronized with Apple Music.
+
+**Status:** Phase 0, plan checkpoint. The application is not runnable yet; see [the plan of record](docs/PLAN.md).
+
+## What it is for
+
+- **Albums and recordings are first-class objects.** An album is the release its artists intended. The editions Apple Music offers (deluxe, expanded, remastered) are tracked separately, and each edition track is classified as part of the intended album or as an extra: demo, live take, interview, alternate take, remix, bonus track.
+- **Performers are first-class objects.** People, bands, duos, choirs, orchestras and ensembles, each with any number of names (stage names, spelling changes, initials, former names) and relationships (member of a band, conductor of an orchestra, persona of a person).
+- **Credits are recorded per recording.** A soloist's album assembled from sessions with different orchestras stays one album; each track keeps its own soloist, orchestra and conductor credits, and featured or duet partners keep their own roles.
+- **Curated metadata lives here.** Genres, dates, credits and notes are edited in this application and are not overwritten by later imports from Apple Music.
+
+## What it does not do
+
+- **No playback.** It is a maintenance tool, not a player.
+- **No in-place edits of Apple Music items.** The Apple Music API has no endpoints to rename, re-tag or delete existing library items. Apple Music is changed only through the operations Apple supports: creating playlists and playlist folders, adding tracks to playlists, adding catalog items to the library, ratings, and favorites. Every such change is proposed first and applied only after approval.
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [docs/PLAN.md](docs/PLAN.md) | Plan of record: requirements, decisions, phases, open questions |
+| [docs/DOMAIN-MODEL.md](docs/DOMAIN-MODEL.md) | Entities, relationships and invariants |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Role and path mapping, boundaries, contracts |
+| [docs/CODING-STANDARDS.md](docs/CODING-STANDARDS.md) | Adopted Engineering Standards release and enforcement matrix |
+| [docs/adr/](docs/adr/) | Architecture decision records |
+| [wiki/](wiki/README.md) | Source of the project wiki, published to the GitHub Wiki |
+| [AGENTS.md](AGENTS.md) | Contract for coding agents working in this repository |
+
+## Quickstart
+
+Available from Phase 1. Until then the repository holds the plan and the design.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
