@@ -8,6 +8,13 @@
       "when": 1792449377286,
       "tag": "20261019223617_default_privileges",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792449379010,
+      "tag": "20261019223619_auth_and_libraries",
+      "breakpoints": true
     }
   ]
 }
