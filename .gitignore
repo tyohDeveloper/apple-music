@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# build and test outputs
+dist/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+tmp/
+
+# secrets (Apple keys and environment files never enter the repository)
+.env*
+!.env.example
+*.p8
+
+# logs
+*.log
+
+# editors and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
