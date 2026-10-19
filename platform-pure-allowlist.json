@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "modules": [
+    { "path": "src/platform/verifyPassword.ts", "reason": "argon2 verification is deterministic for a given hash and password" }
+  ]
+}

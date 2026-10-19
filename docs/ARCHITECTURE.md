@@ -4,7 +4,7 @@
 
 - **Policy:** Engineering Standards v2.2, portable edition, pinned in [CODING-STANDARDS.md](CODING-STANDARDS.md) ([ADR-0001](adr/0001-adopt-engineering-standards.md)).
 - **Target profile:** hosted Postgres — a Node server with a Postgres datastore and a single-page web client served by the same server. The standalone-HTML5 and artifact-contract profiles do not apply. The native-wrappers profile applies only when a native target is added (Phase 8+).
-- **Scope:** the whole repository. The role mapping below is binding from Phase 1; until then it is the planned structure.
+- **Scope:** the whole repository. The role mapping below is binding and checked by `npm run check:standards`.
 
 ## Role and path mapping
 
@@ -12,20 +12,22 @@ Paths are relative to the repository root. A file outside every row fails the st
 
 | Role | Paths | Owns |
 |---|---|---|
-| VIEW | `src/browser/views/**/*.tsx` | Preact components: render state, call controller-supplied callbacks |
-| CONTROLLER | `src/server/**`, `src/browser/controllers/**` | Server composition, HTTP routes, request scope, background sync runner; browser hooks and effects |
+| VIEW | `src/browser/views/**/*.tsx`, `src/browser/main.tsx`, `src/browser/index.html`, `src/browser/styles/**/*.css` | Preact components, the page shell and styles: render state, call controller-supplied callbacks |
+| CONTROLLER | `src/server/**`, `src/browser/controllers/**` | Server composition, HTTP routes, request scope, background sync runner; browser hooks, effects and mount-point lookup |
 | STATE | `src/browser/state/**` | Reducers, action creators, selectors for the browser |
 | PURE-CORE | `src/credits/**`, `src/names/**`, `src/editions/**` | Credit parsing, name normalization and sort forms, edition grouping and track classification |
-| PURE | `src/library-sync/**`, `src/partial-dates/**`, `src/localization/**`, `src/taxonomies/**`, `src/routing/**`, `src/contracts/**` | Import planning, partial dates, message resolution, taxonomy lookups, client route parsing, HTTP wire schemas |
-| DATA | `data/**` | Taxonomies, classification markers, locale strings, JSON Schemas |
+| PURE | `src/library-sync/**`, `src/partial-dates/**`, `src/localization/**`, `src/taxonomies/**`, `src/routing/**`, `src/metrics/**`, `src/contracts/**` | Import planning, partial dates, message resolution, taxonomy lookups, client route parsing, metric arithmetic, HTTP wire schemas |
+| DATA | `data/**` | Taxonomies, classification markers, locale strings, security policy, JSON Schemas |
 | PLATFORM-PURE | Files listed in `platform-pure-allowlist.json` | Deterministic mandated primitives: content hashing, password verification |
 | PLATFORM-AMBIENT | `src/platform/**` not on the allowlist | Clock, password hashing, token encryption, developer-token signing |
 | MODEL | `src/db/**`, `drizzle/**` | The datastore this application owns: schema, migrations, pools, library scope, repositories |
 | REMOTE | `src/apple-music/**`, `src/browser/server-api/**` | Apple Music API access; the browser's access to this server's HTTP API |
-| BUILD | `scripts/**`, root configuration files | Standards checker, verifiers, release and wiki tooling |
+| BUILD | `scripts/**`, `*.config.ts` | Standards checker, verifiers, release and wiki tooling, tool configuration |
 | TEST | `tests/**` | Unit, integration and end-to-end tests, fakes and fixtures |
 
-`src/contracts/**` files each export one TypeBox schema constant and its static type; the server validates with them and the client imports their types only, so no schema code ships to the browser.
+The same mapping, with import rules, is kept machine-readable in [architecture.json](../architecture.json); `npm run check:standards` fails if the two disagree. Root-level manifests and documents (`README.md`, `package.json`, `tsconfig*.json`, the `.architecture-*` manifests) are outside the role model.
+
+`src/contracts/**` files each export one TypeBox schema constant and its static type, or types only; the server validates with the schemas and the browser imports types only, so no schema code ships to the browser.
 
 ## Dependency direction
 
@@ -96,11 +98,14 @@ A sync run is a background job started by a request; no HTTP handler holds a lon
 | Command | Enforces |
 |---|---|
 | `npm run typecheck` | TypeScript strict mode across server, client, scripts and tests |
-| `npm run check:standards` | Role mapping coverage, import direction and library restrictions, ambient identifiers, function and file limits, one export per PURE file, shape names, barrels, test identifiers, user-visible literals, locale keys, data schemas, exceptions expiry, bindings |
-| `npm run test:unit` | PURE and STATE tests, including the export-to-test scan |
+| `npm run check:standards` | Role mapping coverage, import direction and library restrictions, ambient identifiers, function and file limits, one export per PURE file, shape names, barrels, test identifiers, user-visible literals, locale keys, data schemas, unit-test coverage of PURE exports and reducer actions, exception expiry, license and attributions, datastore ownership |
+| `npm run check:dead-code` | Unused files, exports and dependencies (Knip) |
+| `npm run check:migrations` | Migration names, rollback blocks, journal consistency, immutability of applied migrations, one migration per commit |
+| `npm run test:unit` | PURE and STATE tests, and planted-violation controls for the standards checker |
 | `npm run test:integration` | MODEL repositories, migrations, row-level security and HTTP routes against Postgres |
 | `npm run bundle` | Client and server builds |
-| `npm run verify:build` | Built artifact: test identifier uniqueness, gzip baseline, CSP, absence of secrets |
-| `npm run test:e2e` | User flows in a browser against the built server and an Apple Music fake |
+| `npm run check:bindings` | Mandated bindings resolved in the installed tree and the built server |
+| `npm run verify:build` | Built artifact: gzip baseline, test identifier uniqueness and retention, CSP, no inline script, absence of secrets |
+| `npm run test:e2e` | User flows in a browser against the built server (and, from Phase 3, an Apple Music fake) |
 
-`npm run build` runs the first six in order and stops at the first failure; the end-to-end suite is a separate gate in CI.
+`npm run build` runs all but the last in order and stops at the first failure; the end-to-end suite is a separate gate in CI.
