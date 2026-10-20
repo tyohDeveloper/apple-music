@@ -1,4 +1,7 @@
 {
-  "note": "2026-10-19, Phase 2 slice D: genre search and editor with aliases, placement and subgenres, the genres panel on albums, recordings and performers, and the linked performers list added 3,064 bytes of JS and no CSS (gzip) to slice C's 24,040 and 1,249; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
-  "gzipBytes": { "js": 27104, "css": 1249 }
+  "note": "2026-10-19, Phase 2 slice E: the identifiers panel on performers, albums, editions and recordings, with the namespace formats (data/identifiers/external-id-formats.json) shipped so a malformed value is flagged before sending, added 1,485 bytes of JS and 32 of CSS (gzip) to slice D's 27,104 and 1,249; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
+  "gzipBytes": {
+    "js": 28589,
+    "css": 1281
+  }
 }
