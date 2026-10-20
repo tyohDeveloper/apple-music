@@ -2,7 +2,7 @@
 
 A web application for maintaining an Apple Music library as a curated catalog — intentional albums, distinct recordings, and performers with their names and relationships — kept in a datastore of its own and synchronized with Apple Music.
 
-**Status:** Phase 2 in progress on version 0.1.0.0: owner sign-in, libraries, performers with all their names and relations, recordings with ordered credits, albums with credits, intended track lists and editions whose tracks are classified against the album, a genre tree with aliases whose genres albums, recordings and performers carry in order, and external identifiers (Apple Music, ISRC, UPC, MusicBrainz, Discogs, Wikidata) checked against each namespace's form. JSON export of a library comes next; see [the plan of record](docs/PLAN.md). There is no deployed instance yet.
+**Status:** version 0.2.0.0, Phase 2 complete: owner sign-in, libraries, performers with all their names and relations, recordings with ordered credits, albums with credits, intended track lists and editions whose tracks are classified against the album, a genre tree with aliases whose genres albums, recordings and performers carry in order, external identifiers (Apple Music, ISRC, UPC, MusicBrainz, Discogs, Wikidata) checked against each namespace's form, and a JSON export of each library with a [published schema](docs/schemas/library-export.schema.json). Importing from Apple Music (Phase 3) comes next; see [the plan of record](docs/PLAN.md). There is no deployed instance yet.
 
 ## What it is for
 

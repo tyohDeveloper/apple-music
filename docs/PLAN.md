@@ -2,7 +2,7 @@
 
 This file is the durable plan for the Apple Music Library Manager. It is updated at each phase boundary; decisions are recorded as ADRs in [docs/adr/](adr/) and referenced here.
 
-**Active phase:** Phase 2 — curated catalog, built in slices ([docs/design/catalog.md](design/catalog.md)); slices A (performers), B (recordings and credits), C (albums and editions), D (genres) and E (external identifiers) are done; F (JSON export) is next. Phase 1 (foundation) was completed 2026-10-19 as version 0.1.0.0; see the phase log below.
+**Active phase:** Phase 3 — Apple Music import, next; its plan is checkpointed in `docs/design/` before building. Phase 2 (curated catalog) was completed 2026-10-19 as version 0.2.0.0 and Phase 1 (foundation) as version 0.1.0.0; see the phase log below.
 
 ## Requirements
 
@@ -74,6 +74,7 @@ Each phase ends with `npm run build` and the end-to-end suite green locally and 
 |---|---|---|
 | 0 | 2026-10-19 | Plan, domain model, architecture, ADR-0001 to ADR-0008, wiki source |
 | 1 | 2026-10-19 | Standards checker with planted-violation controls; migrations, bindings and artifact checks; three database roles with row-level security on `library` and `library_member`; owner sign-in with Better Auth and argon2; localized Preact shell with library list and creation; health, metrics, rate limits, CSP; CI with PostgreSQL 18.6; backup runbook with a rehearsed restore. Preact's measured 5,350-byte gzip cost exceeds the §9.2 per-library ceiling and is recorded as EXC-0001 (expires 2027-04-19). The MusicKit script binding is added with the Apple Music work in Phase 3. |
+| 2 | 2026-10-19 | Six slices ([docs/design/catalog.md](design/catalog.md)): performers with names and relations; recordings with ordered credits; albums with credits and intended track lists, and editions whose tracks are classified against the album; a genre tree with aliases, guarded against cycles, and ordered genre assignments; external identifiers checked against declared namespace formats in the browser and on the server; a JSON export with a published JSON Schema. 14 migrations with row-level security on every catalog table; isolation between libraries covered by integration tests; restore rehearsed at 14 migrations ([backup.md](ops/backup.md)). |
 
 ## Open questions for the owner
 

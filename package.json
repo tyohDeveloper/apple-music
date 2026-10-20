@@ -1,6 +1,6 @@
 {
   "name": "apple-music",
-  "version": "0.1.0.0",
+  "version": "0.2.0.0",
   "description": "Apple Music library manager: first-class albums, recordings and performers, with curated metadata kept beyond Apple Music.",
   "license": "MIT",
   "author": "David Hoyt",
