@@ -5,6 +5,16 @@ import { readApplicationIdentity, type ApplicationIdentity } from "./readApplica
 
 type AppleCredentials = { readonly teamId: string; readonly keyId: string; readonly privateKey: string };
 
+// Sync runs (docs/design/apple-music-import.md, slice H): library list page size, catalog
+// lookup batch sizes (Apple's limits), and starts allowed per library a minute. Fixed, not
+// read from the environment; tests use smaller values.
+export type SyncSettings = {
+  readonly pageSize: number;
+  readonly catalogSongBatch: number;
+  readonly catalogAlbumBatch: number;
+  readonly startsPerMinute: number;
+};
+
 export type ServerConfig = {
   readonly host: string;
   readonly port: number;
@@ -18,6 +28,7 @@ export type ServerConfig = {
   readonly tokenEncryptionKey: string | null;
   readonly apple: AppleCredentials | null;
   readonly appleMusicApiBaseUrl: string;
+  readonly sync: SyncSettings;
   readonly application: ApplicationIdentity;
 };
 
@@ -66,6 +77,7 @@ export function readServerConfig(env: Environment = process.env): ServerConfig {
     tokenEncryptionKey: optional(env, "TOKEN_ENCRYPTION_KEY"),
     apple: readAppleCredentials(env),
     appleMusicApiBaseUrl: optional(env, "APPLE_MUSIC_API_BASE_URL") ?? "https://api.music.apple.com",
+    sync: { pageSize: 100, catalogSongBatch: 300, catalogAlbumBatch: 100, startsPerMinute: 2 },
     application: readApplicationIdentity(),
   };
 }
