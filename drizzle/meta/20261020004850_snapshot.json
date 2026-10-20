@@ -1,0 +1,2621 @@
+{
+  "id": "67520a65-28d9-4554-8748-df40e22a56a9",
+  "prevId": "644d4cbe-1da9-4d85-b44f-559fbe052331",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.album": {
+      "name": "album",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "match_key": {
+          "name": "match_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "released": {
+          "name": "released",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "album_match_key": {
+          "name": "album_match_key",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "match_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "album_library_id_library_id_fk": {
+          "name": "album_library_id_library_id_fk",
+          "tableFrom": "album",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "album_library_id_id_pk": {
+          "name": "album_library_id_id_pk",
+          "columns": [
+            "library_id",
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "album_read": {
+          "name": "album_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "album_insert": {
+          "name": "album_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "album_update": {
+          "name": "album_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "album_delete": {
+          "name": "album_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.album_credit": {
+      "name": "album_credit",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "album_id": {
+          "name": "album_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "performer_id": {
+          "name": "performer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "credited_name_id": {
+          "name": "credited_name_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "join_phrase": {
+          "name": "join_phrase",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instruments": {
+          "name": "instruments",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        }
+      },
+      "indexes": {
+        "album_credit_performer": {
+          "name": "album_credit_performer",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "performer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "album_credit_library_id_library_id_fk": {
+          "name": "album_credit_library_id_library_id_fk",
+          "tableFrom": "album_credit",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "album_credit_library_id_album_id_album_library_id_id_fk": {
+          "name": "album_credit_library_id_album_id_album_library_id_id_fk",
+          "tableFrom": "album_credit",
+          "columnsFrom": [
+            "library_id",
+            "album_id"
+          ],
+          "tableTo": "album",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "album_credit_library_id_performer_id_performer_library_id_id_fk": {
+          "name": "album_credit_library_id_performer_id_performer_library_id_id_fk",
+          "tableFrom": "album_credit",
+          "columnsFrom": [
+            "library_id",
+            "performer_id"
+          ],
+          "tableTo": "performer",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "album_credit_credited_name_fk": {
+          "name": "album_credit_credited_name_fk",
+          "tableFrom": "album_credit",
+          "columnsFrom": [
+            "library_id",
+            "performer_id",
+            "credited_name_id"
+          ],
+          "tableTo": "performer_name",
+          "columnsTo": [
+            "library_id",
+            "performer_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "album_credit_library_id_album_id_position_pk": {
+          "name": "album_credit_library_id_album_id_position_pk",
+          "columns": [
+            "library_id",
+            "album_id",
+            "position"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "album_credit_read": {
+          "name": "album_credit_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "album_credit_insert": {
+          "name": "album_credit_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "album_credit_update": {
+          "name": "album_credit_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "album_credit_delete": {
+          "name": "album_credit_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {
+        "album_credit_position_not_negative": {
+          "name": "album_credit_position_not_negative",
+          "value": "\"album_credit\".\"position\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.album_track": {
+      "name": "album_track",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "album_id": {
+          "name": "album_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "disc_index": {
+          "name": "disc_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recording_id": {
+          "name": "recording_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "album_track_recording": {
+          "name": "album_track_recording",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "recording_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "album_track_library_id_library_id_fk": {
+          "name": "album_track_library_id_library_id_fk",
+          "tableFrom": "album_track",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "album_track_library_id_album_id_album_library_id_id_fk": {
+          "name": "album_track_library_id_album_id_album_library_id_id_fk",
+          "tableFrom": "album_track",
+          "columnsFrom": [
+            "library_id",
+            "album_id"
+          ],
+          "tableTo": "album",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "album_track_library_id_recording_id_recording_library_id_id_fk": {
+          "name": "album_track_library_id_recording_id_recording_library_id_id_fk",
+          "tableFrom": "album_track",
+          "columnsFrom": [
+            "library_id",
+            "recording_id"
+          ],
+          "tableTo": "recording",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "album_track_library_id_album_id_disc_index_position_pk": {
+          "name": "album_track_library_id_album_id_disc_index_position_pk",
+          "columns": [
+            "library_id",
+            "album_id",
+            "disc_index",
+            "position"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "album_track_read": {
+          "name": "album_track_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "album_track_insert": {
+          "name": "album_track_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "album_track_update": {
+          "name": "album_track_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "album_track_delete": {
+          "name": "album_track_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {
+        "album_track_disc_not_negative": {
+          "name": "album_track_disc_not_negative",
+          "value": "\"album_track\".\"disc_index\" >= 0"
+        },
+        "album_track_position_not_negative": {
+          "name": "album_track_position_not_negative",
+          "value": "\"album_track\".\"position\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "auth.account": {
+      "name": "account",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_token": {
+          "name": "id_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
+          "tableFrom": "account",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "tableTo": "user",
+          "schemaTo": "auth",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "auth.session": {
+      "name": "session",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
+          "tableFrom": "session",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "tableTo": "user",
+          "schemaTo": "auth",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "session_token_unique": {
+          "name": "session_token_unique",
+          "columns": [
+            "token"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "auth.user": {
+      "name": "user",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_email_unique": {
+          "name": "user_email_unique",
+          "columns": [
+            "email"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "auth.verification": {
+      "name": "verification",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "identifier": {
+          "name": "identifier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.edition": {
+      "name": "edition",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "album_id": {
+          "name": "album_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "released": {
+          "name": "released",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "edition_album": {
+          "name": "edition_album",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "album_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "edition_library_id_library_id_fk": {
+          "name": "edition_library_id_library_id_fk",
+          "tableFrom": "edition",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "edition_library_id_album_id_album_library_id_id_fk": {
+          "name": "edition_library_id_album_id_album_library_id_id_fk",
+          "tableFrom": "edition",
+          "columnsFrom": [
+            "library_id",
+            "album_id"
+          ],
+          "tableTo": "album",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "edition_library_id_id_pk": {
+          "name": "edition_library_id_id_pk",
+          "columns": [
+            "library_id",
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "edition_read": {
+          "name": "edition_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "edition_insert": {
+          "name": "edition_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "edition_update": {
+          "name": "edition_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "edition_delete": {
+          "name": "edition_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.edition_track": {
+      "name": "edition_track",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "edition_id": {
+          "name": "edition_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "disc_index": {
+          "name": "disc_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recording_id": {
+          "name": "recording_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "inclusion": {
+          "name": "inclusion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "edition_track_recording": {
+          "name": "edition_track_recording",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "recording_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "edition_track_library_id_library_id_fk": {
+          "name": "edition_track_library_id_library_id_fk",
+          "tableFrom": "edition_track",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "edition_track_library_id_edition_id_edition_library_id_id_fk": {
+          "name": "edition_track_library_id_edition_id_edition_library_id_id_fk",
+          "tableFrom": "edition_track",
+          "columnsFrom": [
+            "library_id",
+            "edition_id"
+          ],
+          "tableTo": "edition",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "edition_track_library_id_recording_id_recording_library_id_id_fk": {
+          "name": "edition_track_library_id_recording_id_recording_library_id_id_fk",
+          "tableFrom": "edition_track",
+          "columnsFrom": [
+            "library_id",
+            "recording_id"
+          ],
+          "tableTo": "recording",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "edition_track_library_id_edition_id_disc_index_position_pk": {
+          "name": "edition_track_library_id_edition_id_disc_index_position_pk",
+          "columns": [
+            "library_id",
+            "edition_id",
+            "disc_index",
+            "position"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "edition_track_read": {
+          "name": "edition_track_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "edition_track_insert": {
+          "name": "edition_track_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "edition_track_update": {
+          "name": "edition_track_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "edition_track_delete": {
+          "name": "edition_track_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {
+        "edition_track_disc_not_negative": {
+          "name": "edition_track_disc_not_negative",
+          "value": "\"edition_track\".\"disc_index\" >= 0"
+        },
+        "edition_track_position_not_negative": {
+          "name": "edition_track_position_not_negative",
+          "value": "\"edition_track\".\"position\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.genre": {
+      "name": "genre",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "match_key": {
+          "name": "match_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "genre_library_id_library_id_fk": {
+          "name": "genre_library_id_library_id_fk",
+          "tableFrom": "genre",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "genre_parent_fk": {
+          "name": "genre_parent_fk",
+          "tableFrom": "genre",
+          "columnsFrom": [
+            "library_id",
+            "parent_id"
+          ],
+          "tableTo": "genre",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "genre_library_id_id_pk": {
+          "name": "genre_library_id_id_pk",
+          "columns": [
+            "library_id",
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "genre_sibling_name": {
+          "name": "genre_sibling_name",
+          "columns": [
+            "library_id",
+            "parent_id",
+            "match_key"
+          ],
+          "nullsNotDistinct": true
+        }
+      },
+      "policies": {
+        "genre_read": {
+          "name": "genre_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "genre_insert": {
+          "name": "genre_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "genre_update": {
+          "name": "genre_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "genre_delete": {
+          "name": "genre_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {
+        "genre_parent_not_self": {
+          "name": "genre_parent_not_self",
+          "value": "\"genre\".\"parent_id\" <> \"genre\".\"id\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.genre_alias": {
+      "name": "genre_alias",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "genre_id": {
+          "name": "genre_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "match_key": {
+          "name": "match_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "genre_alias_genre": {
+          "name": "genre_alias_genre",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "genre_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "genre_alias_library_id_library_id_fk": {
+          "name": "genre_alias_library_id_library_id_fk",
+          "tableFrom": "genre_alias",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "genre_alias_library_id_genre_id_genre_library_id_id_fk": {
+          "name": "genre_alias_library_id_genre_id_genre_library_id_id_fk",
+          "tableFrom": "genre_alias",
+          "columnsFrom": [
+            "library_id",
+            "genre_id"
+          ],
+          "tableTo": "genre",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "genre_alias_library_id_id_pk": {
+          "name": "genre_alias_library_id_id_pk",
+          "columns": [
+            "library_id",
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "genre_alias_match_key": {
+          "name": "genre_alias_match_key",
+          "columns": [
+            "library_id",
+            "match_key"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {
+        "genre_alias_read": {
+          "name": "genre_alias_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "genre_alias_insert": {
+          "name": "genre_alias_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "genre_alias_update": {
+          "name": "genre_alias_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "genre_alias_delete": {
+          "name": "genre_alias_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.library": {
+      "name": "library",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "storefront": {
+          "name": "storefront",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "library_read_by_members": {
+          "name": "library_read_by_members",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "exists (select 1 from library_member m\n  where m.library_id = library.id and m.user_id = current_setting('app.user_id', true))"
+        },
+        "library_update_by_members": {
+          "name": "library_update_by_members",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "exists (select 1 from library_member m\n  where m.library_id = library.id and m.user_id = current_setting('app.user_id', true))",
+          "withCheck": "exists (select 1 from library_member m\n  where m.library_id = library.id and m.user_id = current_setting('app.user_id', true))"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.library_member": {
+      "name": "library_member",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "library_member_library_id_library_id_fk": {
+          "name": "library_member_library_id_library_id_fk",
+          "tableFrom": "library_member",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "library_member_user_id_user_id_fk": {
+          "name": "library_member_user_id_user_id_fk",
+          "tableFrom": "library_member",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "tableTo": "user",
+          "schemaTo": "auth",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "library_member_library_id_user_id_pk": {
+          "name": "library_member_library_id_user_id_pk",
+          "columns": [
+            "library_id",
+            "user_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "library_member_read_own": {
+          "name": "library_member_read_own",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "\"library_member\".\"user_id\" = current_setting('app.user_id', true)"
+        }
+      },
+      "checkConstraints": {
+        "library_member_role_known": {
+          "name": "library_member_role_known",
+          "value": "\"library_member\".\"role\" in ('owner', 'editor', 'viewer')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.performer": {
+      "name": "performer",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "began": {
+          "name": "began",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ended": {
+          "name": "ended",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "area": {
+          "name": "area",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "disambiguation": {
+          "name": "disambiguation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "performer_library_id_library_id_fk": {
+          "name": "performer_library_id_library_id_fk",
+          "tableFrom": "performer",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "performer_library_id_id_pk": {
+          "name": "performer_library_id_id_pk",
+          "columns": [
+            "library_id",
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "performer_read": {
+          "name": "performer_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "performer_insert": {
+          "name": "performer_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "performer_update": {
+          "name": "performer_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "performer_delete": {
+          "name": "performer_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.performer_name": {
+      "name": "performer_name",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "performer_id": {
+          "name": "performer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sort_name": {
+          "name": "sort_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "locale": {
+          "name": "locale",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "valid_to": {
+          "name": "valid_to",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_preferred": {
+          "name": "is_preferred",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "match_key": {
+          "name": "match_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "performer_name_one_preferred": {
+          "name": "performer_name_one_preferred",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "performer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "\"performer_name\".\"is_preferred\"",
+          "concurrently": false
+        },
+        "performer_name_performer": {
+          "name": "performer_name_performer",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "performer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "performer_name_match_key": {
+          "name": "performer_name_match_key",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "match_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "performer_name_library_id_library_id_fk": {
+          "name": "performer_name_library_id_library_id_fk",
+          "tableFrom": "performer_name",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "performer_name_library_id_performer_id_performer_library_id_id_fk": {
+          "name": "performer_name_library_id_performer_id_performer_library_id_id_fk",
+          "tableFrom": "performer_name",
+          "columnsFrom": [
+            "library_id",
+            "performer_id"
+          ],
+          "tableTo": "performer",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "performer_name_library_id_id_pk": {
+          "name": "performer_name_library_id_id_pk",
+          "columns": [
+            "library_id",
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "performer_name_of_performer": {
+          "name": "performer_name_of_performer",
+          "columns": [
+            "library_id",
+            "performer_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {
+        "performer_name_read": {
+          "name": "performer_name_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "performer_name_insert": {
+          "name": "performer_name_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "performer_name_update": {
+          "name": "performer_name_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "performer_name_delete": {
+          "name": "performer_name_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.performer_relation": {
+      "name": "performer_relation",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "subject_id": {
+          "name": "subject_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "object_id": {
+          "name": "object_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "roles": {
+          "name": "roles",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "began": {
+          "name": "began",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ended": {
+          "name": "ended",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "performer_relation_subject": {
+          "name": "performer_relation_subject",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "subject_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "performer_relation_object": {
+          "name": "performer_relation_object",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "object_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "performer_relation_library_id_library_id_fk": {
+          "name": "performer_relation_library_id_library_id_fk",
+          "tableFrom": "performer_relation",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "performer_relation_library_id_subject_id_performer_library_id_id_fk": {
+          "name": "performer_relation_library_id_subject_id_performer_library_id_id_fk",
+          "tableFrom": "performer_relation",
+          "columnsFrom": [
+            "library_id",
+            "subject_id"
+          ],
+          "tableTo": "performer",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "performer_relation_library_id_object_id_performer_library_id_id_fk": {
+          "name": "performer_relation_library_id_object_id_performer_library_id_id_fk",
+          "tableFrom": "performer_relation",
+          "columnsFrom": [
+            "library_id",
+            "object_id"
+          ],
+          "tableTo": "performer",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "performer_relation_library_id_id_pk": {
+          "name": "performer_relation_library_id_id_pk",
+          "columns": [
+            "library_id",
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "performer_relation_read": {
+          "name": "performer_relation_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "performer_relation_insert": {
+          "name": "performer_relation_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "performer_relation_update": {
+          "name": "performer_relation_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "performer_relation_delete": {
+          "name": "performer_relation_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {
+        "performer_relation_not_self": {
+          "name": "performer_relation_not_self",
+          "value": "\"performer_relation\".\"subject_id\" <> \"performer_relation\".\"object_id\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.recording": {
+      "name": "recording",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "match_key": {
+          "name": "match_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version_note": {
+          "name": "version_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recorded_from": {
+          "name": "recorded_from",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recorded_to": {
+          "name": "recorded_to",
+          "type": "partial_date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "venue": {
+          "name": "venue",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "duration_ms": {
+          "name": "duration_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "recording_match_key": {
+          "name": "recording_match_key",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "match_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "recording_library_id_library_id_fk": {
+          "name": "recording_library_id_library_id_fk",
+          "tableFrom": "recording",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "recording_library_id_id_pk": {
+          "name": "recording_library_id_id_pk",
+          "columns": [
+            "library_id",
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "recording_read": {
+          "name": "recording_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "recording_insert": {
+          "name": "recording_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "recording_update": {
+          "name": "recording_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "recording_delete": {
+          "name": "recording_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {
+        "recording_duration_not_negative": {
+          "name": "recording_duration_not_negative",
+          "value": "\"recording\".\"duration_ms\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.recording_credit": {
+      "name": "recording_credit",
+      "schema": "",
+      "columns": {
+        "library_id": {
+          "name": "library_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recording_id": {
+          "name": "recording_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "performer_id": {
+          "name": "performer_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "credited_name_id": {
+          "name": "credited_name_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "join_phrase": {
+          "name": "join_phrase",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instruments": {
+          "name": "instruments",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        }
+      },
+      "indexes": {
+        "recording_credit_performer": {
+          "name": "recording_credit_performer",
+          "columns": [
+            {
+              "expression": "library_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "performer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "recording_credit_library_id_library_id_fk": {
+          "name": "recording_credit_library_id_library_id_fk",
+          "tableFrom": "recording_credit",
+          "columnsFrom": [
+            "library_id"
+          ],
+          "tableTo": "library",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "recording_credit_library_id_recording_id_recording_library_id_id_fk": {
+          "name": "recording_credit_library_id_recording_id_recording_library_id_id_fk",
+          "tableFrom": "recording_credit",
+          "columnsFrom": [
+            "library_id",
+            "recording_id"
+          ],
+          "tableTo": "recording",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "recording_credit_library_id_performer_id_performer_library_id_id_fk": {
+          "name": "recording_credit_library_id_performer_id_performer_library_id_id_fk",
+          "tableFrom": "recording_credit",
+          "columnsFrom": [
+            "library_id",
+            "performer_id"
+          ],
+          "tableTo": "performer",
+          "columnsTo": [
+            "library_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "recording_credit_credited_name_fk": {
+          "name": "recording_credit_credited_name_fk",
+          "tableFrom": "recording_credit",
+          "columnsFrom": [
+            "library_id",
+            "performer_id",
+            "credited_name_id"
+          ],
+          "tableTo": "performer_name",
+          "columnsTo": [
+            "library_id",
+            "performer_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "recording_credit_library_id_recording_id_position_pk": {
+          "name": "recording_credit_library_id_recording_id_position_pk",
+          "columns": [
+            "library_id",
+            "recording_id",
+            "position"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "recording_credit_read": {
+          "name": "recording_credit_read",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_library()"
+        },
+        "recording_credit_insert": {
+          "name": "recording_credit_insert",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "apple_music_app"
+          ],
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "recording_credit_update": {
+          "name": "recording_credit_update",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()",
+          "withCheck": "library_id = app_current_editable_library()"
+        },
+        "recording_credit_delete": {
+          "name": "recording_credit_delete",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": [
+            "apple_music_app"
+          ],
+          "using": "library_id = app_current_editable_library()"
+        }
+      },
+      "checkConstraints": {
+        "recording_credit_position_not_negative": {
+          "name": "recording_credit_position_not_negative",
+          "value": "\"recording_credit\".\"position\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "auth": "auth"
+  },
+  "views": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
