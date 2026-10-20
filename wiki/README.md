@@ -2,7 +2,7 @@
 
 A web application for maintaining an Apple Music library as a curated catalog. It keeps its own records of albums, recordings and performers, imports what Apple Music knows, and changes Apple Music only in the ways Apple's API allows.
 
-**Status:** the foundation is done; the curated catalog is being built. Performers, recordings, albums and genres, with credits, intended track lists, editions, genre trees and identifiers from Apple Music, ISRC, UPC, MusicBrainz, Discogs and Wikidata, can be edited now; exporting a library comes next. See the [Roadmap](Roadmap.md).
+**Status:** the foundation is done; the curated catalog is being built. Performers, recordings, albums and genres, with credits, intended track lists, editions, genre trees and identifiers from Apple Music, ISRC, UPC, MusicBrainz, Discogs and Wikidata, can be edited now, and each library can be downloaded as one JSON file. Importing from Apple Music comes next. See the [Roadmap](Roadmap.md).
 
 ## Why it exists
 
@@ -25,6 +25,7 @@ This application models those things directly. See [Concepts](Concepts.md).
 | [Editing albums](Editing-Albums.md) | Albums, their intended track lists, and editions with classified tracks |
 | [Editing genres](Editing-Genres.md) | The genre tree, aliases, and the genres of albums, recordings and performers |
 | [Editing identifiers](Editing-Identifiers.md) | Apple Music, ISRC, UPC, MusicBrainz, Discogs and Wikidata identifiers, and which entries take which |
+| [Exporting a library](Exporting-a-Library.md) | The JSON export: what it holds, how to check it, what it is not |
 | [Cleanup workflows](Cleanup-Workflows.md) | How the common cleanups are done |
 | [Apple Music integration](Apple-Music-Integration.md) | What is read, what can be changed, what cannot, and how tokens are protected |
 | [Getting started](Getting-Started.md) | Requirements and setup |

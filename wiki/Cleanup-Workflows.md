@@ -33,4 +33,4 @@ Create your genres, nest them, and map each Apple genre name onto one of yours.
 
 ## Export a library
 
-Download the whole library as one JSON document for backup or inspection.
+Download the whole library as one JSON document for backup or inspection; see [Exporting a library](Exporting-a-Library.md).
