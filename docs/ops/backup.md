@@ -35,12 +35,18 @@ The custom format is compressed and restores selectively with `pg_restore`. The 
    # expect 0
    ```
 
-5. Start the server against the restored database; it applies any newer migrations before taking traffic.
+5. Optionally, compare each library's JSON export (below) from the source and the copy; apart from `exportedAt` they are identical.
+6. Start the server against the restored database; it applies any newer migrations before taking traffic.
+
+## JSON export
+
+Each library can also be downloaded as one JSON document: **Download the JSON export** on the library home, or `GET /api/libraries/{libraryId}/export` ([docs/design/catalog.md](../design/catalog.md#export)). It holds one library's curated catalog, without accounts, sessions or tokens, and validates against [docs/schemas/library-export.schema.json](../schemas/library-export.schema.json). It is a readable, portable copy for inspection and interchange; it does not replace the dump, and there is no import yet.
 
 ## Rehearsals
 
 | Date | Source | Result |
 |---|---|---|
 | 2026-10-19 | Development database, PostgreSQL 18.6, 3 migrations | Restored into a scratch database; user, library, membership, migration and policy counts matched (1, 2, 2, 3, 3); application role saw 0 libraries without a scope; scratch database dropped |
+| 2026-10-19 | Test database after the end-to-end suite, PostgreSQL 18.6, 14 migrations | Restored into a scratch database; counts matched for users, libraries, memberships, performers, performer names, recordings, credits, albums, editions, edition tracks, genres, external identifiers, migrations, policies, functions and triggers (1, 2, 2, 4, 6, 6, 2, 1, 1, 2, 2, 2, 14, 79, 6, 3); application role saw 0 libraries and 0 recordings without a scope; both libraries' JSON exports were identical from source and copy apart from `exportedAt`; scratch database dropped |
 
 Rehearse again after any migration that adds a schema, role, function or policy, and record the result here.
