@@ -1,6 +1,6 @@
 # Connecting Apple Music
 
-Connecting a library lets the application read the Apple Music library of one Apple ID. It is the first step of importing; reading and importing the library are being built ([Roadmap](Roadmap.md)). What the integration reads and can change is described in [Apple Music integration](Apple-Music-Integration.md).
+Connecting a library lets the application read the Apple Music library of one Apple ID. It is the first step of importing; once connected, the library can be read into a mirror ([Reading from Apple Music](Reading-from-Apple-Music.md)), and importing the mirror into the catalog is being built ([Roadmap](Roadmap.md)). What the integration reads and can change is described in [Apple Music integration](Apple-Music-Integration.md).
 
 ## Before you start
 

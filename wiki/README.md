@@ -2,7 +2,7 @@
 
 A web application for maintaining an Apple Music library as a curated catalog. It keeps its own records of albums, recordings and performers, imports what Apple Music knows, and changes Apple Music only in the ways Apple's API allows.
 
-**Status:** the foundation and the curated catalog are done. Performers, recordings, albums and genres, with credits, intended track lists, editions, genre trees and identifiers from Apple Music, ISRC, UPC, MusicBrainz, Discogs and Wikidata, can be edited, and each library can be downloaded as one JSON file. Importing from Apple Music is being built: a library can be connected to Apple Music now. See the [Roadmap](Roadmap.md).
+**Status:** the foundation and the curated catalog are done. Performers, recordings, albums and genres, with credits, intended track lists, editions, genre trees and identifiers from Apple Music, ISRC, UPC, MusicBrainz, Discogs and Wikidata, can be edited, and each library can be downloaded as one JSON file. Importing from Apple Music is being built: a library can be connected to Apple Music and its Apple Music library read into a mirror now. See the [Roadmap](Roadmap.md).
 
 ## Why it exists
 
@@ -29,6 +29,7 @@ This application models those things directly. See [Concepts](Concepts.md).
 | [Cleanup workflows](Cleanup-Workflows.md) | How the common cleanups are done |
 | [Apple Music integration](Apple-Music-Integration.md) | What is read, what can be changed, what cannot, and how tokens are protected |
 | [Connecting Apple Music](Connecting-Apple-Music.md) | Connecting and disconnecting a library, the messages you may see, and what is stored |
+| [Reading from Apple Music](Reading-from-Apple-Music.md) | Reading a connected library into the mirror, what the counts mean, and what to do when a read stops |
 | [Getting started](Getting-Started.md) | Requirements and setup |
 | [Development](Development.md) | Repository layout, standards and checks |
 | [Roadmap](Roadmap.md) | Phases and open questions |

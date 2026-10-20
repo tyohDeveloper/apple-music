@@ -10,6 +10,7 @@
 - [Cleanup workflows](Cleanup-Workflows.md)
 - [Apple Music integration](Apple-Music-Integration.md)
 - [Connecting Apple Music](Connecting-Apple-Music.md)
+- [Reading from Apple Music](Reading-from-Apple-Music.md)
 - [Getting started](Getting-Started.md)
 - [Development](Development.md)
 - [Roadmap](Roadmap.md)

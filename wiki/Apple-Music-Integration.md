@@ -2,7 +2,7 @@
 
 Decision record: [ADR-0005](https://github.com/tyohDeveloper/apple-music/blob/main/docs/adr/0005-apple-music-integration-boundary.md).
 
-**Status:** connecting a library works. Reading and importing the library are being built; changes in Apple Music come in a later phase ([Roadmap](Roadmap.md)).
+**Status:** connecting a library and reading it into a mirror work ([Reading from Apple Music](Reading-from-Apple-Music.md)). Importing the mirror into the catalog is being built; changes in Apple Music come in a later phase ([Roadmap](Roadmap.md)).
 
 ## What you need
 
