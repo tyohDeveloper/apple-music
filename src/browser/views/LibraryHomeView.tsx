@@ -5,8 +5,10 @@ type LibraryHomeViewProps = {
   readonly messages: Messages;
   readonly library: LibrarySummary | null;
   readonly onBack: () => void;
-  readonly onOpen: (section: "albums" | "performers" | "recordings") => void;
+  readonly onOpen: (section: LibrarySection) => void;
 };
+
+export type LibrarySection = "albums" | "performers" | "recordings" | "genres";
 
 export function LibraryHomeView({ messages, library, onBack, onOpen }: LibraryHomeViewProps) {
   const { t } = messages;
@@ -34,6 +36,12 @@ export function LibraryHomeView({ messages, library, onBack, onOpen }: LibraryHo
           <button type="button" class="card" data-testid="button-library-performers" onClick={() => onOpen("performers")}>
             <span class="card-title">{t("library.performers")}</span>
             <span class="card-meta">{t("library.performers.summary")}</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="card" data-testid="button-library-genres" onClick={() => onOpen("genres")}>
+            <span class="card-title">{t("library.genres")}</span>
+            <span class="card-meta">{t("library.genres.summary")}</span>
           </button>
         </li>
       </ul>
