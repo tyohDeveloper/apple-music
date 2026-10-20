@@ -11,8 +11,9 @@ Each slice is migrations, MODEL functions, contracts, routes, client screens and
 | A | Performers, names, relations | done 2026-10-19 |
 | B | Recordings and recording credits | done 2026-10-19 |
 | C | Albums, album credits, intended track lists, editions, edition tracks | done 2026-10-19 |
-| D | Genres, aliases and assignments; external identifiers | next |
-| E | JSON export of a library | planned |
+| D | Genres, aliases and genre assignments | next |
+| E | External identifiers | planned |
+| F | JSON export of a library | planned |
 
 ## HTTP API
 
@@ -40,16 +41,29 @@ All paths are under `/api/libraries/{libraryId}` and require a session. Lists ta
 | `POST /albums/{id}/editions` | Create an edition of the album | C |
 | `GET`/`PATCH`/`DELETE /editions/{id}` | Read with its album and tracks, edit (an `albumId` moves the edition to another album), delete with its tracks | C |
 | `PUT /editions/{id}/tracks` | Replace the edition's tracks, `{ discs: [{ tracks: [{ title, recordingId?, inclusion }] }] }`; a track may name no recording yet; answers with the edition | C |
-| `GET /genres`, `POST /genres`, `PATCH`/`DELETE /genres/{id}`, `POST`/`DELETE /genres/{id}/aliases` | Genres and aliases | D |
-| `PUT /{albums,recordings,performers}/{id}/genres` | Replace genre assignments | D |
-| `PUT /{albums,editions,recordings,performers}/{id}/external-ids` | Replace external identifiers | D |
-| `GET /export` | The library as one JSON document (`data/schemas/library-export.schema.json`) | E |
+| `GET /genres` | Search genres by name or alias, ordered by path so that the list reads as the tree | D |
+| `POST /genres`, `GET`/`PATCH`/`DELETE /genres/{id}` | Create with a name, parent and notes; read with path, aliases, subgenres and use counts; edit or move (`parentId: null` makes it top-level); delete with its aliases; `409` while it has subgenres or uses | D |
+| `POST /genres/{id}/aliases`, `DELETE /genres/{id}/aliases/{aliasId}` | Add or remove an alias; answers with the genre | D |
+| `PUT /{albums,recordings,performers}/{id}/genres` | Replace the ordered genres, `{ genreIds }`; answers with the album, recording or performer | D |
+| `genreId` on `GET /albums`, `GET /recordings`, `GET /performers` | Limits the list to entities carrying that genre | D |
+| `PUT /{albums,editions,recordings,performers}/{id}/external-ids` | Replace external identifiers | E |
+| `GET /export` | The library as one JSON document (`data/schemas/library-export.schema.json`) | F |
 
-Errors use the Phase 1 envelope `{ error: { code } }`; new codes are `conflict-in-use`, `conflict-duplicate`, `conflict-preferred-name` (409) and `forbidden` (403). Every write first checks for the owner or editor role, so a viewer or non-member writing gets `403` rather than a `404` from rows that row-level security hides. A foreign key that names a missing row answers `404 not-found`.
+Errors use the Phase 1 envelope `{ error: { code } }`; new codes are `conflict-in-use`, `conflict-duplicate`, `conflict-preferred-name`, `conflict-genre-cycle` (409, from slice D) and `forbidden` (403). Every write first checks for the owner or editor role, so a viewer or non-member writing gets `403` rather than a `404` from rows that row-level security hides. A foreign key that names a missing row answers `404 not-found`.
 
 The credit line shown for a recording joins its performing credits (roles in the `performer` family of `data/taxonomies/credit-roles.json`) in order, each under its credited name, with its join phrase; a credit without one is followed by a comma, and the last credit's join phrase is dropped (`src/credits/creditLineOf.ts`). Credit rows are keyed by position: the list is replaced whole, so a credit has no identity of its own.
 
 Track lists are replaced whole in the same way. Disc index and position follow from the order of the request; a disc holds 1 to 300 tracks, and a list at most 100 discs. A recording on any album's or edition's track list cannot be deleted, an album with editions cannot be deleted, and a performer or performer name credited on an album cannot be deleted; each answers `409 conflict-in-use`. A count shown in a list (an album's tracks and editions, an edition's tracks) is a correlated subquery whose outer columns are named with their table (`src/db/catalog/outerColumn.ts`), because Drizzle leaves table names off the select list of a single-table query.
+
+## Genres
+
+| Table | Holds | Rules |
+|---|---|---|
+| `genre` | Name and its match key, optional parent, notes | Sibling names are unique (`unique nulls not distinct` on library, parent and match key, so two top-level genres cannot share a name either). A genre is never its own ancestor: a trigger refuses the move with `409 conflict-genre-cycle`, and an advisory lock per library serializes moves so that two concurrent moves cannot close a loop. A genre with subgenres or uses cannot be deleted |
+| `genre_alias` | Another name for a genre, such as an Apple Music genre name or a spelling | An alias names one genre in a library (unique match key); deleted with its genre |
+| `album_genre`, `recording_genre`, `performer_genre` | An entity's genres in order; the first is its main genre | Replaced whole; a genre appears once per entity; at most 20; deleted with the entity |
+
+A genre's path is its ancestors from the top down. The genre list is computed with a recursive query and ordered by the path of match keys under the `C` collation, so each genre follows its parent and siblings sort by name. Search matches a genre's name or any alias. Genres on an album describe the album, genres on a recording the recording, and genres on a performer the performer's work in general; none is inferred from another. Imports (Phase 3) resolve an Apple Music genre name through the aliases first, then through a genre name that is unique in the library.
 
 ## Screens
 
@@ -61,4 +75,7 @@ Track lists are replaced whole in the same way. Disc index and position follow f
 | `/libraries/{id}/recordings`, `/libraries/{id}/recordings/{recordingId}` | Recording search; recording editor with credits and the albums whose track lists play it |
 | `/libraries/{id}/albums`, `/libraries/{id}/albums/{albumId}` | Album search; album editor with details, credits, intended track list and editions |
 | `/libraries/{id}/editions/{editionId}` | Edition editor: details, and tracks with their inclusion; editions are reached from their album |
-| `/libraries/{id}/genres` | Genre tree with aliases |
+| `/libraries/{id}/genres` | Genre search, listed in tree order with each genre's path |
+| `/libraries/{id}/genres/{genreId}` | Genre editor: name, parent, notes, aliases, subgenres, and the albums, recordings and performers carrying it |
+
+The album, recording and performer editors each gain a genres panel: find a genre, add it, reorder or remove; each change is saved at once.
