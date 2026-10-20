@@ -1,6 +1,7 @@
 // The only module that reads process.env (docs/ARCHITECTURE.md). Missing required
 // variables stop the server at start rather than failing on first use.
 import type { DatabaseSettings } from "../../db/createDatabasePools.ts";
+import { readApplicationIdentity, type ApplicationIdentity } from "./readApplicationIdentity.ts";
 
 type AppleCredentials = { readonly teamId: string; readonly keyId: string; readonly privateKey: string };
 
@@ -17,6 +18,7 @@ export type ServerConfig = {
   readonly tokenEncryptionKey: string | null;
   readonly apple: AppleCredentials | null;
   readonly appleMusicApiBaseUrl: string;
+  readonly application: ApplicationIdentity;
 };
 
 type Environment = Readonly<Record<string, string | undefined>>;
@@ -64,5 +66,6 @@ export function readServerConfig(env: Environment = process.env): ServerConfig {
     tokenEncryptionKey: optional(env, "TOKEN_ENCRYPTION_KEY"),
     apple: readAppleCredentials(env),
     appleMusicApiBaseUrl: optional(env, "APPLE_MUSIC_API_BASE_URL") ?? "https://api.music.apple.com",
+    application: readApplicationIdentity(),
   };
 }
