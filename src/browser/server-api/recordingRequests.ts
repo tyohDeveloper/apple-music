@@ -1,6 +1,7 @@
-// Requests for recordings and their credits (docs/design/catalog.md, slice B).
+// Requests for recordings, their credits and genres (docs/design/catalog.md).
 import type { CatalogPage } from "../../contracts/catalog/catalogPage.ts";
 import type { ReplaceCreditsRequest } from "../../contracts/credits/replaceCreditsRequestSchema.ts";
+import type { ReplaceGenresRequest } from "../../contracts/genres/replaceGenresRequestSchema.ts";
 import type { CreateRecordingRequest } from "../../contracts/recordings/createRecordingRequestSchema.ts";
 import type { RecordingDetail } from "../../contracts/recordings/recordingDetailSchema.ts";
 import type { RecordingSummary } from "../../contracts/recordings/recordingSummarySchema.ts";
@@ -15,7 +16,7 @@ export function fetchRecordingPage(libraryId: string, query: string, offset: num
   return fetchCatalogPage<RecordingSummary>(recordings(libraryId), query, offset);
 }
 
-export type RecordingFilter = { readonly performerId: string };
+export type RecordingFilter = { readonly performerId: string } | { readonly genreId: string };
 
 export function fetchLinkedRecordingPage(libraryId: string, filter: RecordingFilter, offset: number): Promise<ApiResult<CatalogPage<RecordingSummary>>> {
   return fetchCatalogPage<RecordingSummary>(recordings(libraryId), "", offset, filter);
@@ -39,4 +40,8 @@ export function deleteRecording(libraryId: string, recordingId: string): Promise
 
 export function putRecordingCredits(libraryId: string, recordingId: string, body: ReplaceCreditsRequest): Promise<ApiResult<RecordingDetail>> {
   return requestJson<RecordingDetail>(`${recording(libraryId, recordingId)}/credits`, { method: "PUT", body });
+}
+
+export function putRecordingGenres(libraryId: string, recordingId: string, body: ReplaceGenresRequest): Promise<ApiResult<RecordingDetail>> {
+  return requestJson<RecordingDetail>(`${recording(libraryId, recordingId)}/genres`, { method: "PUT", body });
 }

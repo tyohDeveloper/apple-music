@@ -1,4 +1,4 @@
-// Requests for albums, their credits and intended track lists (docs/design/catalog.md, slice C).
+// Requests for albums, their credits, intended track lists and genres (docs/design/catalog.md).
 import type { AlbumDetail } from "../../contracts/albums/albumDetailSchema.ts";
 import type { AlbumSummary } from "../../contracts/albums/albumSummarySchema.ts";
 import type { CreateAlbumRequest } from "../../contracts/albums/createAlbumRequestSchema.ts";
@@ -6,10 +6,11 @@ import type { ReplaceAlbumTracksRequest } from "../../contracts/albums/replaceAl
 import type { UpdateAlbumRequest } from "../../contracts/albums/updateAlbumRequestSchema.ts";
 import type { CatalogPage } from "../../contracts/catalog/catalogPage.ts";
 import type { ReplaceCreditsRequest } from "../../contracts/credits/replaceCreditsRequestSchema.ts";
+import type { ReplaceGenresRequest } from "../../contracts/genres/replaceGenresRequestSchema.ts";
 import { fetchCatalogPage } from "./catalogPageRequest.ts";
 import { requestJson, type ApiResult } from "./requestJson.ts";
 
-type AlbumFilter = { readonly performerId: string } | { readonly recordingId: string };
+type AlbumFilter = { readonly performerId: string } | { readonly recordingId: string } | { readonly genreId: string };
 
 const albums = (libraryId: string): string => `/api/libraries/${libraryId}/albums`;
 const album = (libraryId: string, albumId: string): string => `${albums(libraryId)}/${albumId}`;
@@ -44,4 +45,8 @@ export function putAlbumCredits(libraryId: string, albumId: string, body: Replac
 
 export function putAlbumTracks(libraryId: string, albumId: string, body: ReplaceAlbumTracksRequest): Promise<ApiResult<AlbumDetail>> {
   return requestJson<AlbumDetail>(`${album(libraryId, albumId)}/tracks`, { method: "PUT", body });
+}
+
+export function putAlbumGenres(libraryId: string, albumId: string, body: ReplaceGenresRequest): Promise<ApiResult<AlbumDetail>> {
+  return requestJson<AlbumDetail>(`${album(libraryId, albumId)}/genres`, { method: "PUT", body });
 }
