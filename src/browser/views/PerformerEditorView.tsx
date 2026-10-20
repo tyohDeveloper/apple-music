@@ -1,9 +1,11 @@
 import { preferredNameOf } from "../../names/preferredNameOf.ts";
 import type { CreditedRecordingsControls } from "../controllers/useCreditedRecordings.ts";
+import type { LinkedAlbumsControls } from "../controllers/useLinkedAlbums.ts";
 import type { Messages } from "../controllers/useMessages.ts";
 import type { PerformerEditorControls } from "../controllers/usePerformerEditor.ts";
 import type { PerformerPickerControls } from "../controllers/usePerformerPicker.ts";
 import { CreditedRecordingsPanel } from "./CreditedRecordingsPanel.tsx";
+import { LinkedAlbumsPanel } from "./LinkedAlbumsPanel.tsx";
 import { PerformerDetailsForm } from "./PerformerDetailsForm.tsx";
 import { PerformerNamesPanel } from "./PerformerNamesPanel.tsx";
 import { PerformerRelationsPanel } from "./PerformerRelationsPanel.tsx";
@@ -13,12 +15,14 @@ type PerformerEditorViewProps = {
   readonly controls: PerformerEditorControls;
   readonly picker: PerformerPickerControls;
   readonly credited: CreditedRecordingsControls;
+  readonly albums: LinkedAlbumsControls;
   readonly onBack: () => void;
   readonly onOpenPerformer: (performerId: string) => void;
   readonly onOpenRecording: (recordingId: string) => void;
+  readonly onOpenAlbum: (albumId: string) => void;
 };
 
-export function PerformerEditorView({ messages, controls, picker, credited, onBack, onOpenPerformer, onOpenRecording }: PerformerEditorViewProps) {
+export function PerformerEditorView({ messages, controls, picker, credited, albums, onBack, onOpenPerformer, onOpenRecording, onOpenAlbum }: PerformerEditorViewProps) {
   const { t } = messages;
   const { state } = controls;
   const performer = state.entity;
@@ -41,6 +45,7 @@ export function PerformerEditorView({ messages, controls, picker, credited, onBa
           <PerformerNamesPanel messages={messages} names={performer.names} controls={controls} />
           <PerformerRelationsPanel messages={messages} relations={performer.relations} controls={controls} picker={picker} onOpenPerformer={onOpenPerformer} />
           <CreditedRecordingsPanel messages={messages} controls={credited} onOpenRecording={onOpenRecording} />
+          <LinkedAlbumsPanel messages={messages} heading={t("performer.albums.heading")} empty={t("performer.albums.empty")} controls={albums} onOpenAlbum={onOpenAlbum} />
         </>
       )}
     </>

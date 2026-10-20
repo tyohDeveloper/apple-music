@@ -1,5 +1,6 @@
 // Recording screens: each binds a view to its controllers for one library.
 import type { Route } from "../../routing/parseRoute.ts";
+import { useLinkedAlbums } from "../controllers/useLinkedAlbums.ts";
 import type { Messages } from "../controllers/useMessages.ts";
 import { usePerformerPicker } from "../controllers/usePerformerPicker.ts";
 import { useRecordingEditor } from "../controllers/useRecordingEditor.ts";
@@ -19,7 +20,11 @@ export function RecordingsScreen({ messages, libraryId, navigate }: ScreenProps)
 export function RecordingScreen({ messages, libraryId, recordingId, navigate }: ScreenProps & { readonly recordingId: string }) {
   const controls = useRecordingEditor(libraryId, recordingId, navigate);
   const picker = usePerformerPicker(libraryId);
-  const onBack = (): void => navigate({ name: "recordings", libraryId });
-  const onOpenPerformer = (performerId: string): void => navigate({ name: "performer", libraryId, performerId });
-  return <RecordingEditorView messages={messages} controls={controls} picker={picker} onBack={onBack} onOpenPerformer={onOpenPerformer} />;
+  const albums = useLinkedAlbums(libraryId, { recordingId });
+  const navigation = {
+    onBack: () => navigate({ name: "recordings", libraryId }),
+    onOpenPerformer: (performerId: string) => navigate({ name: "performer", libraryId, performerId }),
+    onOpenAlbum: (albumId: string) => navigate({ name: "album", libraryId, albumId }),
+  };
+  return <RecordingEditorView messages={messages} controls={controls} picker={picker} albums={albums} {...navigation} />;
 }

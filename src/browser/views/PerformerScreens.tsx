@@ -2,6 +2,7 @@
 import type { Route } from "../../routing/parseRoute.ts";
 import type { Messages } from "../controllers/useMessages.ts";
 import { useCreditedRecordings } from "../controllers/useCreditedRecordings.ts";
+import { useLinkedAlbums } from "../controllers/useLinkedAlbums.ts";
 import { usePerformerEditor } from "../controllers/usePerformerEditor.ts";
 import { usePerformerList } from "../controllers/usePerformerList.ts";
 import { usePerformerPicker } from "../controllers/usePerformerPicker.ts";
@@ -21,9 +22,11 @@ export function PerformerScreen({ messages, libraryId, performerId, navigate }: 
   const controls = usePerformerEditor(libraryId, performerId, navigate);
   const picker = usePerformerPicker(libraryId);
   const credited = useCreditedRecordings(libraryId, performerId);
+  const albums = useLinkedAlbums(libraryId, { performerId });
   const onBack = (): void => navigate({ name: "performers", libraryId });
   const onOpenPerformer = (otherId: string): void => navigate({ name: "performer", libraryId, performerId: otherId });
   const onOpenRecording = (recordingId: string): void => navigate({ name: "recording", libraryId, recordingId });
-  const opening = { onBack, onOpenPerformer, onOpenRecording };
-  return <PerformerEditorView messages={messages} controls={controls} picker={picker} credited={credited} {...opening} />;
+  const onOpenAlbum = (albumId: string): void => navigate({ name: "album", libraryId, albumId });
+  const opening = { onBack, onOpenPerformer, onOpenRecording, onOpenAlbum };
+  return <PerformerEditorView messages={messages} controls={controls} picker={picker} credited={credited} albums={albums} {...opening} />;
 }
