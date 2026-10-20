@@ -25,7 +25,7 @@ The owner asked for a project wiki. The standards keep architecture and rules in
 
 ## Consequences
 
-- The owner creates one placeholder page on GitHub once; the action documents this as required to create the wiki repository.
+- The owner creates one placeholder page on GitHub once; the action documents this as required to create the wiki repository. The workflow also runs when a wiki page is saved on GitHub (the `gollum` event) and publishes an exact copy, so saving the placeholder publishes `wiki/` at once and later direct edits are replaced as decision 4 says.
 - Wiki content is versioned and reviewed with the code it describes.
 - The action also offers a pull mode that turns wiki-side edits into a pull request; it can be enabled later if editing on GitHub becomes useful.
 

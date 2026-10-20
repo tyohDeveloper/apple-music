@@ -1,11 +1,17 @@
-# Publishes wiki/ to the GitHub Wiki (ADR-0007). The wiki repository exists only
-# after its first page is created on GitHub; until then the publish step is skipped.
+# Publishes wiki/ to the GitHub Wiki (ADR-0007) as an exact copy: one commit,
+# force-pushed, so pages created or edited on GitHub are replaced (decision 4).
+# Runs on pushes that change wiki/, on demand, and whenever a wiki page is saved
+# on GitHub (the gollum event), so saving the placeholder first page publishes at
+# once. The wiki repository exists only after that first page is created; until
+# then the publish step is skipped. The action's own push uses GITHUB_TOKEN, which
+# starts no further runs.
 name: wiki
 
 on:
   push:
     branches: [main]
     paths: ["wiki/**", ".github/workflows/wiki.yml"]
+  gollum:
   workflow_dispatch:
 
 permissions:
@@ -27,10 +33,11 @@ jobs:
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Wiki not initialized. Create one page on GitHub (Wiki tab, Create the first page), then re-run this workflow."
+            echo "::notice::Wiki not initialized. Create one page on GitHub (Wiki tab, Create the first page); saving it starts this workflow again."
           fi
       - if: steps.probe.outputs.exists == 'true'
         uses: Andrew-Chen-Wang/github-wiki-action@1bbb4280446f9630e8e21a18012cbacf3b0f992e # v5.0.6
         with:
           path: wiki/
           preprocess: true
+          strategy: init
