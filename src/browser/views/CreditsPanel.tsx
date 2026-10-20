@@ -1,4 +1,4 @@
-// The credits of a recording (and, later, an album) as being edited, with the credit line
+// The credits of a recording or an album as being edited, with the credit line
 // they make. Changes are saved, or discarded, as one list.
 import type { Credit } from "../../contracts/credits/creditSchema.ts";
 import { creditLineOf } from "../../credits/creditLineOf.ts";
@@ -39,8 +39,11 @@ export function CreditsPanel(props: CreditsPanelProps) {
   return (
     <section class="panel" aria-labelledby="credits-heading">
       <h2 id="credits-heading">{t("credits.heading")}</h2>
-      <p data-testid="display-credits-line">{line === "" ? t("credits.lineEmpty") : t("credits.line", { line })}</p>
-      {credits.state.credits.length === 0 && <p data-testid="display-credits-empty">{t("credits.empty")}</p>}
+      {credits.state.credits.length === 0 ? (
+        <p data-testid="display-credits-empty">{t("credits.empty")}</p>
+      ) : (
+        <p data-testid="display-credits-line">{line === "" ? t("credits.lineEmpty") : t("credits.line", { line })}</p>
+      )}
       <ol class="rows" data-testid="panel-credits-list">
         {credits.state.credits.map((credit, index) => (
           <CreditRow key={index} messages={messages} credit={credit} index={index} last={index === credits.state.credits.length - 1} credits={credits} onOpenPerformer={onOpenPerformer} />
