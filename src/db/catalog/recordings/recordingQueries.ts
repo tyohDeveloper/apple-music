@@ -6,7 +6,7 @@ import { matchKeyOf } from "../../../names/matchKeyOf.ts";
 import { recording } from "../../schema/recordingTables.ts";
 import type { ScopedTransaction } from "../../withUserScope.ts";
 import type { CatalogPage, PageRequest } from "../catalogPage.ts";
-import { creditLinesOf, creditsOf, type CreditRow } from "./recordingCreditQueries.ts";
+import { creditLinesOf, creditsOf, recordingCredits, type CreditRow } from "../credits/creditQueries.ts";
 
 export type RecordingSummary = {
   readonly id: string;
@@ -50,7 +50,7 @@ export async function listRecordings(tx: ScopedTransaction, page: PageRequest, p
     .limit(page.limit)
     .offset(page.offset);
   const [counted] = await tx.select({ total: count() }).from(recording).where(where);
-  const lines = await creditLinesOf(tx, rows.map((row) => row.id));
+  const lines = await creditLinesOf(tx, recordingCredits, rows.map((row) => row.id));
   return { items: rows.map((row) => ({ ...row, creditLine: lines.get(row.id) ?? "" })), total: counted?.total ?? 0 };
 }
 
@@ -58,5 +58,5 @@ export async function getRecordingDetail(tx: ScopedTransaction, recordingId: str
   const { id, title, versionNote, kind, recordedFrom, recordedTo, venue, durationMs, notes } = recording;
   const [row] = await tx.select({ id, title, versionNote, kind, recordedFrom, recordedTo, venue, durationMs, notes }).from(recording).where(eq(id, recordingId));
   if (row === undefined) return null;
-  return { ...row, ...(await creditsOf(tx, recordingId)) };
+  return { ...row, ...(await creditsOf(tx, recordingCredits, recordingId)) };
 }
