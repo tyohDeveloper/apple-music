@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "preact/hooks";
 import languages from "../../../data/locales/languages.json" with { type: "json" };
 import { displayNameKey } from "../../localization/displayNameKey.ts";
+import { durationPartsOf } from "../../localization/durationPartsOf.ts";
 import { errorMessageKey } from "../../localization/errorMessageKey.ts";
 import { fillMessage } from "../../localization/fillMessage.ts";
 import { indexCatalogsByLocale } from "../../localization/indexCatalogsByLocale.ts";
@@ -18,6 +19,7 @@ export type Messages = {
   readonly errorMessage: (code: string) => string;
   readonly list: (items: readonly string[]) => string;
   readonly number: (value: number) => string;
+  readonly duration: (ms: number) => string;
 };
 
 const interfaceCatalogs = indexCatalogsByLocale(
@@ -32,6 +34,16 @@ function translatorFor(catalogs: Readonly<Record<string, Catalog>>, locale: stri
   return (key, values) => fillMessage(resolveMessage(chain, key), values ?? {});
 }
 
+function durationFormatter(locale: string, t: Translate): (ms: number) => string {
+  const plain = new Intl.NumberFormat(locale);
+  const twoDigits = new Intl.NumberFormat(locale, { minimumIntegerDigits: 2 });
+  return (ms) => {
+    const { hours, minutes, seconds } = durationPartsOf(ms);
+    if (hours === 0) return t("duration.minutes", { minutes: plain.format(minutes), seconds: twoDigits.format(seconds) });
+    return t("duration.hours", { hours: plain.format(hours), minutes: twoDigits.format(minutes), seconds: twoDigits.format(seconds) });
+  };
+}
+
 function messagesFor(locale: string): Messages {
   const t = translatorFor(interfaceCatalogs, locale);
   const names = translatorFor(displayNameCatalogs, locale);
@@ -42,6 +54,7 @@ function messagesFor(locale: string): Messages {
     errorMessage: (code) => t(errorMessageKey(code)),
     list: (items) => new Intl.ListFormat(locale, { type: "conjunction" }).format(items),
     number: (value) => new Intl.NumberFormat(locale).format(value),
+    duration: durationFormatter(locale, t),
   };
 }
 

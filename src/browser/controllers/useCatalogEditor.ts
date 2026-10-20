@@ -13,7 +13,7 @@ export type CatalogEditorRequests<T> = {
 
 export type CatalogEditorControls<T> = {
   readonly state: CatalogEditorState<T>;
-  readonly apply: (request: Promise<ApiResult<T>>) => void;
+  readonly apply: (request: Promise<ApiResult<T>>, onApplied?: (entity: T) => void) => void;
   readonly refuse: (failure: string) => void;
   readonly requestDelete: () => void;
   readonly cancelDelete: () => void;
@@ -24,9 +24,12 @@ type Dispatch<T> = (action: actions.CatalogEditorAction<T>) => void;
 
 function changeControls<T>(dispatch: Dispatch<T>) {
   return {
-    apply: (request: Promise<ApiResult<T>>): void => {
+    apply: (request: Promise<ApiResult<T>>, onApplied?: (entity: T) => void): void => {
       dispatch(actions.catalogSaveStarted());
-      void request.then((result) => dispatch(result.ok ? actions.catalogSaved(result.value) : actions.catalogSaveFailed(result.code)));
+      void request.then((result) => {
+        dispatch(result.ok ? actions.catalogSaved(result.value) : actions.catalogSaveFailed(result.code));
+        if (result.ok) onApplied?.(result.value);
+      });
     },
     refuse: (failure: string): void => dispatch(actions.catalogSaveFailed(failure)),
     requestDelete: (): void => dispatch(actions.catalogDeleteRequested()),

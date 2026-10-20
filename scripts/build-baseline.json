@@ -1,4 +1,4 @@
 {
-  "note": "2026-10-19, Phase 2 slice A: performer search, editor, names and relations screens added 4,985 bytes of JS and 259 bytes of CSS (gzip) to the Phase 1 shell of 9,505 and 949; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
-  "gzipBytes": { "js": 14490, "css": 1208 }
+  "note": "2026-10-19, Phase 2 slice B: recording search and editor, the ordered credit editor and the performer's credited-recordings panel added 4,570 bytes of JS and 41 bytes of CSS (gzip) to slice A's 14,490 and 1,208; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
+  "gzipBytes": { "js": 19060, "css": 1249 }
 }

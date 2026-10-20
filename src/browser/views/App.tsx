@@ -8,6 +8,7 @@ import { LibrariesView } from "./LibrariesView.tsx";
 import { LibraryHomeView } from "./LibraryHomeView.tsx";
 import { NotFoundView } from "./NotFoundView.tsx";
 import { PerformerScreen, PerformersScreen } from "./PerformerScreens.tsx";
+import { RecordingScreen, RecordingsScreen } from "./RecordingScreens.tsx";
 import { SignInView } from "./SignInView.tsx";
 
 type SignedInScreenProps = {
@@ -16,21 +17,42 @@ type SignedInScreenProps = {
   readonly navigate: (route: Route) => void;
 };
 
+type CatalogRoute = Extract<Route, { readonly name: "performers" | "performer" | "recordings" | "recording" }>;
+type CatalogScreenProps = { readonly messages: Messages; readonly route: CatalogRoute; readonly navigate: (route: Route) => void };
+
+function CatalogScreen({ messages, route, navigate }: CatalogScreenProps) {
+  const { libraryId } = route;
+  switch (route.name) {
+    case "performers":
+      return <PerformersScreen messages={messages} libraryId={libraryId} navigate={navigate} />;
+    case "performer":
+      return <PerformerScreen messages={messages} libraryId={libraryId} performerId={route.performerId} navigate={navigate} />;
+    case "recordings":
+      return <RecordingsScreen messages={messages} libraryId={libraryId} navigate={navigate} />;
+    case "recording":
+      return <RecordingScreen messages={messages} libraryId={libraryId} recordingId={route.recordingId} navigate={navigate} />;
+  }
+}
+
 function SignedInScreen({ messages, route, navigate }: SignedInScreenProps) {
   const libraries = useLibraries(true);
   const toLibraries = (): void => navigate({ name: "libraries" });
-  if (route.name === "not-found") return <NotFoundView messages={messages} onBack={toLibraries} />;
-  if (route.name === "performers") return <PerformersScreen messages={messages} libraryId={route.libraryId} navigate={navigate} />;
-  if (route.name === "performer") {
-    return <PerformerScreen messages={messages} libraryId={route.libraryId} performerId={route.performerId} navigate={navigate} />;
+  switch (route.name) {
+    case "not-found":
+      return <NotFoundView messages={messages} onBack={toLibraries} />;
+    case "performers":
+    case "performer":
+    case "recordings":
+    case "recording":
+      return <CatalogScreen messages={messages} route={route} navigate={navigate} />;
+    case "library": {
+      const library = libraries.state.libraries.find((candidate) => candidate.id === route.libraryId) ?? null;
+      const onOpen = (section: "performers" | "recordings"): void => navigate({ name: section, libraryId: route.libraryId });
+      return <LibraryHomeView messages={messages} library={library} onBack={toLibraries} onOpen={onOpen} />;
+    }
+    default:
+      return <LibrariesView messages={messages} state={libraries.state} onCreate={libraries.create} onOpen={(libraryId) => navigate({ name: "library", libraryId })} />;
   }
-  if (route.name === "library") {
-    const library = libraries.state.libraries.find((candidate) => candidate.id === route.libraryId) ?? null;
-    const onOpenPerformers = (): void => navigate({ name: "performers", libraryId: route.libraryId });
-    return <LibraryHomeView messages={messages} library={library} onBack={toLibraries} onOpenPerformers={onOpenPerformers} />;
-  }
-  const open = (libraryId: string): void => navigate({ name: "library", libraryId });
-  return <LibrariesView messages={messages} state={libraries.state} onCreate={libraries.create} onOpen={open} />;
 }
 
 function AppScreen({ messages, session, route, navigate }: SignedInScreenProps & { readonly session: SessionControls }) {
