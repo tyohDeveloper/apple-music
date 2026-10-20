@@ -87,11 +87,50 @@ An entity's identifiers are read in order of namespace code, then value. The lis
 
 The performer, album, edition and recording editors each have an identifiers panel: choose a namespace, enter a value, add; remove; each change is saved at once. The browser checks a value with the same rules and data before sending (`normalizedExternalIdOf`), so a malformed value is flagged on its field and kept for correction; the form clears once the identifier is saved. A value whose namespace has a page (MusicBrainz, Discogs, Wikidata) links to it.
 
+## Export
+
+`GET /api/libraries/{libraryId}/export` answers a library's whole curated catalog as one JSON document, sent as a download named after the library and the day (`Content-Disposition: attachment; filename="<label>-<yyyy-mm-dd>.json"`). Any member may export, viewers included; anyone else gets 404, as for every read. [ADR-0002](../adr/0002-postgres-system-of-record.md) names this document as the format for backup, inspection and interchange beside `pg_dump` ([backup.md](../ops/backup.md)).
+
+| Question | Options | Choice and reason |
+|---|---|---|
+| Shape | (a) One array per table, as stored; (b) each entity with the rows it owns nested inside it, other entities referred to by id | (b): it reads like the domain model, owned rows (names, credits, tracks, aliases, identifiers, an album's editions) stay with their owner, and ids keep references exact for a later import |
+| Schema | (a) A hand-written JSON Schema as the source; (b) a TypeBox contract as the source, as for every other response, with the JSON Schema generated into `docs/schemas/library-export.schema.json` and a unit test that fails when the file is stale | (b): one source of truth; the checked-in file lets a backup be validated without running the application |
+| Version | (a) A four-part format version on its own track; (b) an integer `formatVersion` raised only when a reader of the previous format could misread a new document, with the four-part version of the application that wrote it alongside | (b): readers need one question answered, whether they understand the document; additions that old readers can ignore leave it unchanged, and the application version records exactly what wrote it |
+| Delivery | (a) Built in memory and sent in one response; (b) a background job that writes a file to fetch later | (a): one owner, at most tens of thousands of recordings (tens of megabytes); a route limit of 6 exports a minute keeps it from loading the server. Streaming is the change to make if a library outgrows that |
+| Consistency | (a) Independent reads; (b) one `repeatable read, read only` transaction | (b): the document is one snapshot even while edits continue |
+| Order | (a) Whatever the database returns; (b) entities by creation time then id, owned rows in their stored order | (b): two exports of an unchanged library differ only in `exportedAt`, so backups compare cleanly |
+
+```text
+format             "apple-music-library-export"
+formatVersion      1
+exportedAt         time of the snapshot
+application        name and four-part version of the writer
+library            id, label, storefront, createdAt, updatedAt
+genres[]           id, parentId, name, notes, aliases[] { id, name }, createdAt, updatedAt
+performers[]       id, kind, began, ended, area, disambiguation, notes,
+                   names[] { id, name, sortName, kind, locale, validFrom, validTo, isPreferred },
+                   genreIds[], externalIds[] { namespace, value }, createdAt, updatedAt
+performerRelations[] id, subjectId, objectId, kind, roles[], began, ended, notes
+recordings[]       id, title, versionNote, kind, recordedFrom, recordedTo, venue, durationMs, notes,
+                   credits[] { performerId, creditedNameId, role, joinPhrase, instruments[] },
+                   genreIds[], externalIds[], createdAt, updatedAt
+albums[]           id, title, kind, released, label, notes, credits[],
+                   tracks[] { discIndex, position, recordingId, title, label }, genreIds[], externalIds[],
+                   editions[] { id, title, kind, released, notes,
+                                tracks[] { discIndex, position, title, recordingId, inclusion },
+                                externalIds[], createdAt, updatedAt },
+                   createdAt, updatedAt
+```
+
+Taxonomy values are written as their codes (`group`, `primary`), not display names, so a document is the same whatever the interface language. Match keys are derived and left out. Accounts, memberships and sessions are not catalog data and are not exported. The Apple mirror and change outbox (Phases 3 and 5) join the document as added fields when they exist. Importing a document is not part of this slice.
+
+Build order: snapshot transaction option on the library scope; MODEL reads in bulk per entity type (`src/db/catalog/export/`), grouped in memory with `Map.groupBy`, never one query per entity; contracts in `src/contracts/export/`; the route; the generated schema file and its staleness test; an integration test that validates an export against the schema, resolves every id reference and finds nothing from another library; a download link on the library home; an end-to-end test that downloads and reads the document; a wiki page.
+
 ## Screens
 
 | Route | Screen |
 |---|---|
-| `/libraries/{id}` | Library home with sections for albums, recordings, performers and genres |
+| `/libraries/{id}` | Library home with sections for albums, recordings, performers and genres, and a link that downloads the library's JSON export |
 | `/libraries/{id}/performers` | Performer search and creation |
 | `/libraries/{id}/performers/{performerId}` | Performer editor: details, names, relations, the recordings and albums crediting the performer |
 | `/libraries/{id}/recordings`, `/libraries/{id}/recordings/{recordingId}` | Recording search; recording editor with credits and the albums whose track lists play it |
