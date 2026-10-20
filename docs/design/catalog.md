@@ -46,7 +46,7 @@ All paths are under `/api/libraries/{libraryId}` and require a session. Lists ta
 | `POST /genres/{id}/aliases`, `DELETE /genres/{id}/aliases/{aliasId}` | Add or remove an alias; answers with the genre | D |
 | `PUT /{albums,recordings,performers}/{id}/genres` | Replace the ordered genres, `{ genreIds }`; answers with the album, recording or performer | D |
 | `genreId` on `GET /albums`, `GET /recordings`, `GET /performers` | Limits the list to entities carrying that genre | D |
-| `PUT /{albums,editions,recordings,performers}/{id}/external-ids` | Replace external identifiers | E |
+| `PUT /{performers,albums,editions,recordings}/{id}/external-ids` | Replace the identifiers, `{ externalIds: [{ namespace, value }] }`, at most 50; each value is normalized and must have the form its namespace uses for that kind of entity, else `400 invalid-external-id`; answers with the entity | E |
 | `GET /export` | The library as one JSON document (`data/schemas/library-export.schema.json`) | F |
 
 Errors use the Phase 1 envelope `{ error: { code } }`; new codes are `conflict-in-use`, `conflict-duplicate`, `conflict-preferred-name`, `conflict-genre-cycle` (409, from slice D) and `forbidden` (403). Every write first checks for the owner or editor role, so a viewer or non-member writing gets `403` rather than a `404` from rows that row-level security hides. A foreign key that names a missing row answers `404 not-found`.
@@ -64,6 +64,26 @@ Track lists are replaced whole in the same way. Disc index and position follow f
 | `album_genre`, `recording_genre`, `performer_genre` | An entity's genres in order; the first is its main genre | Replaced whole; a genre appears once per entity; at most 20; deleted with the entity |
 
 A genre's path is its ancestors from the top down. The genre list is computed with a recursive query and ordered by the path of match keys under the `C` collation, so each genre follows its parent and siblings sort by name. Search matches a genre's name or any alias. Genres on an album describe the album, genres on a recording the recording, and genres on a performer the performer's work in general; none is inferred from another. Imports (Phase 3) resolve an Apple Music genre name through the aliases first, then through a genre name that is unique in the library.
+
+## External identifiers
+
+Namespaces are a taxonomy, `data/taxonomies/external-id-namespaces.json`, whose families are the issuing authorities. Which namespaces each kind of entity takes, the form of a value and the page it links to are data, `data/identifiers/external-id-formats.json` (schema `data/schemas/external-id-formats.schema.json`); `src/identifiers` reads them.
+
+| Namespace | Performer | Album | Edition | Recording | Value |
+|---|---|---|---|---|---|
+| `apple-library` | Library artist id | | Library album id | Library song id | Apple's opaque id, such as `i.b1lXQGKUoZRzDE` |
+| `apple-catalog` | Artist id | | Album id | Song id | Digits |
+| `isrc` | | | | Yes | Twelve characters, such as `USSM15900113`; spaces, hyphens and lower case are accepted and removed |
+| `upc` | | | Yes | | 12 to 14 digits: UPC-A, EAN-13 or GTIN-14 |
+| `musicbrainz` | Artist | Release group | Release | Recording | MBID, a UUID, stored in lower case |
+| `discogs` | Artist | Master | Release | | Digits |
+| `wikidata` | Item | Item | | Item | `Q` and digits |
+
+| Table | Holds | Rules |
+|---|---|---|
+| `performer_external_id`, `album_external_id`, `edition_external_id`, `recording_external_id` | Namespace and value per entity | Unique per entity; indexed by library, namespace and value for lookups; deleted with the entity. The same value may sit on two entities: duplicates are what the Phase 4 merge workflow looks for |
+
+The performer, album, edition and recording editors each gain an identifiers panel: choose a namespace, enter a value, add; remove; each change is saved at once. A value whose namespace has a page (MusicBrainz, Discogs, Wikidata) links to it.
 
 ## Screens
 
