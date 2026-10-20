@@ -30,14 +30,18 @@ async function requireRole(tx: ScopedTransaction, libraryId: string, owner: bool
 const params = libraryParamsSchema;
 const connect = { params, body: connectAppleMusicRequestSchema, response: { 200: appleMusicConnectionSchema } };
 
+// Apple is asked between two short transactions, so none waits on Apple; the role is
+// checked before asking and again when saving.
 function registerConnect(app: CatalogApp, db: NodePgDatabase, services: AppleMusicServices | null): void {
-  app.put(path, { schema: connect, config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, (request) => {
+  app.put(path, { schema: connect, config: { rateLimit: { max: 10, timeWindow: "1 minute" } } }, async (request) => {
     const ready = requireAppleMusic(services);
     const scope = libraryScopeOf(request, request.params);
+    const { musicUserToken } = request.body;
+    await runInLibrary(db, scope, (tx) => requireRole(tx, scope.libraryId, true));
+    const storefront = await storefrontOf(ready.client, musicUserToken);
     return runInLibrary(db, scope, async (tx) => {
       await requireRole(tx, scope.libraryId, true);
-      const storefront = await storefrontOf(ready.client, request.body.musicUserToken);
-      await saveConnection(tx, { ...scope, sealedToken: sealToken(ready.tokenKey, scope.libraryId, request.body.musicUserToken), storefront });
+      await saveConnection(tx, { ...scope, sealedToken: sealToken(ready.tokenKey, scope.libraryId, musicUserToken), storefront });
       return replyOf(await connectionOf(tx, scope.libraryId));
     });
   });
