@@ -6,6 +6,8 @@ import { isPartialDate } from "../../partial-dates/isPartialDate.ts";
 import { appleMusicServicesOf, type AppleMusicServices } from "../apple-music/appleMusicServices.ts";
 import { registerAppleMusicRoutes } from "../apple-music/registerAppleMusicRoutes.ts";
 import { registerConnectionRoutes } from "../apple-music/registerConnectionRoutes.ts";
+import { registerSyncRoutes } from "../apple-music/registerSyncRoutes.ts";
+import { syncRunnerOf, type SyncRunner } from "../apple-music/syncRunner.ts";
 import { createAuth } from "../auth/createAuth.ts";
 import { registerAuthRoutes } from "../auth/registerAuthRoutes.ts";
 import { registerSessionGuard } from "../auth/registerSessionGuard.ts";
@@ -25,12 +27,24 @@ export type ServerDependencies = {
   readonly logRequests: boolean;
 };
 
+type AppleMusicParts = { readonly services: AppleMusicServices | null; readonly runner: SyncRunner };
+
 // Every route behind the session guard.
-function registerSessionRoutes(scope: FastifyInstance, deps: ServerDependencies, appleMusic: AppleMusicServices | null): void {
-  registerLibraryRoutes(scope, deps.pools.app);
-  registerCatalogRoutes(scope, deps.pools.app, deps.config.application);
-  registerAppleMusicRoutes(withTypeBox(scope), appleMusic);
-  registerConnectionRoutes(withTypeBox(scope), deps.pools.app, appleMusic);
+function registerSessionRoutes(scope: FastifyInstance, deps: ServerDependencies, appleMusic: AppleMusicParts): void {
+  const db = deps.pools.app;
+  registerLibraryRoutes(scope, db);
+  registerCatalogRoutes(scope, db, deps.config.application);
+  registerAppleMusicRoutes(withTypeBox(scope), appleMusic.services);
+  registerConnectionRoutes(withTypeBox(scope), db, appleMusic.services);
+  registerSyncRoutes(withTypeBox(scope), { db, ...appleMusic, startsPerMinute: deps.config.sync.startsPerMinute });
+}
+
+// Apple Music services, and the sync runner, whose tasks the server stops when it closes.
+async function appleMusicPartsOf(app: FastifyInstance, deps: ServerDependencies): Promise<AppleMusicParts> {
+  const services = await appleMusicServicesOf(deps.config);
+  const runner = syncRunnerOf({ db: deps.pools.app, settings: deps.config.sync, log: app.log });
+  app.addHook("onClose", () => runner.close());
+  return { services, runner };
 }
 
 export async function buildServer(deps: ServerDependencies): Promise<FastifyInstance> {
@@ -42,10 +56,10 @@ export async function buildServer(deps: ServerDependencies): Promise<FastifyInst
   });
   registerErrorReplies(app);
   await registerSecurity(app);
-  registerObservability(app, deps.pools.app);
+  const appleMusic = await appleMusicPartsOf(app, deps);
+  registerObservability(app, deps.pools.app, appleMusic.runner.finishedCounts);
   const auth = createAuth(deps.config, deps.pools.auth);
   registerAuthRoutes(app, auth);
-  const appleMusic = await appleMusicServicesOf(deps.config);
   await app.register(async (scope) => {
     registerSessionGuard(scope, auth);
     registerSessionRoutes(scope, deps, appleMusic);
