@@ -19,8 +19,8 @@ export function PerformerDetailsForm({ messages, performer, controls }: Performe
       <h2>{t("performer.details")}</h2>
       <label class="field">
         <span>{t("performer.kind")}</span>
-        <select name="kind" defaultValue={performer.kind} data-testid="select-performer-kind">
-          <TaxonomyOptions messages={messages} taxonomy={performerKinds} />
+        <select name="kind" data-testid="select-performer-kind">
+          <TaxonomyOptions messages={messages} taxonomy={performerKinds} selected={performer.kind} />
         </select>
       </label>
       <div class="field-row">

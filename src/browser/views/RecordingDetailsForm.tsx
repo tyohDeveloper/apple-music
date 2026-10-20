@@ -52,8 +52,8 @@ export function RecordingDetailsForm({ messages, recording, controls }: Recordin
       <div class="field-row">
         <label class="field">
           <span>{t("recording.kind")}</span>
-          <select name="kind" defaultValue={recording.kind} data-testid="select-recording-kind">
-            <TaxonomyOptions messages={messages} taxonomy={recordingKinds} />
+          <select name="kind" data-testid="select-recording-kind">
+            <TaxonomyOptions messages={messages} taxonomy={recordingKinds} selected={recording.kind} />
           </select>
         </label>
         <label class="field">

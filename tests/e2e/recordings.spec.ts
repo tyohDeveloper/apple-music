@@ -3,6 +3,7 @@
 // see the performer cannot be deleted while credited, and find the recording by that name.
 import { expect, test, type Page } from "@playwright/test";
 import { createPerformer } from "./support/createPerformer.ts";
+import { createRecording } from "./support/createRecording.ts";
 import { expectUniqueTestIds } from "./support/expectUniqueTestIds.ts";
 import { openSeededLibrary, signInAsOwner } from "./support/signInAsOwner.ts";
 
@@ -11,13 +12,6 @@ async function openRecordings(page: Page): Promise<void> {
   await openSeededLibrary(page);
   await page.getByTestId("button-library-recordings").click();
   await expect(page.getByTestId("panel-recordings-create")).toBeVisible();
-}
-
-async function createRecording(page: Page, title: string): Promise<void> {
-  await page.getByTestId("input-recordings-title").fill(title);
-  await page.getByTestId("select-recordings-kind").selectOption("studio");
-  await page.getByTestId("button-recordings-create").click();
-  await expect(page.getByTestId("text-recording-title")).toHaveText(title);
 }
 
 async function addCredit(page: Page, query: string, role: string): Promise<void> {
@@ -82,7 +76,7 @@ test("owner credits performers on a recording", async ({ page }) => {
 
 test("a recording can be deleted", async ({ page }) => {
   await openRecordings(page);
-  await createRecording(page, "Blue in Green");
+  await createRecording(page, "Blue in Green", "alternate-take");
   await page.getByTestId("button-delete-request").click();
   await page.getByTestId("button-delete-confirm").click();
   await expect(page.getByTestId("panel-recordings-create")).toBeVisible();

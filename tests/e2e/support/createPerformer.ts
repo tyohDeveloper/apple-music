@@ -7,4 +7,5 @@ export async function createPerformer(page: Page, kind: string, name: string, so
   await page.getByTestId("input-performers-sortname").fill(sortName);
   await page.getByTestId("button-performers-create").click();
   await expect(page.getByTestId("text-performer-name")).toHaveText(name);
+  await expect(page.getByTestId("select-performer-kind")).toHaveValue(kind);
 }
