@@ -2,7 +2,7 @@
 
 A web application for maintaining an Apple Music library as a curated catalog — intentional albums, distinct recordings, and performers with their names and relationships — kept in a datastore of its own and synchronized with Apple Music.
 
-**Status:** Phase 2 in progress on version 0.1.0.0: owner sign-in, libraries, performers with all their names and relations, and recordings with ordered credits. Albums and editions come next; see [the plan of record](docs/PLAN.md). There is no deployed instance yet.
+**Status:** Phase 2 in progress on version 0.1.0.0: owner sign-in, libraries, performers with all their names and relations, recordings with ordered credits, and albums with credits, intended track lists and editions whose tracks are classified against the album. Genres and external identifiers come next; see [the plan of record](docs/PLAN.md). There is no deployed instance yet.
 
 ## What it is for
 

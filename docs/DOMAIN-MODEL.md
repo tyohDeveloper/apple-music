@@ -102,11 +102,23 @@ Roles are a declared taxonomy in `data/taxonomies/credit-roles.json`: `primary`,
 | `edition` | One issued form of the album: an Apple library album, an Apple catalog album, or a manually entered edition | Title as issued, edition kind, release date, source reference |
 | `edition_track` | One track of an edition | Disc index, position, title as issued, recording, inclusion |
 
+| Field | Meaning |
+|---|---|
+| `album.kind` | Taxonomy key from `data/taxonomies/album-kinds.json`: `album`, `ep`, `single`, `compilation`, `live`, `soundtrack`, `broadcast`, `spoken-word`, `other` |
+| `album.released`, `edition.released` | Partial dates: the album's first release, and this edition's |
+| `album.label`, `album.notes`, `edition.notes` | Free text |
+| `album_track.recording_id` | Required: an intended slot always plays a known recording |
+| `album_track.title`, `album_track.label` | Optional printed title, when it differs from the recording's, and printed number (`A1`) |
+| `edition_track.title` | Required: the title as the edition issued it |
+| `edition_track.recording_id` | Optional: a track whose recording has not been identified yet names none |
+
+Album credits work as recording credits do. The source reference that ties an edition to an Apple library or catalog album arrives with the Phase 3 import.
+
 An album's identity does not depend on its track credits ([R-20](PLAN.md#requirements)). A soloist's album assembled from three sessions with three orchestras is one album with one intended track list; each recording keeps its own credits.
 
-`edition_track.inclusion` states how a track relates to the intended album. Values are a declared taxonomy in `data/taxonomies/track-inclusions.json`: `core`, `bonus`, `demo`, `live`, `alternate`, `interview`, `commentary`, `remix`, `instrumental`, `single-edit`, `hidden`, `unknown`. Imports classify tracks heuristically from title markers declared in `data/classification/track-title-markers.json`, with the matched marker kept as evidence; curated classification overrides the heuristic and is never reverted by later imports.
+`edition_track.inclusion` states how a track relates to the intended album. Values are a declared taxonomy in `data/taxonomies/track-inclusions.json`, in three families: `intended` (`core`, `hidden`), `extra` (`bonus`, `demo`, `live`, `alternate`, `interview`, `commentary`, `remix`, `instrumental`, `single-edit`) and `unclassified` (`unknown`). Imports classify tracks heuristically from title markers declared in `data/classification/track-title-markers.json`, with the matched marker kept as evidence; curated classification overrides the heuristic and is never reverted by later imports.
 
-Edition kinds are a declared taxonomy: `original`, `remaster`, `deluxe`, `expanded`, `anniversary`, `super-deluxe`, `reissue`, `regional`, `clean`, `explicit`, `unknown`.
+Edition kinds are a declared taxonomy in `data/taxonomies/edition-kinds.json`: `original`, `remaster`, `deluxe`, `expanded`, `anniversary`, `super-deluxe`, `reissue`, `regional`, `clean`, `explicit`, `unknown`.
 
 ### Genres
 
@@ -137,6 +149,7 @@ The mirror is a copy of data Apple owns; the curated tables are data this applic
 5. Curated fields are never overwritten by an import; imports only add entities, refresh the mirror and record differences.
 6. Nothing is written to Apple Music without an `apple_change` row approved by a library member.
 7. Partial dates match `YYYY`, `YYYY-MM` or `YYYY-MM-DD`.
+8. A recording on a track list, an album with editions, and a performer or name a credit uses are not deleted; the delete is refused.
 
 ## Worked examples
 
