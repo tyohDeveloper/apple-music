@@ -38,6 +38,7 @@
     "better-auth": "1.7.11",
     "drizzle-orm": "0.45.4",
     "fastify": "5.12.7",
+    "jose": "6.2.12",
     "pg": "8.23.1",
     "preact": "11.0.1",
     "typebox": "1.4.2"
