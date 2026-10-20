@@ -36,6 +36,6 @@ export function usePerformerEditor(libraryId: string, performerId: string, navig
     addRelation: (values) => apply(remote.postPerformerRelation(libraryId, performerId, createPerformerRelationRequestOf(values))),
     removeRelation: (relationId) => apply(remote.deletePerformerRelation(libraryId, performerId, relationId)),
     genres: genreAssignmentOf(editor.state.entity?.genres, (genreIds) => apply(remote.putPerformerGenres(libraryId, performerId, { genreIds }))),
-    externalIds: externalIdAssignmentOf(editor.state.entity?.externalIds, (externalIds) => apply(remote.putPerformerExternalIds(libraryId, performerId, { externalIds }))),
+    externalIds: externalIdAssignmentOf("performer", editor.state.entity?.externalIds, (externalIds, onSaved) => apply(remote.putPerformerExternalIds(libraryId, performerId, { externalIds }), onSaved)),
   };
 }

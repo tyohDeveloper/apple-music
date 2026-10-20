@@ -66,6 +66,6 @@ export function useAlbumEditor(libraryId: string, albumId: string, navigate: (ro
     saveTracks: () => apply(remote.putAlbumTracks(libraryId, albumId, albumTracksRequestOf(tracks.state)), (saved) => tracks.reset(saved.tracks)),
     createEdition: editionCreator(libraryId, albumId, navigate, editor.refuse),
     genres: genreAssignmentOf(editor.state.entity?.genres, (genreIds) => apply(remote.putAlbumGenres(libraryId, albumId, { genreIds }))),
-    externalIds: externalIdAssignmentOf(editor.state.entity?.externalIds, (externalIds) => apply(remote.putAlbumExternalIds(libraryId, albumId, { externalIds }))),
+    externalIds: externalIdAssignmentOf("album", editor.state.entity?.externalIds, (externalIds, onSaved) => apply(remote.putAlbumExternalIds(libraryId, albumId, { externalIds }), onSaved)),
   };
 }

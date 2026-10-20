@@ -33,6 +33,6 @@ export function useRecordingEditor(libraryId: string, recordingId: string, navig
     editor.apply(remote.putRecordingCredits(libraryId, recordingId, replaceCreditsRequestOf(credits.state)), (saved) => credits.reset(saved.credits));
   };
   const genres = genreAssignmentOf(editor.state.entity?.genres, (genreIds) => editor.apply(remote.putRecordingGenres(libraryId, recordingId, { genreIds })));
-  const externalIds = externalIdAssignmentOf(editor.state.entity?.externalIds, (ids) => editor.apply(remote.putRecordingExternalIds(libraryId, recordingId, { externalIds: ids })));
+  const externalIds = externalIdAssignmentOf("recording", editor.state.entity?.externalIds, (ids, onSaved) => editor.apply(remote.putRecordingExternalIds(libraryId, recordingId, { externalIds: ids }), onSaved));
   return { ...editor, save, credits, saveCredits, genres, externalIds };
 }

@@ -45,6 +45,6 @@ export function useEditionEditor(libraryId: string, editionId: string, navigate:
     tracks,
     addTrack: trackAdder(tracks),
     saveTracks: () => apply(remote.putEditionTracks(libraryId, editionId, editionTracksRequestOf(tracks.state)), (saved) => tracks.reset(saved.tracks)),
-    externalIds: externalIdAssignmentOf(editor.state.entity?.externalIds, (externalIds) => apply(remote.putEditionExternalIds(libraryId, editionId, { externalIds }))),
+    externalIds: externalIdAssignmentOf("edition", editor.state.entity?.externalIds, (externalIds, onSaved) => apply(remote.putEditionExternalIds(libraryId, editionId, { externalIds }), onSaved)),
   };
 }
