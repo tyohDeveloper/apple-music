@@ -11,10 +11,12 @@ export type Route =
   | { readonly name: "albums"; readonly libraryId: string }
   | { readonly name: "album"; readonly libraryId: string; readonly albumId: string }
   | { readonly name: "edition"; readonly libraryId: string; readonly editionId: string }
+  | { readonly name: "genres"; readonly libraryId: string }
+  | { readonly name: "genre"; readonly libraryId: string; readonly genreId: string }
   | { readonly name: "not-found" };
 
 const uuid = "([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})";
-const libraryPath = new RegExp(`^/libraries/${uuid}(?:/(performers|recordings|albums|editions)(?:/${uuid})?)?/?$`, "u");
+const libraryPath = new RegExp(`^/libraries/${uuid}(?:/(performers|recordings|albums|editions|genres)(?:/${uuid})?)?/?$`, "u");
 
 function entityRoute(libraryId: string, section: string, id: string): Route {
   switch (section) {
@@ -24,6 +26,8 @@ function entityRoute(libraryId: string, section: string, id: string): Route {
       return { name: "recording", libraryId, recordingId: id };
     case "albums":
       return { name: "album", libraryId, albumId: id };
+    case "genres":
+      return { name: "genre", libraryId, genreId: id };
     default:
       return { name: "edition", libraryId, editionId: id };
   }
@@ -31,7 +35,7 @@ function entityRoute(libraryId: string, section: string, id: string): Route {
 
 function sectionRoute(libraryId: string, section: string, id: string | undefined): Route {
   if (id !== undefined) return entityRoute(libraryId, section, id);
-  if (section === "performers" || section === "recordings" || section === "albums") return { name: section, libraryId };
+  if (section === "performers" || section === "recordings" || section === "albums" || section === "genres") return { name: section, libraryId };
   return { name: "not-found" };
 }
 

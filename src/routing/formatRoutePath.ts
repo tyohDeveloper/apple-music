@@ -10,6 +10,7 @@ function sectionPathOf(route: LibraryRoute): string {
     case "performers":
     case "recordings":
     case "albums":
+    case "genres":
       return `/${route.name}`;
     case "performer":
       return `/performers/${route.performerId}`;
@@ -19,6 +20,8 @@ function sectionPathOf(route: LibraryRoute): string {
       return `/albums/${route.albumId}`;
     case "edition":
       return `/editions/${route.editionId}`;
+    case "genre":
+      return `/genres/${route.genreId}`;
   }
 }
 
