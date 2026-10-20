@@ -28,7 +28,7 @@ export function CreditedRecordingsPanel({ messages, controls, onOpenRecording }:
           </li>
         ))}
       </ul>
-      <CatalogPager messages={messages} range={range} onPrevious={controls.showPrevious} onNext={controls.showNext} />
+      <CatalogPager messages={messages} list="credited" range={range} onPrevious={controls.showPrevious} onNext={controls.showNext} />
     </section>
   );
 }

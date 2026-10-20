@@ -32,7 +32,7 @@ function PerformerResults({ messages, controls, onOpen }: Omit<PerformersViewPro
           </li>
         ))}
       </ul>
-      <CatalogPager messages={messages} range={range} onPrevious={controls.showPrevious} onNext={controls.showNext} />
+      <CatalogPager messages={messages} list="performers" range={range} onPrevious={controls.showPrevious} onNext={controls.showNext} />
     </>
   );
 }

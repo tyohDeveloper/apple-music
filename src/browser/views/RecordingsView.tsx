@@ -29,7 +29,7 @@ function RecordingResults({ messages, controls, onOpen }: Omit<RecordingsViewPro
           </li>
         ))}
       </ul>
-      <CatalogPager messages={messages} range={range} onPrevious={controls.showPrevious} onNext={controls.showNext} />
+      <CatalogPager messages={messages} list="recordings" range={range} onPrevious={controls.showPrevious} onNext={controls.showNext} />
     </>
   );
 }

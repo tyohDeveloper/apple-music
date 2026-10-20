@@ -38,7 +38,7 @@ test("owner curates performers with names and relations", async ({ page }) => {
   await page.getByTestId("button-performers-search").click();
   await expect(page.getByTestId("panel-performers-results")).toContainText("Lou Reed");
   await expect(page.getByTestId("panel-performers-results")).not.toContainText("Velvet");
-  await expect(page.getByTestId("display-pager-range")).toHaveText("1–1 of 1");
+  await expect(page.getByTestId("display-pager-range-performers")).toHaveText("1–1 of 1");
 });
 
 test("a performer keeps its preferred name and can be deleted", async ({ page }) => {
