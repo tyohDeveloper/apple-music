@@ -65,3 +65,19 @@ export const appleLibraryItem = pgTable("apple_library_item", {
     foreignKey({ name: `apple_library_item_${name}_run_fk`, columns: [t.libraryId, t[column]], foreignColumns: [syncRun.libraryId, syncRun.id] })),
   ...libraryRowPolicies("apple_library_item"),
 ]);
+
+// Catalog songs and albums the library items point to, in the library's storefront.
+export const appleCatalogItem = pgTable("apple_catalog_item", {
+  libraryId: libraryIdColumn(),
+  kind: text("kind").notNull(),
+  storefront: text("storefront").notNull(),
+  catalogId: text("catalog_id").notNull(),
+  attributes: jsonb("attributes").$type<AppleAttributes>().notNull(),
+  relationships: jsonb("relationships").$type<AppleRelationshipIds>().notNull(),
+  fetchedRunId: uuid("fetched_run_id").notNull(),
+}, (t) => [
+  primaryKey({ columns: [t.libraryId, t.kind, t.storefront, t.catalogId] }),
+  check("apple_catalog_item_kind", sql`${t.kind} in ('song', 'album')`),
+  foreignKey({ name: "apple_catalog_item_fetched_run_fk", columns: [t.libraryId, t.fetchedRunId], foreignColumns: [syncRun.libraryId, syncRun.id] }),
+  ...libraryRowPolicies("apple_catalog_item"),
+]);
