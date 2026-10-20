@@ -5,6 +5,7 @@
 import { sql } from "drizzle-orm";
 import { check, foreignKey, index, integer, pgTable, primaryKey, text, uuid } from "drizzle-orm/pg-core";
 import { instant, libraryIdColumn, partialDate } from "./columns.ts";
+import { creditColumns } from "./creditColumns.ts";
 import { libraryRowPolicies } from "./libraryRowPolicies.ts";
 import { performer, performerName } from "./performerTables.ts";
 
@@ -32,12 +33,7 @@ export const recording = pgTable("recording", {
 export const recordingCredit = pgTable("recording_credit", {
   libraryId: libraryIdColumn(),
   recordingId: uuid("recording_id").notNull(),
-  position: integer("position").notNull(),
-  performerId: uuid("performer_id").notNull(),
-  creditedNameId: uuid("credited_name_id"),
-  role: text("role").notNull(),
-  joinPhrase: text("join_phrase"),
-  instruments: text("instruments").array().notNull().default(sql`'{}'::text[]`),
+  ...creditColumns(),
 }, (t) => [
   primaryKey({ columns: [t.libraryId, t.recordingId, t.position] }),
   foreignKey({ columns: [t.libraryId, t.recordingId], foreignColumns: [recording.libraryId, recording.id] }).onDelete("cascade"),
