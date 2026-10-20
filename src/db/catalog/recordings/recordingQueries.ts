@@ -1,7 +1,7 @@
 // Reads of recordings (DOMAIN-MODEL.md): search by title or by any name of a credited
 // performer, optionally only the recordings crediting one performer, and one recording
 // with its credits. Row-level security limits every query to the scoped library.
-import { and, asc, count, eq, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, eq, inArray, sql, type SQL } from "drizzle-orm";
 import { matchKeyOf } from "../../../names/matchKeyOf.ts";
 import { recording } from "../../schema/recordingTables.ts";
 import type { ScopedTransaction } from "../../withUserScope.ts";
@@ -52,6 +52,17 @@ export async function listRecordings(tx: ScopedTransaction, page: PageRequest, p
   const [counted] = await tx.select({ total: count() }).from(recording).where(where);
   const lines = await creditLinesOf(tx, recordingCredits, rows.map((row) => row.id));
   return { items: rows.map((row) => ({ ...row, creditLine: lines.get(row.id) ?? "" })), total: counted?.total ?? 0 };
+}
+
+export type RecordingReference = Pick<RecordingSummary, "id" | "title" | "versionNote" | "durationMs" | "creditLine">;
+
+// The recordings that tracks play, by id, for album and edition track lists.
+export async function recordingReferencesOf(tx: ScopedTransaction, recordingIds: string[]): Promise<Map<string, RecordingReference>> {
+  if (recordingIds.length === 0) return new Map();
+  const { id, title, versionNote, durationMs } = recording;
+  const rows = await tx.select({ id, title, versionNote, durationMs }).from(recording).where(inArray(id, recordingIds));
+  const lines = await creditLinesOf(tx, recordingCredits, recordingIds);
+  return new Map(rows.map((row) => [row.id, { ...row, creditLine: lines.get(row.id) ?? "" }]));
 }
 
 export async function getRecordingDetail(tx: ScopedTransaction, recordingId: string): Promise<RecordingDetail | null> {

@@ -2,10 +2,9 @@
 // and its match key; credits are replaced as a whole list (ADR-0009), and deleting a
 // recording takes its credits with it.
 import { eq, sql } from "drizzle-orm";
-import { collapseWhitespace } from "../../../names/collapseWhitespace.ts";
-import { matchKeyOf } from "../../../names/matchKeyOf.ts";
 import { recording, recordingCredit } from "../../schema/recordingTables.ts";
 import type { ScopedTransaction } from "../../withUserScope.ts";
+import { storedTitle } from "../storedTitle.ts";
 
 export type RecordingFields = {
   readonly title: string;
@@ -24,11 +23,6 @@ export type CreditFields = {
   readonly joinPhrase: string | null;
   readonly instruments: string[];
 };
-
-function storedTitle(title: string) {
-  const collapsed = collapseWhitespace(title);
-  return { title: collapsed, matchKey: matchKeyOf(collapsed) };
-}
 
 export async function createRecording(tx: ScopedTransaction, libraryId: string, fields: RecordingFields): Promise<string> {
   const [created] = await tx.insert(recording).values({ libraryId, ...fields, ...storedTitle(fields.title) }).returning({ id: recording.id });

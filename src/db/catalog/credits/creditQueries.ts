@@ -8,6 +8,7 @@ import type { ScopedTransaction } from "../../withUserScope.ts";
 
 export type CreditSource = { readonly table: "recording_credit" | "album_credit"; readonly owner: "recording_id" | "album_id" };
 export const recordingCredits: CreditSource = { table: "recording_credit", owner: "recording_id" };
+export const albumCredits: CreditSource = { table: "album_credit", owner: "album_id" };
 
 type NameReference = { readonly id: string; readonly name: string };
 export type CreditRow = {
