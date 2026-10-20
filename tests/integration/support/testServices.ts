@@ -3,7 +3,7 @@ import pg from "pg";
 import { createDatabasePools, type DatabasePools } from "../../../src/db/createDatabasePools.ts";
 import { buildServer } from "../../../src/server/app/buildServer.ts";
 import { createOwnerAccount } from "../../../src/server/auth/createOwnerAccount.ts";
-import { readServerConfig } from "../../../src/server/config/readServerConfig.ts";
+import { readServerConfig, type ServerConfig } from "../../../src/server/config/readServerConfig.ts";
 
 export const testConfig = () => readServerConfig(process.env);
 
@@ -21,8 +21,8 @@ export async function createTestUser(pools: DatabasePools, label: string): Promi
   return { id, email, password };
 }
 
-export function buildTestServer(pools: DatabasePools) {
-  return buildServer({ config: testConfig(), pools, serveClientAssets: false, logRequests: false });
+export function buildTestServer(pools: DatabasePools, config: ServerConfig = testConfig()) {
+  return buildServer({ config, pools, serveClientAssets: false, logRequests: false });
 }
 
 export async function queryAsRole<T extends pg.QueryResultRow>(url: string, text: string, values: unknown[] = []) {
