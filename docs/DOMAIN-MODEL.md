@@ -124,6 +124,14 @@ Edition kinds are a declared taxonomy in `data/taxonomies/edition-kinds.json`: `
 
 Genres are curated per library and may nest (`parent_id`). Apple genre names map to curated genres through `genre_alias`, so a change of mind about a genre is one edit. Albums, recordings and performers each carry their own genre assignments.
 
+| Entity | Holds | Rules |
+|---|---|---|
+| `genre` | Name, optional parent, notes | Sibling names are unique, top-level names included; never its own ancestor; not deleted while it has subgenres or uses |
+| `genre_alias` | Another name for a genre | Names one genre in a library; deleted with its genre |
+| `album_genre`, `recording_genre`, `performer_genre` | The entity's genres in order; the first is its main genre | At most 20; a genre appears once |
+
+Genres on an album describe the album, on a recording the recording, and on a performer the performer's work in general; none is inferred from another.
+
 ### External identifiers
 
 `performer_external_id`, `album_external_id`, `edition_external_id` and `recording_external_id` hold identifiers by namespace: Apple library and catalog ids, ISRC, UPC, MusicBrainz ids, Discogs ids, Wikidata ids. Namespaces are a declared taxonomy.
@@ -149,7 +157,8 @@ The mirror is a copy of data Apple owns; the curated tables are data this applic
 5. Curated fields are never overwritten by an import; imports only add entities, refresh the mirror and record differences.
 6. Nothing is written to Apple Music without an `apple_change` row approved by a library member.
 7. Partial dates match `YYYY`, `YYYY-MM` or `YYYY-MM-DD`.
-8. A recording on a track list, an album with editions, and a performer or name a credit uses are not deleted; the delete is refused.
+8. A recording on a track list, an album with editions, a performer or name a credit uses, and a genre with subgenres or uses are not deleted; the delete is refused.
+9. A genre is never its own ancestor.
 
 ## Worked examples
 

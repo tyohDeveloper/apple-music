@@ -2,7 +2,7 @@
 
 This file is the durable plan for the Apple Music Library Manager. It is updated at each phase boundary; decisions are recorded as ADRs in [docs/adr/](adr/) and referenced here.
 
-**Active phase:** Phase 2 — curated catalog, built in slices ([docs/design/catalog.md](design/catalog.md)); slices A (performers), B (recordings and credits) and C (albums and editions) are done. Phase 1 (foundation) was completed 2026-10-19 as version 0.1.0.0; see the phase log below.
+**Active phase:** Phase 2 — curated catalog, built in slices ([docs/design/catalog.md](design/catalog.md)); slices A (performers), B (recordings and credits), C (albums and editions) and D (genres) are done. Phase 1 (foundation) was completed 2026-10-19 as version 0.1.0.0; see the phase log below.
 
 ## Requirements
 

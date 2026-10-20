@@ -11,8 +11,8 @@ Each slice is migrations, MODEL functions, contracts, routes, client screens and
 | A | Performers, names, relations | done 2026-10-19 |
 | B | Recordings and recording credits | done 2026-10-19 |
 | C | Albums, album credits, intended track lists, editions, edition tracks | done 2026-10-19 |
-| D | Genres, aliases and genre assignments | next |
-| E | External identifiers | planned |
+| D | Genres, aliases and genre assignments | done 2026-10-19 |
+| E | External identifiers | next |
 | F | JSON export of a library | planned |
 
 ## HTTP API
