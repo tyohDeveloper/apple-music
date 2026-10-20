@@ -20,6 +20,10 @@ Album credits work as [recording credits](Editing-Recordings.md#credits) do: an 
 
 The **Genres** panel holds the album's genres in order, the first being its main genre; see [Editing genres](Editing-Genres.md#giving-genres-to-albums-recordings-and-performers).
 
+## Identifiers
+
+The **Identifiers** panel holds the album's MusicBrainz release group, Discogs master release and Wikidata item. Apple Music ids and UPCs belong to editions, and are entered on each edition's page; see [Editing identifiers](Editing-Identifiers.md).
+
 ## The intended track list
 
 The intended track list is the album as its artists made it, disc by disc. Every track plays a recording from the library. To add one, find the recording, choose it and a disc, and choose **Add track**; a new disc is started by choosing **New disc**. Each track can then be given:
@@ -33,7 +37,7 @@ A recording's page lists the albums whose track lists play it, and a performer's
 
 ## Editions
 
-Under **Editions** on the album's page, create an edition with its title as issued and its kind (original, remaster, deluxe, expanded, anniversary, super deluxe, reissue, regional, clean, explicit, unknown). The edition's own page takes its release date, notes and tracks.
+Under **Editions** on the album's page, create an edition with its title as issued and its kind (original, remaster, deluxe, expanded, anniversary, super deluxe, reissue, regional, clean, explicit, unknown). The edition's own page takes its release date, notes, tracks and identifiers: Apple Music library and catalog album ids, UPC, MusicBrainz release and Discogs release.
 
 Each edition track has the title it was issued under, and says how it belongs to the album:
 

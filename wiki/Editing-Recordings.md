@@ -50,3 +50,7 @@ The line at the top of the credits, and in search results, is made from the perf
 ## Genres
 
 The **Genres** panel holds the recording's genres in order, the first being its main genre; see [Editing genres](Editing-Genres.md#giving-genres-to-albums-recordings-and-performers).
+
+## Identifiers
+
+The **Identifiers** panel holds the recording's Apple Music library and catalog song ids, its ISRC, its MusicBrainz recording id and its Wikidata item; see [Editing identifiers](Editing-Identifiers.md).
