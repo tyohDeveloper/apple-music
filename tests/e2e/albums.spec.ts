@@ -3,6 +3,7 @@
 // album nor a recording on it can be deleted, and follow a track to its recording.
 import { expect, test, type Page } from "@playwright/test";
 import { createRecording } from "./support/createRecording.ts";
+import { expectNoneFound } from "./support/expectNoneFound.ts";
 import { expectUniqueTestIds } from "./support/expectUniqueTestIds.ts";
 import { openSeededLibrary, signInAsOwner } from "./support/signInAsOwner.ts";
 
@@ -91,5 +92,5 @@ test("an album without editions can be deleted", async ({ page }) => {
   await page.getByTestId("button-delete-request").click();
   await page.getByTestId("button-delete-confirm").click();
   await expect(page.getByTestId("panel-albums-create")).toBeVisible();
-  await expect(page.getByTestId("panel-albums-results")).not.toContainText("Sketches of Spain");
+  await expectNoneFound(page, "albums", "Sketches of Spain");
 });

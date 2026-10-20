@@ -4,6 +4,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createPerformer } from "./support/createPerformer.ts";
 import { createRecording } from "./support/createRecording.ts";
+import { expectNoneFound } from "./support/expectNoneFound.ts";
 import { expectUniqueTestIds } from "./support/expectUniqueTestIds.ts";
 import { openSeededLibrary, signInAsOwner } from "./support/signInAsOwner.ts";
 
@@ -76,9 +77,9 @@ test("owner credits performers on a recording", async ({ page }) => {
 
 test("a recording can be deleted", async ({ page }) => {
   await openRecordings(page);
-  await createRecording(page, "Blue in Green", "alternate-take");
+  await createRecording(page, "Flamenco Sketches", "alternate-take");
   await page.getByTestId("button-delete-request").click();
   await page.getByTestId("button-delete-confirm").click();
   await expect(page.getByTestId("panel-recordings-create")).toBeVisible();
-  await expect(page.getByTestId("panel-recordings-results")).not.toContainText("Blue in Green");
+  await expectNoneFound(page, "recordings", "Flamenco Sketches");
 });

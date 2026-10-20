@@ -2,6 +2,7 @@
 // band, follow the relation, find the member by the birth name, and keep the preferred name.
 import { expect, test } from "@playwright/test";
 import { createPerformer } from "./support/createPerformer.ts";
+import { expectNoneFound } from "./support/expectNoneFound.ts";
 import { expectUniqueTestIds } from "./support/expectUniqueTestIds.ts";
 import { openSeededLibrary, signInAsOwner } from "./support/signInAsOwner.ts";
 
@@ -63,5 +64,6 @@ test("a performer keeps its preferred name and can be deleted", async ({ page })
 
   await page.getByTestId("button-delete-request").click();
   await page.getByTestId("button-delete-confirm").click();
-  await expect(page.getByTestId("panel-performers-results")).not.toContainText("Nina Simone");
+  await expect(page.getByTestId("panel-performers-create")).toBeVisible();
+  await expectNoneFound(page, "performers", "Nina Simone");
 });
