@@ -1,0 +1,12 @@
+{
+  "taxonomy": "externalIdNamespace",
+  "entries": [
+    { "id": "apple-library", "family": "apple" },
+    { "id": "apple-catalog", "family": "apple" },
+    { "id": "isrc", "family": "industry" },
+    { "id": "upc", "family": "industry" },
+    { "id": "musicbrainz", "family": "musicbrainz" },
+    { "id": "discogs", "family": "discogs" },
+    { "id": "wikidata", "family": "wikidata" }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "External identifier formats",
+  "description": "For each kind of entity, the external identifier namespaces it takes, the form a stored value has, how an entered value is normalized, and the page a value links to (docs/design/catalog.md, External identifiers).",
+  "type": "object",
+  "required": ["formats"],
+  "additionalProperties": false,
+  "properties": {
+    "formats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["owner", "namespace", "pattern", "normalize"],
+        "additionalProperties": false,
+        "properties": {
+          "owner": { "enum": ["performer", "album", "edition", "recording"] },
+          "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "pattern": { "type": "string", "description": "Anchored regular expression a normalized value matches." },
+          "normalize": {
+            "type": "array",
+            "description": "Applied in order after trimming: remove-separators drops spaces and hyphens; upper-case and lower-case change case.",
+            "items": { "enum": ["remove-separators", "upper-case", "lower-case"] },
+            "uniqueItems": true
+          },
+          "link": { "type": "string", "pattern": "^https://[^ ]*\\{value\\}[^ ]*$", "description": "Page for a value; {value} is replaced by the encoded value." }
+        }
+      }
+    }
+  }
+}

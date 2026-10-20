@@ -1,0 +1,22 @@
+{
+  "formats": [
+    { "owner": "performer", "namespace": "apple-library", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", "normalize": [] },
+    { "owner": "performer", "namespace": "apple-catalog", "pattern": "^[0-9]{1,20}$", "normalize": [] },
+    { "owner": "performer", "namespace": "musicbrainz", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "normalize": ["lower-case"], "link": "https://musicbrainz.org/artist/{value}" },
+    { "owner": "performer", "namespace": "discogs", "pattern": "^[1-9][0-9]{0,11}$", "normalize": [], "link": "https://www.discogs.com/artist/{value}" },
+    { "owner": "performer", "namespace": "wikidata", "pattern": "^Q[1-9][0-9]{0,11}$", "normalize": ["upper-case"], "link": "https://www.wikidata.org/wiki/{value}" },
+    { "owner": "album", "namespace": "musicbrainz", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "normalize": ["lower-case"], "link": "https://musicbrainz.org/release-group/{value}" },
+    { "owner": "album", "namespace": "discogs", "pattern": "^[1-9][0-9]{0,11}$", "normalize": [], "link": "https://www.discogs.com/master/{value}" },
+    { "owner": "album", "namespace": "wikidata", "pattern": "^Q[1-9][0-9]{0,11}$", "normalize": ["upper-case"], "link": "https://www.wikidata.org/wiki/{value}" },
+    { "owner": "edition", "namespace": "apple-library", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", "normalize": [] },
+    { "owner": "edition", "namespace": "apple-catalog", "pattern": "^[0-9]{1,20}$", "normalize": [] },
+    { "owner": "edition", "namespace": "upc", "pattern": "^[0-9]{12,14}$", "normalize": ["remove-separators"] },
+    { "owner": "edition", "namespace": "musicbrainz", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "normalize": ["lower-case"], "link": "https://musicbrainz.org/release/{value}" },
+    { "owner": "edition", "namespace": "discogs", "pattern": "^[1-9][0-9]{0,11}$", "normalize": [], "link": "https://www.discogs.com/release/{value}" },
+    { "owner": "recording", "namespace": "apple-library", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$", "normalize": [] },
+    { "owner": "recording", "namespace": "apple-catalog", "pattern": "^[0-9]{1,20}$", "normalize": [] },
+    { "owner": "recording", "namespace": "isrc", "pattern": "^[A-Z]{2}[A-Z0-9]{3}[0-9]{7}$", "normalize": ["remove-separators", "upper-case"] },
+    { "owner": "recording", "namespace": "musicbrainz", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "normalize": ["lower-case"], "link": "https://musicbrainz.org/recording/{value}" },
+    { "owner": "recording", "namespace": "wikidata", "pattern": "^Q[1-9][0-9]{0,11}$", "normalize": ["upper-case"], "link": "https://www.wikidata.org/wiki/{value}" }
+  ]
+}
