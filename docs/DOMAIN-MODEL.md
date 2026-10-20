@@ -134,7 +134,13 @@ Genres on an album describe the album, on a recording the recording, and on a pe
 
 ### External identifiers
 
-`performer_external_id`, `album_external_id`, `edition_external_id` and `recording_external_id` hold identifiers by namespace: Apple library and catalog ids, ISRC, UPC, MusicBrainz ids, Discogs ids, Wikidata ids. Namespaces are a declared taxonomy.
+Identifiers that other systems give the same performer, album, edition or recording, by namespace: Apple library and catalog ids, ISRC, UPC, MusicBrainz ids, Discogs ids, Wikidata ids. Namespaces are a declared taxonomy in `data/taxonomies/external-id-namespaces.json`; which kinds of entity take a namespace, the form of its values and the page a value links to are declared in `data/identifiers/external-id-formats.json`.
+
+| Entity | Holds | Rules |
+|---|---|---|
+| `performer_external_id`, `album_external_id`, `edition_external_id`, `recording_external_id` | Namespace and normalized value | A value appears once per entity and has the form its namespace uses for that kind of entity; at most 50 per entity; deleted with the entity |
+
+An ISRC identifies a recording and never a product or release ([IFPI, When not to assign](https://isrc.ifpi.org/why-use-isrc/when-not-to-assign)); a UPC carries a GTIN, which identifies a product ([GS1 US, What is a GTIN?](https://www.gs1us.org/upcs-barcodes-prefixes/what-is-a-gtin)). So recordings take ISRCs, editions take UPCs, and albums take neither. MusicBrainz separates the same levels: a release group is the album as a concept and a release is one issue of it that can be bought ([MusicBrainz, Release Group](https://musicbrainz.org/doc/Release_Group)), so an album takes a release group id and an edition a release id. The same value may be recorded on two entities of a library; such duplicates are candidates for merging (Phase 4).
 
 ## Apple mirror and change outbox
 
@@ -159,6 +165,7 @@ The mirror is a copy of data Apple owns; the curated tables are data this applic
 7. Partial dates match `YYYY`, `YYYY-MM` or `YYYY-MM-DD`.
 8. A recording on a track list, an album with editions, a performer or name a credit uses, and a genre with subgenres or uses are not deleted; the delete is refused.
 9. A genre is never its own ancestor.
+10. An external identifier is stored normalized and has the form its namespace declares for that kind of entity.
 
 ## Worked examples
 

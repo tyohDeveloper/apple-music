@@ -2,7 +2,7 @@
 
 This file is the durable plan for the Apple Music Library Manager. It is updated at each phase boundary; decisions are recorded as ADRs in [docs/adr/](adr/) and referenced here.
 
-**Active phase:** Phase 2 — curated catalog, built in slices ([docs/design/catalog.md](design/catalog.md)); slices A (performers), B (recordings and credits), C (albums and editions) and D (genres) are done. Phase 1 (foundation) was completed 2026-10-19 as version 0.1.0.0; see the phase log below.
+**Active phase:** Phase 2 — curated catalog, built in slices ([docs/design/catalog.md](design/catalog.md)); slices A (performers), B (recordings and credits), C (albums and editions), D (genres) and E (external identifiers) are done; F (JSON export) is next. Phase 1 (foundation) was completed 2026-10-19 as version 0.1.0.0; see the phase log below.
 
 ## Requirements
 
@@ -64,7 +64,7 @@ Each phase ends with `npm run build` and the end-to-end suite green locally and 
 | 3 — Apple Music import | Developer token, MusicKit authorization, encrypted Music User Token, sync runs over library songs, albums, artists and playlists with catalog enrichment; mapping into the curated model: credit parsing, edition grouping, track classification; guard against attaching a different library | Sync exercised against a contract-faithful Apple Music fake in CI; live check by the owner with real credentials |
 | 4 — Cleanup workflows | Review queue for classified extras, intended track lists, album merge and split, performer merge, name-variant and relation editing | Each workflow covered end to end |
 | 5 — Apple Music changes | Approval outbox; intended-album playlists in a folder; ratings and favorites; adding catalog items | Each operation covered against the fake; live check by the owner |
-| 6 — Other databases | MusicBrainz lookup through a rate-limited REMOTE adapter; match suggestions; external identifiers | Lookups covered against a recorded fake |
+| 6 — Other databases | MusicBrainz lookup through a rate-limited REMOTE adapter; match suggestions that fill in external identifiers | Lookups covered against a recorded fake |
 | 7 — Depth | Works and compositions; edit history; Sign in with Apple; opening sign-up for more users | Per feature |
 | 8+ — Reach | Other streaming services through their own adapters; native wrappers per the native-wrappers profile | Per target |
 

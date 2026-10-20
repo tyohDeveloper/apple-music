@@ -12,8 +12,8 @@ Each slice is migrations, MODEL functions, contracts, routes, client screens and
 | B | Recordings and recording credits | done 2026-10-19 |
 | C | Albums, album credits, intended track lists, editions, edition tracks | done 2026-10-19 |
 | D | Genres, aliases and genre assignments | done 2026-10-19 |
-| E | External identifiers | next |
-| F | JSON export of a library | planned |
+| E | External identifiers | done 2026-10-19 |
+| F | JSON export of a library | next |
 
 ## HTTP API
 
@@ -71,7 +71,7 @@ Namespaces are a taxonomy, `data/taxonomies/external-id-namespaces.json`, whose 
 
 | Namespace | Performer | Album | Edition | Recording | Value |
 |---|---|---|---|---|---|
-| `apple-library` | Library artist id | | Library album id | Library song id | Apple's opaque id, such as `i.b1lXQGKUoZRzDE` |
+| `apple-library` | Library artist id | | Library album id | Library song id | Apple's opaque library id. Apple does not document its form: library song ids seen in [Apple's developer forums](https://developer.apple.com/forums/tags/apple-music-api?page=3) start with `i.`, and [third-party notes](https://github.com/kaosZL/zl-music-tv/blob/main/docs/apple-music-api.md) give `l.` for albums and `r.` for artists. Letters, digits, `.`, `_` and `-` are accepted |
 | `apple-catalog` | Artist id | | Album id | Song id | Digits |
 | `isrc` | | | | Yes | Twelve characters, such as `USSM15900113`; spaces, hyphens and lower case are accepted and removed |
 | `upc` | | | Yes | | 12 to 14 digits: UPC-A, EAN-13 or GTIN-14 |
@@ -83,7 +83,9 @@ Namespaces are a taxonomy, `data/taxonomies/external-id-namespaces.json`, whose 
 |---|---|---|
 | `performer_external_id`, `album_external_id`, `edition_external_id`, `recording_external_id` | Namespace and value per entity | Unique per entity; indexed by library, namespace and value for lookups; deleted with the entity. The same value may sit on two entities: duplicates are what the Phase 4 merge workflow looks for |
 
-The performer, album, edition and recording editors each gain an identifiers panel: choose a namespace, enter a value, add; remove; each change is saved at once. A value whose namespace has a page (MusicBrainz, Discogs, Wikidata) links to it.
+An entity's identifiers are read in order of namespace code, then value. The list is replaced whole; the server trims, normalizes and checks every value, drops repeats, and refuses the whole list with `400 invalid-external-id` if one value lacks its form.
+
+The performer, album, edition and recording editors each have an identifiers panel: choose a namespace, enter a value, add; remove; each change is saved at once. The browser checks a value with the same rules and data before sending (`normalizedExternalIdOf`), so a malformed value is flagged on its field and kept for correction; the form clears once the identifier is saved. A value whose namespace has a page (MusicBrainz, Discogs, Wikidata) links to it.
 
 ## Screens
 
