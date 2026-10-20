@@ -76,6 +76,7 @@ describe("albums", () => {
     expect(replaced.tracks.map((t: { discIndex: number; position: number; inclusion: string }) => [t.discIndex, t.position, t.inclusion])).toEqual([[0, 0, "core"], [1, 0, "interview"], [1, 1, "alternate"]]);
     expect(replaced.tracks[1].recording).toBeNull();
     expect((await owner.call("GET", `${base}/albums/${album.id}`)).body.editions).toEqual([expect.objectContaining({ id: deluxe.id, trackCount: 3 })]);
+    expect((await owner.call("GET", `${base}/albums?query=concertos`)).body.items).toContainEqual(expect.objectContaining({ id: album.id, editionCount: 1 }));
     expect((await owner.call("DELETE", `${base}/albums/${album.id}`))).toEqual({ status: 409, body: { error: { code: "conflict-in-use" } } });
     expect((await owner.call("DELETE", `${base}/recordings/${second.id}`)).status).toBe(409);
     const other = await created("/albums", { title: "Concertos, volume 2", kind: "album" });

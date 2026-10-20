@@ -7,6 +7,7 @@ import { matchKeyOf } from "../../../names/matchKeyOf.ts";
 import { album } from "../../schema/albumTables.ts";
 import type { ScopedTransaction } from "../../withUserScope.ts";
 import type { CatalogPage, PageRequest } from "../catalogPage.ts";
+import { outerColumn } from "../outerColumn.ts";
 import { albumCredits, creditLinesOf, creditsOf, type CreditRow } from "../credits/creditQueries.ts";
 import { editionsOfAlbum, type EditionSummary } from "../editions/editionQueries.ts";
 import { albumTracksOf, type AlbumTrackRow } from "./albumTrackQueries.ts";
@@ -50,8 +51,9 @@ function albumFilter(filters: AlbumFilters): SQL | undefined {
   return and(crediting, playing);
 }
 
-const trackCount = sql<number>`(select count(*)::int from album_track t where t.library_id = ${album.libraryId} and t.album_id = ${album.id})`;
-const editionCount = sql<number>`(select count(*)::int from edition e where e.library_id = ${album.libraryId} and e.album_id = ${album.id})`;
+const [outerLibraryId, outerAlbumId] = [outerColumn(album.libraryId), outerColumn(album.id)];
+const trackCount = sql<number>`(select count(*)::int from album_track t where t.library_id = ${outerLibraryId} and t.album_id = ${outerAlbumId})`;
+const editionCount = sql<number>`(select count(*)::int from edition e where e.library_id = ${outerLibraryId} and e.album_id = ${outerAlbumId})`;
 
 export async function listAlbums(tx: ScopedTransaction, page: PageRequest, filters: AlbumFilters = {}): Promise<CatalogPage<AlbumSummary>> {
   const where = and(albumMatches(page.query), albumFilter(filters));

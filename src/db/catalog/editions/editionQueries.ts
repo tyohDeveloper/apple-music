@@ -4,6 +4,7 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { album } from "../../schema/albumTables.ts";
 import { edition, editionTrack } from "../../schema/editionTables.ts";
 import type { ScopedTransaction } from "../../withUserScope.ts";
+import { outerColumn } from "../outerColumn.ts";
 import { recordingReferencesOf, type RecordingReference } from "../recordings/recordingQueries.ts";
 
 export type EditionSummary = { readonly id: string; readonly title: string; readonly kind: string; readonly released: string | null; readonly trackCount: number };
@@ -20,7 +21,7 @@ export type EditionDetail = Omit<EditionSummary, "trackCount"> & {
   readonly tracks: EditionTrackRow[];
 };
 
-const trackCount = sql<number>`(select count(*)::int from edition_track t where t.library_id = ${edition.libraryId} and t.edition_id = ${edition.id})`;
+const trackCount = sql<number>`(select count(*)::int from edition_track t where t.library_id = ${outerColumn(edition.libraryId)} and t.edition_id = ${outerColumn(edition.id)})`;
 
 export async function editionsOfAlbum(tx: ScopedTransaction, albumId: string): Promise<EditionSummary[]> {
   const { id, title, kind, released } = edition;
