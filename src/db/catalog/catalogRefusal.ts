@@ -7,7 +7,8 @@ export type RefusalCode =
   | "conflict-in-use"
   | "conflict-duplicate"
   | "conflict-preferred-name"
-  | "conflict-genre-cycle";
+  | "conflict-genre-cycle"
+  | "invalid-external-id";
 
 export class CatalogRefusal extends Error {
   readonly code: RefusalCode;

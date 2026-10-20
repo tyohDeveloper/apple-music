@@ -12,6 +12,7 @@ const refusalStatus: Readonly<Record<RefusalCode, number>> = {
   "conflict-duplicate": 409,
   "conflict-preferred-name": 409,
   "conflict-genre-cycle": 409,
+  "invalid-external-id": 400,
 };
 
 export function registerErrorReplies(app: FastifyInstance): void {
