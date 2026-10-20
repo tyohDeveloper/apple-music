@@ -13,7 +13,9 @@ Each slice is migrations, MODEL functions, contracts, routes, client screens and
 | C | Albums, album credits, intended track lists, editions, edition tracks | done 2026-10-19 |
 | D | Genres, aliases and genre assignments | done 2026-10-19 |
 | E | External identifiers | done 2026-10-19 |
-| F | JSON export of a library | next |
+| F | JSON export of a library | done 2026-10-19 |
+
+With slice F, Phase 2 is complete.
 
 ## HTTP API
 
@@ -123,6 +125,8 @@ albums[]           id, title, kind, released, label, notes, credits[],
 ```
 
 Taxonomy values are written as their codes (`group`, `primary`), not display names, so a document is the same whatever the interface language. Match keys are derived and left out. Accounts, memberships and sessions are not catalog data and are not exported. The Apple mirror and change outbox (Phases 3 and 5) join the document as added fields when they exist. Importing a document is not part of this slice.
+
+Measured when the slice was built: a synthetic library of 20,000 recordings with 40,000 credits and 2,000 albums, each with one edition of ten tracks, exported as 19 MB in 1.6 seconds through the route, response serialization included, on the development machine.
 
 Build order: snapshot transaction option on the library scope; MODEL reads in bulk per entity type (`src/db/catalog/export/`), grouped in memory with `Map.groupBy`, never one query per entity; contracts in `src/contracts/export/`; the route; the generated schema file and its staleness test; an integration test that validates an export against the schema, resolves every id reference and finds nothing from another library; a download link on the library home; an end-to-end test that downloads and reads the document; a wiki page.
 
