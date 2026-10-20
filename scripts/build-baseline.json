@@ -1,4 +1,4 @@
 {
-  "note": "2026-10-19, Phase 2 slice B: recording search and editor, the ordered credit editor and the performer's credited-recordings panel added 4,570 bytes of JS and 41 bytes of CSS (gzip) to slice A's 14,490 and 1,208; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
-  "gzipBytes": { "js": 19060, "css": 1249 }
+  "note": "2026-10-19, Phase 2 slice C: album search and editor with album credits and the intended track list, the edition editor with classified tracks, and the albums panel on recordings added 4,980 bytes of JS and no CSS (gzip) to slice B's 19,060 and 1,249; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
+  "gzipBytes": { "js": 24040, "css": 1249 }
 }
