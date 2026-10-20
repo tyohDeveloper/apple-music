@@ -1,7 +1,7 @@
 {
-  "note": "2026-10-19, Phase 3 slice G: the Apple Music screen (connect and disconnect through MusicKit on the Web, which loads from Apple's CDN at run time and is not bundled), with its state, requests and strings, added 1,926 bytes of JS (gzip) to 28,788; before it, slice F's export link had added 199 bytes of JS and 5 of CSS to slice E's 28,589 and 1,281; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
+  "note": "2026-10-19, Phase 3 slice H: the reading panel on the Apple Music screen (latest sync run with its status and counts, polling while it runs, start, cancel and replace), with its state, requests and strings, added 1,835 bytes of JS (gzip) to slice G's 30,714, and its count list 69 bytes of CSS to 1,286; no new libraries. Gzip level 9 over dist/client/assets. Update only in a reviewed change that says what moved the numbers (§7.6).",
   "gzipBytes": {
-    "js": 30714,
-    "css": 1286
+    "js": 32549,
+    "css": 1355
   }
 }
