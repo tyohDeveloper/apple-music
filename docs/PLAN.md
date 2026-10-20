@@ -37,6 +37,7 @@ Each requirement traces to the owner's request of 2026-10-19. IDs are stable; la
 | R-25 | Native apps later (Windows, macOS, iOS, ChromeOS and others) | HTTP API as the only client contract; Phase 8+ |
 | R-26 | Initially a web app | [ADR-0006](adr/0006-application-stack.md) |
 | R-27 | A project wiki | [ADR-0007](adr/0007-wiki-published-from-repository.md), [wiki/](../wiki/README.md) |
+| R-28 | A standard web app: not restricted to a single HTML file, and not downloadable to run off the network | Hosted-Postgres profile ([ADR-0001](adr/0001-adopt-engineering-standards.md)); the standalone-HTML5 and artifact-contract profiles do not apply ([CODING-STANDARDS.md](CODING-STANDARDS.md)); no service worker, offline cache or installable copy |
 
 ## Decisions
 

@@ -3,7 +3,7 @@
 ## Adopted standards and scope
 
 - **Policy:** Engineering Standards v2.2, portable edition, pinned in [CODING-STANDARDS.md](CODING-STANDARDS.md) ([ADR-0001](adr/0001-adopt-engineering-standards.md)).
-- **Target profile:** hosted Postgres — a Node server with a Postgres datastore and a single-page web client served by the same server. The standalone-HTML5 and artifact-contract profiles do not apply. The native-wrappers profile applies only when a native target is added (Phase 8+).
+- **Target profile:** hosted Postgres — a Node server with a Postgres datastore and a single-page web client served by the same server. The standalone-HTML5 and artifact-contract profiles do not apply: the client is a standard multi-file web app that works only through its server, with no single-file build and no offline or downloadable copy ([R-28](PLAN.md#requirements)). The native-wrappers profile applies only when a native target is added (Phase 8+).
 - **Scope:** the whole repository. The role mapping below is binding and checked by `npm run check:standards`.
 
 ## Role and path mapping

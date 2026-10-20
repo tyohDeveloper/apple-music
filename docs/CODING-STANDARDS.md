@@ -26,7 +26,7 @@ The baseline delegates target-specific rules to companion pages in the programmi
 | Localization | Yes | English only at first; two translation domains |
 | Repository conventions | Yes | |
 | Architecture-review lessons | Yes | |
-| Standalone HTML5 and artifact contract | No | Not a single-file artifact |
+| Standalone HTML5 and artifact contract | No | A standard multi-file web app served by its server: not a single HTML file, and no offline or downloadable copy ([R-28](PLAN.md#requirements)) |
 | Native wrappers | Later | When a native target is added |
 
 ## Application mapping
