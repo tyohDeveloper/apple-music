@@ -4,6 +4,7 @@ import type { Messages } from "../controllers/useMessages.ts";
 import type { PerformerPickerControls } from "../controllers/usePerformerPicker.ts";
 import type { RecordingEditorControls } from "../controllers/useRecordingEditor.ts";
 import { CreditsPanel } from "./CreditsPanel.tsx";
+import { ExternalIdsPanel } from "./ExternalIdsPanel.tsx";
 import { GenresPanel } from "./GenresPanel.tsx";
 import { LinkedAlbumsPanel } from "./LinkedAlbumsPanel.tsx";
 import { RecordingDetailsForm } from "./RecordingDetailsForm.tsx";
@@ -52,6 +53,7 @@ export function RecordingEditorView(props: RecordingEditorViewProps) {
             onOpenPerformer={onOpenPerformer}
           />
           <GenresPanel messages={messages} genres={recording.genres} saving={state.saving} controls={controls.genres} picker={props.genrePicker} onOpenGenre={props.onOpenGenre} />
+          <ExternalIdsPanel messages={messages} owner="recording" externalIds={recording.externalIds} saving={state.saving} controls={controls.externalIds} />
           <LinkedAlbumsPanel messages={messages} heading={t("recording.albums.heading")} empty={t("recording.albums.empty")} controls={albums} onOpenAlbum={onOpenAlbum} />
         </>
       )}

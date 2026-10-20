@@ -1,10 +1,11 @@
 import { preferredNameOf } from "../../names/preferredNameOf.ts";
-import type { LinkedAlbumsControls } from "../controllers/useLinkedAlbums.ts";
 import type { GenrePickerControls } from "../controllers/useGenrePicker.ts";
+import type { LinkedAlbumsControls } from "../controllers/useLinkedAlbums.ts";
 import type { LinkedRecordingsControls } from "../controllers/useLinkedRecordings.ts";
 import type { Messages } from "../controllers/useMessages.ts";
 import type { PerformerEditorControls } from "../controllers/usePerformerEditor.ts";
 import type { PerformerPickerControls } from "../controllers/usePerformerPicker.ts";
+import { ExternalIdsPanel } from "./ExternalIdsPanel.tsx";
 import { GenresPanel } from "./GenresPanel.tsx";
 import { LinkedAlbumsPanel } from "./LinkedAlbumsPanel.tsx";
 import { LinkedRecordingsPanel } from "./LinkedRecordingsPanel.tsx";
@@ -50,6 +51,7 @@ export function PerformerEditorView(props: PerformerEditorViewProps) {
           <PerformerNamesPanel messages={messages} names={performer.names} controls={controls} />
           <PerformerRelationsPanel messages={messages} relations={performer.relations} controls={controls} picker={picker} onOpenPerformer={onOpenPerformer} />
           <GenresPanel messages={messages} genres={performer.genres} saving={state.saving} controls={controls.genres} picker={props.genrePicker} onOpenGenre={props.onOpenGenre} />
+          <ExternalIdsPanel messages={messages} owner="performer" externalIds={performer.externalIds} saving={state.saving} controls={controls.externalIds} />
           <LinkedRecordingsPanel messages={messages} heading={t("performer.recordings.heading")} empty={t("performer.recordings.empty")} controls={credited} onOpenRecording={onOpenRecording} />
           <LinkedAlbumsPanel messages={messages} heading={t("performer.albums.heading")} empty={t("performer.albums.empty")} controls={albums} onOpenAlbum={onOpenAlbum} />
         </>

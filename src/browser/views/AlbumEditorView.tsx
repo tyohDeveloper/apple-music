@@ -7,6 +7,7 @@ import { AlbumDetailsForm } from "./AlbumDetailsForm.tsx";
 import { AlbumTracksPanel } from "./AlbumTracksPanel.tsx";
 import { CreditsPanel } from "./CreditsPanel.tsx";
 import { EditionsPanel } from "./EditionsPanel.tsx";
+import { ExternalIdsPanel } from "./ExternalIdsPanel.tsx";
 import { GenresPanel } from "./GenresPanel.tsx";
 
 type AlbumNavigation = {
@@ -45,6 +46,7 @@ export function AlbumEditorView(props: AlbumEditorViewProps) {
           <AlbumDetailsForm messages={messages} album={album} controls={controls} />
           <CreditsPanel messages={messages} stored={album.credits} credits={controls.credits} picker={performerPicker} saving={state.saving} onSave={controls.saveCredits} onOpenPerformer={props.onOpenPerformer} />
           <GenresPanel messages={messages} genres={album.genres} saving={state.saving} controls={controls.genres} picker={props.genrePicker} onOpenGenre={props.onOpenGenre} />
+          <ExternalIdsPanel messages={messages} owner="album" externalIds={album.externalIds} saving={state.saving} controls={controls.externalIds} />
           <AlbumTracksPanel messages={messages} stored={album.tracks} controls={controls} picker={recordingPicker} onOpenRecording={props.onOpenRecording} />
           <EditionsPanel messages={messages} album={album} controls={controls} onOpenEdition={props.onOpenEdition} />
         </>

@@ -3,6 +3,7 @@ import type { Messages } from "../controllers/useMessages.ts";
 import type { RecordingPickerControls } from "../controllers/useRecordingPicker.ts";
 import { EditionDetailsForm } from "./EditionDetailsForm.tsx";
 import { EditionTracksPanel } from "./EditionTracksPanel.tsx";
+import { ExternalIdsPanel } from "./ExternalIdsPanel.tsx";
 
 type EditionEditorViewProps = {
   readonly messages: Messages;
@@ -33,6 +34,7 @@ export function EditionEditorView({ messages, controls, picker, onOpenAlbum, onO
         <>
           <EditionDetailsForm messages={messages} edition={edition} controls={controls} />
           <EditionTracksPanel messages={messages} stored={edition.tracks} controls={controls} picker={picker} onOpenRecording={onOpenRecording} />
+          <ExternalIdsPanel messages={messages} owner="edition" externalIds={edition.externalIds} saving={state.saving} controls={controls.externalIds} />
         </>
       )}
     </>
