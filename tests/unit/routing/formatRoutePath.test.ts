@@ -8,6 +8,8 @@ const routes: readonly Route[] = [
   { name: "library", libraryId: "03ad7794-f502-4777-883e-c20232d55880" },
   { name: "performers", libraryId: "03ad7794-f502-4777-883e-c20232d55880" },
   { name: "performer", libraryId: "03ad7794-f502-4777-883e-c20232d55880", performerId: "5f0c2a9e-8f6d-4c3b-9a1e-2d7b6c4e1f00" },
+  { name: "recordings", libraryId: "03ad7794-f502-4777-883e-c20232d55880" },
+  { name: "recording", libraryId: "03ad7794-f502-4777-883e-c20232d55880", recordingId: "9b2d4f6a-1c3e-4a5b-8d7f-0e2c4a6b8d00" },
 ];
 
 describe("formatRoutePath", () => {
