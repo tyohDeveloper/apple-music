@@ -20,6 +20,7 @@ export type Messages = {
   readonly list: (items: readonly string[]) => string;
   readonly number: (value: number) => string;
   readonly duration: (ms: number) => string;
+  readonly instant: (iso: string) => string;
 };
 
 const interfaceCatalogs = indexCatalogsByLocale(
@@ -55,6 +56,7 @@ function messagesFor(locale: string): Messages {
     list: (items) => new Intl.ListFormat(locale, { type: "conjunction" }).format(items),
     number: (value) => new Intl.NumberFormat(locale).format(value),
     duration: durationFormatter(locale, t),
+    instant: (iso) => new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso)),
   };
 }
 
