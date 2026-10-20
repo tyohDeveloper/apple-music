@@ -1,8 +1,10 @@
 // Sync runs and the Apple Music mirror (docs/design/apple-music-import.md, slice H). A run
 // reads the connected Apple Music library into the mirror; at most one per library is
-// running. Members read runs; owners and editors start them.
+// running. Members read runs and the mirror; owners and editors start runs, which write it.
+// Mirror items keep Apple's attributes and relationship ids as returned, and the runs that
+// first saw, last saw, last changed and found them removed.
 import { sql } from "drizzle-orm";
-import { boolean, check, index, integer, pgTable, primaryKey, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, check, foreignKey, index, integer, jsonb, pgTable, primaryKey, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { authUser } from "./authTables.ts";
 import { instant, libraryIdColumn } from "./columns.ts";
 import { libraryRowPolicies } from "./libraryRowPolicies.ts";
@@ -38,4 +40,28 @@ export const syncRun = pgTable("sync_run", {
   uniqueIndex("sync_run_one_running").on(t.libraryId).where(sql`${t.status} = 'running'`),
   index("sync_run_latest").on(t.libraryId, t.startedAt),
   ...libraryRowPolicies("sync_run"),
+]);
+
+export type AppleAttributes = Readonly<Record<string, unknown>>;
+export type AppleRelationshipIds = Readonly<Record<string, readonly string[]>>;
+
+const runColumns = [["first_seen", "firstSeenRunId"], ["last_seen", "lastSeenRunId"], ["changed", "changedRunId"], ["removed", "removedRunId"]] as const;
+
+export const appleLibraryItem = pgTable("apple_library_item", {
+  libraryId: libraryIdColumn(),
+  kind: text("kind").notNull(),
+  appleId: text("apple_id").notNull(),
+  catalogId: text("catalog_id"),
+  attributes: jsonb("attributes").$type<AppleAttributes>().notNull(),
+  relationships: jsonb("relationships").$type<AppleRelationshipIds>().notNull(),
+  firstSeenRunId: uuid("first_seen_run_id").notNull(),
+  lastSeenRunId: uuid("last_seen_run_id").notNull(),
+  changedRunId: uuid("changed_run_id").notNull(),
+  removedRunId: uuid("removed_run_id"),
+}, (t) => [
+  primaryKey({ columns: [t.libraryId, t.kind, t.appleId] }),
+  check("apple_library_item_kind", sql`${t.kind} in ('song', 'album', 'artist', 'playlist')`),
+  ...runColumns.map(([name, column]) =>
+    foreignKey({ name: `apple_library_item_${name}_run_fk`, columns: [t.libraryId, t[column]], foreignColumns: [syncRun.libraryId, syncRun.id] })),
+  ...libraryRowPolicies("apple_library_item"),
 ]);
