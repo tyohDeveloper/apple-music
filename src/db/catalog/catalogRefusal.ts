@@ -6,7 +6,8 @@ export type RefusalCode =
   | "validation"
   | "conflict-in-use"
   | "conflict-duplicate"
-  | "conflict-preferred-name";
+  | "conflict-preferred-name"
+  | "conflict-genre-cycle";
 
 export class CatalogRefusal extends Error {
   readonly code: RefusalCode;
@@ -31,6 +32,8 @@ const bySqlState: Readonly<Record<string, RefusalCode>> = {
 const byConstraint: Readonly<Record<string, RefusalCode>> = {
   performer_has_one_preferred_name: "conflict-preferred-name",
   performer_relation_not_self: "validation",
+  genre_no_cycle: "conflict-genre-cycle",
+  genre_parent_not_self: "conflict-genre-cycle",
 };
 
 function postgresErrorOf(error: unknown): PostgresError | null {
