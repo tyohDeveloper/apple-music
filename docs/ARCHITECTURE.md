@@ -16,7 +16,7 @@ Paths are relative to the repository root. A file outside every row fails the st
 | CONTROLLER | `src/server/**`, `src/browser/controllers/**` | Server composition, HTTP routes, request scope, background sync runner; browser hooks, effects and mount-point lookup |
 | STATE | `src/browser/state/**` | Reducers, action creators, selectors for the browser |
 | PURE-CORE | `src/credits/**`, `src/names/**`, `src/editions/**` | Credit parsing, name normalization and sort forms, edition grouping and track classification |
-| PURE | `src/library-sync/**`, `src/partial-dates/**`, `src/localization/**`, `src/taxonomies/**`, `src/routing/**`, `src/metrics/**`, `src/forms/**`, `src/contracts/**`, `src/identifiers/**` | Import planning, partial dates, message resolution, taxonomy lookups, client route parsing, metric arithmetic, form-to-request mapping, HTTP wire schemas, external identifier formats |
+| PURE | `src/library-sync/**`, `src/partial-dates/**`, `src/localization/**`, `src/taxonomies/**`, `src/routing/**`, `src/metrics/**`, `src/forms/**`, `src/contracts/**`, `src/identifiers/**`, `src/export/**` | Import planning, partial dates, message resolution, taxonomy lookups, client route parsing, metric arithmetic, form-to-request mapping, HTTP wire schemas, external identifier formats, export file naming |
 | DATA | `data/**` | Taxonomies, classification markers, locale strings, security policy, JSON Schemas |
 | PLATFORM-PURE | Files listed in `platform-pure-allowlist.json` | Deterministic mandated primitives: content hashing, password verification |
 | PLATFORM-AMBIENT | `src/platform/**` not on the allowlist | Clock, password hashing, token encryption, developer-token signing |
