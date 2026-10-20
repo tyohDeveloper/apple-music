@@ -11,5 +11,3 @@ export const editionSummarySchema = Type.Object(
   },
   { additionalProperties: false },
 );
-
-export type EditionSummary = Type.Static<typeof editionSummarySchema>;
