@@ -2,6 +2,8 @@
 
 Decision record: [ADR-0005](https://github.com/tyohDeveloper/apple-music/blob/main/docs/adr/0005-apple-music-integration-boundary.md).
 
+**Status:** connecting a library works. Reading and importing the library are being built; changes in Apple Music come in a later phase ([Roadmap](Roadmap.md)).
+
 ## What you need
 
 - An Apple Developer Program membership, with a MusicKit identifier and private key. Apple requires a developer token signed with that key on every Apple Music API request ([Apple: generating developer tokens](https://developer.apple.com/documentation/applemusicapi/generating-developer-tokens)).
@@ -11,9 +13,7 @@ Without the developer credentials the application still runs; Apple Music featur
 
 ## Connecting a library
 
-1. Create a library and name it for the Apple ID it will hold.
-2. Choose **Connect Apple Music**. Apple's MusicKit on the Web opens Apple's own sign-in and authorization window ([MusicKit on the Web: user authorization](https://js-cdn.music.apple.com/musickit/v3/docs/index.html?path=/story/user-authorization--page)).
-3. The resulting Music User Token is sent to the server once and stored encrypted. It never returns to the browser.
+Each library holds one Apple ID's library, so name it for that Apple ID. Its owner connects it from the library's **Apple Music** screen through Apple's own sign-in window; the resulting Music User Token is sent to the server once and stored encrypted, and never returns to the browser. [Connecting Apple Music](Connecting-Apple-Music.md) walks through the steps and explains each message.
 
 ## What is read
 
@@ -37,4 +37,4 @@ Apple's API documents no way to rename or re-tag existing library items, delete 
 
 ## If the token stops working
 
-Apple Music User Tokens expire and can be revoked. When Apple rejects the token, the library is marked as needing reauthorization; connect again to continue. If a reconnection reaches a library that shares nothing with the stored one, the next import stops and asks for confirmation instead of treating everything as removed.
+Apple Music User Tokens expire and can be revoked. When Apple rejects the token, connect the library again. Once imports are built, an import that Apple refuses stops, and the Apple Music screen asks for the library to be connected again. If a reconnection reaches a library that shares nothing with the stored one, the next import stops and asks for confirmation instead of treating everything as removed.

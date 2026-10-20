@@ -9,6 +9,7 @@
 - [Exporting a library](Exporting-a-Library.md)
 - [Cleanup workflows](Cleanup-Workflows.md)
 - [Apple Music integration](Apple-Music-Integration.md)
+- [Connecting Apple Music](Connecting-Apple-Music.md)
 - [Getting started](Getting-Started.md)
 - [Development](Development.md)
 - [Roadmap](Roadmap.md)
