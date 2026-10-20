@@ -1,6 +1,9 @@
 // Every catalog route, registered inside the session-guarded scope (buildServer.ts).
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { FastifyInstance } from "fastify";
+import { registerAlbumListRoutes } from "./albums/registerAlbumListRoutes.ts";
+import { registerAlbumRoutes } from "./albums/registerAlbumRoutes.ts";
+import { registerEditionRoutes } from "./editions/registerEditionRoutes.ts";
 import { registerPerformerNameRoutes } from "./performers/registerPerformerNameRoutes.ts";
 import { registerPerformerRelationRoutes } from "./performers/registerPerformerRelationRoutes.ts";
 import { registerPerformerRoutes } from "./performers/registerPerformerRoutes.ts";
@@ -15,4 +18,7 @@ export function registerCatalogRoutes(scope: FastifyInstance, db: NodePgDatabase
   registerPerformerRelationRoutes(app, db);
   registerRecordingRoutes(app, db);
   registerRecordingCreditRoutes(app, db);
+  registerAlbumRoutes(app, db);
+  registerAlbumListRoutes(app, db);
+  registerEditionRoutes(app, db);
 }
