@@ -9,7 +9,7 @@ type LibraryHomeViewProps = {
   readonly onOpen: (section: LibrarySection) => void;
 };
 
-export type LibrarySection = "albums" | "performers" | "recordings" | "genres";
+export type LibrarySection = "albums" | "performers" | "recordings" | "genres" | "apple-music";
 
 // The library's JSON export, downloaded by the browser under the name the server gives it.
 function LibraryExportSection({ messages, href }: { readonly messages: Messages; readonly href: string }) {
@@ -57,6 +57,12 @@ export function LibraryHomeView({ messages, library, exportHref, onBack, onOpen 
           <button type="button" class="card" data-testid="button-library-genres" onClick={() => onOpen("genres")}>
             <span class="card-title">{t("library.genres")}</span>
             <span class="card-meta">{t("library.genres.summary")}</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="card" data-testid="button-library-applemusic" onClick={() => onOpen("apple-music")}>
+            <span class="card-title">{t("library.apple-music")}</span>
+            <span class="card-meta">{t("library.apple-music.summary")}</span>
           </button>
         </li>
       </ul>

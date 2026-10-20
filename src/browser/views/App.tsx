@@ -1,10 +1,11 @@
 import type { Route } from "../../routing/parseRoute.ts";
-import { useLibraries } from "../controllers/useLibraries.ts";
+import { useLibraries, type LibraryControls } from "../controllers/useLibraries.ts";
 import { useMessages, type Messages } from "../controllers/useMessages.ts";
 import { useRoute } from "../controllers/useRoute.ts";
 import { useSession, type SessionControls } from "../controllers/useSession.ts";
 import { AlbumScreen, AlbumsScreen, EditionScreen } from "./AlbumScreens.tsx";
 import { AppHeader } from "./AppHeader.tsx";
+import { AppleMusicScreen } from "./AppleMusicScreen.tsx";
 import { GenreScreen, GenresScreen } from "./GenreScreens.tsx";
 import { LibrariesView } from "./LibrariesView.tsx";
 import { LibraryHomeView, type LibrarySection } from "./LibraryHomeView.tsx";
@@ -19,7 +20,8 @@ type SignedInScreenProps = {
   readonly navigate: (route: Route) => void;
 };
 
-type CatalogRoute = Exclude<Route, { readonly name: "sign-in" | "libraries" | "library" | "not-found" }>;
+type LibraryRoute = Extract<Route, { readonly name: "library" | "apple-music" }>;
+type CatalogRoute = Exclude<Route, { readonly name: "sign-in" | "libraries" | "library" | "apple-music" | "not-found" }>;
 type ListRoute = Extract<CatalogRoute, { readonly name: "performers" | "recordings" | "albums" | "genres" }>;
 type EntityRoute = Exclude<CatalogRoute, ListRoute>;
 type ScreenProps<R> = { readonly messages: Messages; readonly route: R; readonly navigate: (route: Route) => void };
@@ -64,6 +66,16 @@ function CatalogScreen({ messages, route, navigate }: ScreenProps<CatalogRoute>)
   return isListRoute(route) ? <ListScreen messages={messages} route={route} navigate={navigate} /> : <EntityScreen messages={messages} route={route} navigate={navigate} />;
 }
 
+// A library's home and its Apple Music connection, which need the library's summary.
+function LibraryScreen({ messages, route, navigate, libraries }: ScreenProps<LibraryRoute> & { readonly libraries: LibraryControls }) {
+  const { libraryId } = route;
+  const library = libraries.state.libraries.find((candidate) => candidate.id === libraryId) ?? null;
+  if (route.name === "apple-music") return <AppleMusicScreen messages={messages} library={library} libraryId={libraryId} navigate={navigate} />;
+  const onOpen = (section: LibrarySection): void => navigate({ name: section, libraryId });
+  const toLibraries = (): void => navigate({ name: "libraries" });
+  return <LibraryHomeView messages={messages} library={library} exportHref={libraries.exportHrefOf(libraryId)} onBack={toLibraries} onOpen={onOpen} />;
+}
+
 function SignedInScreen({ messages, route, navigate }: SignedInScreenProps) {
   const libraries = useLibraries(true);
   const toLibraries = (): void => navigate({ name: "libraries" });
@@ -73,11 +85,9 @@ function SignedInScreen({ messages, route, navigate }: SignedInScreenProps) {
     case "libraries":
     case "sign-in":
       return <LibrariesView messages={messages} state={libraries.state} onCreate={libraries.create} onOpen={(libraryId) => navigate({ name: "library", libraryId })} />;
-    case "library": {
-      const library = libraries.state.libraries.find((candidate) => candidate.id === route.libraryId) ?? null;
-      const onOpen = (section: LibrarySection): void => navigate({ name: section, libraryId: route.libraryId });
-      return <LibraryHomeView messages={messages} library={library} exportHref={libraries.exportHrefOf(route.libraryId)} onBack={toLibraries} onOpen={onOpen} />;
-    }
+    case "library":
+    case "apple-music":
+      return <LibraryScreen messages={messages} route={route} navigate={navigate} libraries={libraries} />;
     default:
       return <CatalogScreen messages={messages} route={route} navigate={navigate} />;
   }
