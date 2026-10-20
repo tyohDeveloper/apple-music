@@ -99,6 +99,13 @@
       "when": 1792458929483,
       "tag": "20261020011529_external_ids",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792461570625,
+      "tag": "20261020015930_library_owner_scope",
+      "breakpoints": true
     }
   ]
 }
