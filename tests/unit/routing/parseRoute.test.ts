@@ -20,7 +20,14 @@ describe("parseRoute", () => {
     const recordingId = "9b2d4f6a-1c3e-4a5b-8d7f-0e2c4a6b8d00";
     expect(parseRoute(`/libraries/${id}/recordings/`)).toEqual({ name: "recordings", libraryId: id });
     expect(parseRoute(`/libraries/${id}/recordings/${recordingId}`)).toEqual({ name: "recording", libraryId: id, recordingId });
-    expect(parseRoute(`/libraries/${id}/albums`)).toEqual({ name: "not-found" });
+  });
+  it("reads the album list, one album and one edition, but no edition list", () => {
+    const entityId = "9b2d4f6a-1c3e-4a5b-8d7f-0e2c4a6b8d00";
+    expect(parseRoute(`/libraries/${id}/albums`)).toEqual({ name: "albums", libraryId: id });
+    expect(parseRoute(`/libraries/${id}/albums/${entityId}`)).toEqual({ name: "album", libraryId: id, albumId: entityId });
+    expect(parseRoute(`/libraries/${id}/editions/${entityId}`)).toEqual({ name: "edition", libraryId: id, editionId: entityId });
+    expect(parseRoute(`/libraries/${id}/editions`)).toEqual({ name: "not-found" });
+    expect(parseRoute(`/libraries/${id}/genres`)).toEqual({ name: "not-found" });
   });
   it("rejects malformed ids and unknown paths", () => {
     expect(parseRoute("/libraries/not-a-uuid")).toEqual({ name: "not-found" });

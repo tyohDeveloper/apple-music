@@ -17,6 +17,12 @@ export function formatRoutePath(route: Route): string {
       return `/libraries/${route.libraryId}/recordings`;
     case "recording":
       return `/libraries/${route.libraryId}/recordings/${route.recordingId}`;
+    case "albums":
+      return `/libraries/${route.libraryId}/albums`;
+    case "album":
+      return `/libraries/${route.libraryId}/albums/${route.albumId}`;
+    case "edition":
+      return `/libraries/${route.libraryId}/editions/${route.editionId}`;
     case "not-found":
       return "/not-found";
   }
