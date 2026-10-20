@@ -1,9 +1,11 @@
 // Mandated bindings (docs/standards/portable-v2.2.md §18.2): every org-mandated binding in
 // .architecture-bindings.json resolves, for its deployment target, to the approved module,
 // version and integrity in package.json, package-lock.json, the installed tree and the built
-// server. Review dates are reported when due; standing bindings do not expire (§18.3).
-// Run after `npm run bundle`.
-import { existsSync, readFileSync } from "node:fs";
+// server. A browser binding is a script loaded from its vendor's address: the built client
+// loads exactly that address, the sources named load it, and the Content-Security-Policy
+// allows its origin. Review dates are reported when due; standing bindings do not expire
+// (§18.3). Run after `npm run bundle`.
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 
 type BindingTarget = {
   readonly target: string;
@@ -23,6 +25,8 @@ const manifest = readJson<{ bindings: readonly Binding[] }>(".architecture-bindi
 const lock = readJson<{ packages: Readonly<Record<string, LockEntry>> }>("package-lock.json");
 const declared = readJson<{ dependencies: Readonly<Record<string, string>> }>("package.json").dependencies;
 const builtRoots: Readonly<Record<string, string>> = { server: "dist/server" };
+const clientAssets = "dist/client/assets";
+const scriptSources = readJson<{ directives: Readonly<Record<string, readonly string[]>> }>("data/security/content-security-policy.json").directives["script-src"] ?? [];
 
 function importsSpecifier(path: string, specifier: string): boolean {
   const escaped = specifier.replace(/[.*+?^${}()|[\]\\/]/gu, "\\$&");
@@ -44,7 +48,18 @@ function artifactProblems(target: BindingTarget): string[] {
   });
 }
 
+function scriptProblems(target: BindingTarget): string[] {
+  const bundles = existsSync(clientAssets) ? readdirSync(clientAssets).filter((file) => file.endsWith(".js")) : [];
+  const problems: string[] = [];
+  if (!bundles.some((file) => readFileSync(`${clientAssets}/${file}`, "utf8").includes(target.specifier))) problems.push("the built client does not load it; run npm run bundle first");
+  for (const source of target.importedBy) if (!readFileSync(source, "utf8").includes(target.specifier)) problems.push(`${source} does not load it`);
+  const origin = new URL(target.specifier).origin;
+  if (!scriptSources.includes(origin)) problems.push(`the Content-Security-Policy script-src does not allow ${origin}`);
+  return problems;
+}
+
 function targetProblems(binding: Binding, target: BindingTarget): string[] {
+  if (target.target === "browser") return scriptProblems(target).map((problem) => `§18.2 ${binding.id} browser ${target.specifier}: ${problem}`);
   const locked = lock.packages[`node_modules/${target.specifier}`];
   const problems: string[] = [];
   if (declared[target.specifier] !== target.version) problems.push(`package.json pins ${declared[target.specifier] ?? "nothing"}`);

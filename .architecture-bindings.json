@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Mandated bindings (standards §18.2, §18.3): standing policy, separate from .architecture-exceptions.json. Each entry has an owner, a policy reference and an annual review date; entries do not expire. npm run check:bindings resolves every org-mandated binding per deployment target in the installed dependency tree and the built server, and fails on any mismatch.",
+  "description": "Mandated bindings (standards §18.2, §18.3): standing policy, separate from .architecture-exceptions.json. Each entry has an owner, a policy reference and an annual review date; entries do not expire. npm run check:bindings resolves every org-mandated binding per deployment target in the installed dependency tree and the built server, or for a browser script in the built client and the Content-Security-Policy, and fails on any mismatch.",
   "bindings": [
     {
       "id": "BND-0001",
@@ -33,6 +33,23 @@
           "version": "1.7.11",
           "integrity": "sha512-V4OMDdoFvOuAGbOb/mjNzX/iFJoC3hEF1rpL8vdI5eTR24dMJr7AWJuuhr6dE1ib/CBECzegt64ehS3/ngKYpQ==",
           "importedBy": ["src/server/auth/createAuth.ts"]
+        }
+      ]
+    },
+    {
+      "id": "BND-0003",
+      "capability": "Apple Music authorization in the browser",
+      "authority": "org-mandated",
+      "owner": "@tyohDeveloper",
+      "policyReference": "ADR-0005: MusicKit on the Web, loaded from Apple's CDN as Apple's documentation instructs, is how a browser obtains a Music User Token; docs/design/apple-music-import.md",
+      "reviewOn": "2027-10-19",
+      "targets": [
+        {
+          "target": "browser",
+          "specifier": "https://js-cdn.music.apple.com/musickit/v3/musickit.js",
+          "version": "v3",
+          "integrity": "none: Apple serves MusicKit v3 from one unversioned address and publishes no integrity hash; the Content-Security-Policy limits scripts to this origin and this server",
+          "importedBy": ["src/browser/controllers/musicKitAuthorization.ts"]
         }
       ]
     }
