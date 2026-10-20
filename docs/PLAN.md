@@ -2,7 +2,7 @@
 
 This file is the durable plan for the Apple Music Library Manager. It is updated at each phase boundary; decisions are recorded as ADRs in [docs/adr/](adr/) and referenced here.
 
-**Active phase:** Phase 3 — Apple Music import, planned in [docs/design/apple-music-import.md](design/apple-music-import.md) as slices G (connection, built), H (mirror, next), I (import) and J (runbook and live check). Phase 2 (curated catalog) was completed 2026-10-19 as version 0.2.0.0 and Phase 1 (foundation) as version 0.1.0.0; see the phase log below.
+**Active phase:** Phase 3 — Apple Music import, planned in [docs/design/apple-music-import.md](design/apple-music-import.md) as slices G (connection, built), H (mirror, built), I (import, next) and J (runbook and live check). Phase 2 (curated catalog) was completed 2026-10-19 as version 0.2.0.0 and Phase 1 (foundation) as version 0.1.0.0; see the phase log below.
 
 ## Requirements
 
