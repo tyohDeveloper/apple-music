@@ -9,7 +9,10 @@ export type RefusalCode =
   | "conflict-preferred-name"
   | "conflict-genre-cycle"
   | "invalid-external-id"
-  | "apple-music-not-configured";
+  | "apple-music-not-configured"
+  | "apple-music-not-connected"
+  | "sync-already-running"
+  | "sync-not-running";
 
 export class CatalogRefusal extends Error {
   readonly code: RefusalCode;
@@ -36,6 +39,7 @@ const byConstraint: Readonly<Record<string, RefusalCode>> = {
   performer_relation_not_self: "validation",
   genre_no_cycle: "conflict-genre-cycle",
   genre_parent_not_self: "conflict-genre-cycle",
+  sync_run_one_running: "sync-already-running",
 };
 
 function postgresErrorOf(error: unknown): PostgresError | null {

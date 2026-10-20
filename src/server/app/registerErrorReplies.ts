@@ -16,6 +16,9 @@ const refusalStatus: Readonly<Record<RefusalCode, number>> = {
   "conflict-genre-cycle": 409,
   "invalid-external-id": 400,
   "apple-music-not-configured": 503,
+  "apple-music-not-connected": 409,
+  "sync-already-running": 409,
+  "sync-not-running": 409,
 };
 
 const appleMusicStatus: Readonly<Record<AppleMusicFailureCode, number>> = {
