@@ -116,7 +116,7 @@ Album credits work as recording credits do. The source reference that ties an ed
 
 An album's identity does not depend on its track credits ([R-20](PLAN.md#requirements)). A soloist's album assembled from three sessions with three orchestras is one album with one intended track list; each recording keeps its own credits.
 
-`edition_track.inclusion` states how a track relates to the intended album. Values are a declared taxonomy in `data/taxonomies/track-inclusions.json`, in three families: `intended` (`core`, `hidden`), `extra` (`bonus`, `demo`, `live`, `alternate`, `interview`, `commentary`, `remix`, `instrumental`, `single-edit`) and `unclassified` (`unknown`). Imports classify tracks heuristically from title markers declared in `data/classification/track-title-markers.json`, with the matched marker kept as evidence; curated classification overrides the heuristic and is never reverted by later imports.
+`edition_track.inclusion` states how a track relates to the intended album. Values are a declared taxonomy in `data/taxonomies/track-inclusions.json`, in three families: `intended` (`core`, `hidden`), `extra` (`bonus`, `demo`, `live`, `alternate`, `interview`, `commentary`, `remix`, `instrumental`, `single-edit`) and `unclassified` (`unknown`). Imports classify tracks heuristically from title markers declared in `data/import/title-markers.json` (decided in the [slice I plan](design/apple-music-import.md#slice-i-plan)), with the matched marker kept as evidence; curated classification overrides the heuristic and is never reverted by later imports.
 
 Edition kinds are a declared taxonomy in `data/taxonomies/edition-kinds.json`: `original`, `remaster`, `deluxe`, `expanded`, `anniversary`, `super-deluxe`, `reissue`, `regional`, `clean`, `explicit`, `unknown`.
 
@@ -146,11 +146,11 @@ An ISRC identifies a recording and never a product or release ([IFPI, When not t
 
 | Table | Holds |
 |---|---|
-| `apple_music_connection` | One per library: the encrypted Music User Token, its status and storefront |
-| `apple_library_item` | Last fetched form of each Apple library song, album, artist and playlist: raw attributes, relationship ids, content hash, first and last seen, removal time |
-| `apple_catalog_item` | Catalog enrichment fetched for library items: ISRC, composer, work and movement names, label, UPC, track counts |
-| `sync_run` | One import run: status, counts by kind, error |
-| `apple_change` | Proposed and applied changes to Apple Music: kind, planned request, status, result |
+| `apple_music_connection` | One per library: the encrypted Music User Token, who connected it and when; the storefront is on `library` |
+| `apple_library_item` | Last fetched form of each Apple library song, album, artist and playlist: attributes and relationship ids as returned, and the runs that first saw, last saw, last changed and found it removed |
+| `apple_catalog_item` | Catalog songs and albums the library items name, by storefront: ISRC, composer, work and movement names, label, UPC, track counts, as returned |
+| `sync_run` | One read of the Apple Music library: status, phase, counts read by kind, items added, changed and removed, error |
+| `apple_change` | Proposed and applied changes to Apple Music: kind, planned request, status, result (Phase 5) |
 
 The mirror is a copy of data Apple owns; the curated tables are data this application owns. Imports read the mirror and create curated entities only where none are linked yet.
 
