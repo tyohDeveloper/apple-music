@@ -1,29 +1,28 @@
 // The inverse of parseRoute: the URL path for a screen.
 import type { Route } from "./parseRoute.ts";
 
-export function formatRoutePath(route: Route): string {
+type LibraryRoute = Exclude<Route, { readonly name: "sign-in" | "libraries" | "not-found" }>;
+
+function sectionPathOf(route: LibraryRoute): string {
   switch (route.name) {
-    case "sign-in":
-      return "/sign-in";
-    case "libraries":
-      return "/libraries";
     case "library":
-      return `/libraries/${route.libraryId}`;
+      return "";
     case "performers":
-      return `/libraries/${route.libraryId}/performers`;
-    case "performer":
-      return `/libraries/${route.libraryId}/performers/${route.performerId}`;
     case "recordings":
-      return `/libraries/${route.libraryId}/recordings`;
-    case "recording":
-      return `/libraries/${route.libraryId}/recordings/${route.recordingId}`;
     case "albums":
-      return `/libraries/${route.libraryId}/albums`;
+      return `/${route.name}`;
+    case "performer":
+      return `/performers/${route.performerId}`;
+    case "recording":
+      return `/recordings/${route.recordingId}`;
     case "album":
-      return `/libraries/${route.libraryId}/albums/${route.albumId}`;
+      return `/albums/${route.albumId}`;
     case "edition":
-      return `/libraries/${route.libraryId}/editions/${route.editionId}`;
-    case "not-found":
-      return "/not-found";
+      return `/editions/${route.editionId}`;
   }
+}
+
+export function formatRoutePath(route: Route): string {
+  if (route.name === "sign-in" || route.name === "libraries" || route.name === "not-found") return `/${route.name}`;
+  return `/libraries/${route.libraryId}${sectionPathOf(route)}`;
 }
