@@ -1,4 +1,4 @@
-// The recordings that credit one performer, a page at a time.
+// The recordings that credit one performer or carry one genre, a page at a time.
 import type { RecordingSummary } from "../../contracts/recordings/recordingSummarySchema.ts";
 import { fetchLinkedRecordingPage, type RecordingFilter } from "../server-api/recordingRequests.ts";
 import { useLinkedList, type LinkedListControls } from "./useLinkedList.ts";

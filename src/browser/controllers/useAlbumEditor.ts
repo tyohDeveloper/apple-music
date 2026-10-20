@@ -1,5 +1,5 @@
-// Loads one album and applies edits to its details, credits and intended track list, and
-// creates its editions. Saved lists become the clean drafts.
+// Loads one album and applies edits to its details, credits, intended track list and
+// genres, and creates its editions. Saved lists become the clean drafts.
 import type { AlbumDetail } from "../../contracts/albums/albumDetailSchema.ts";
 import type { AlbumTrack } from "../../contracts/albums/albumTrackSchema.ts";
 import type { RecordingSummary } from "../../contracts/recordings/recordingSummarySchema.ts";
@@ -10,6 +10,7 @@ import * as remote from "../server-api/albumRequests.ts";
 import { postEdition } from "../server-api/editionRequests.ts";
 import { replaceCreditsRequestOf } from "../state/credits/creditDraftReducer.ts";
 import { albumTracksRequestOf } from "../state/tracks/trackListRequests.ts";
+import { genreAssignmentOf, type GenreAssignmentControls } from "./genreAssignmentOf.ts";
 import { useCatalogEditor, type CatalogEditorControls, type CatalogEditorRequests } from "./useCatalogEditor.ts";
 import { useCreditDraft, type CreditDraftControls } from "./useCreditDraft.ts";
 import { useTrackListDraft, type TrackListDraftControls } from "./useTrackListDraft.ts";
@@ -25,6 +26,7 @@ export type AlbumEditorControls = CatalogEditorControls<AlbumDetail> & {
   readonly addTrack: (values: FormValues, choices: readonly RecordingSummary[]) => void;
   readonly saveTracks: () => void;
   readonly createEdition: (values: FormValues) => void;
+  readonly genres: GenreAssignmentControls;
 };
 
 function trackAdder(tracks: TrackListDraftControls<AlbumTrack>) {
@@ -37,17 +39,21 @@ function trackAdder(tracks: TrackListDraftControls<AlbumTrack>) {
   };
 }
 
+// A created edition opens in its own editor.
+function editionCreator(libraryId: string, albumId: string, navigate: (route: Route) => void, refuse: (failure: string) => void) {
+  return (values: FormValues): void => {
+    void postEdition(libraryId, albumId, createEditionRequestOf(values)).then((result) => {
+      if (result.ok) navigate({ name: "edition", libraryId, editionId: result.value.id });
+      else refuse(result.code);
+    });
+  };
+}
+
 export function useAlbumEditor(libraryId: string, albumId: string, navigate: (route: Route) => void): AlbumEditorControls {
   const editor = useCatalogEditor(libraryId, albumId, albumEditorRequests, () => navigate({ name: "albums", libraryId }));
   const credits = useCreditDraft(libraryId, editor.state.entity?.credits ?? null);
   const tracks = useTrackListDraft(editor.state.entity?.tracks ?? null);
   const { apply } = editor;
-  const createEdition = (values: FormValues): void => {
-    void postEdition(libraryId, albumId, createEditionRequestOf(values)).then((result) => {
-      if (result.ok) navigate({ name: "edition", libraryId, editionId: result.value.id });
-      else editor.refuse(result.code);
-    });
-  };
   return {
     ...editor,
     save: (values) => apply(remote.patchAlbum(libraryId, albumId, updateAlbumRequestOf(values))),
@@ -56,6 +62,7 @@ export function useAlbumEditor(libraryId: string, albumId: string, navigate: (ro
     tracks,
     addTrack: trackAdder(tracks),
     saveTracks: () => apply(remote.putAlbumTracks(libraryId, albumId, albumTracksRequestOf(tracks.state)), (saved) => tracks.reset(saved.tracks)),
-    createEdition,
+    createEdition: editionCreator(libraryId, albumId, navigate, editor.refuse),
+    genres: genreAssignmentOf(editor.state.entity?.genres, (genreIds) => apply(remote.putAlbumGenres(libraryId, albumId, { genreIds }))),
   };
 }

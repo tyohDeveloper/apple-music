@@ -1,10 +1,11 @@
-// Loads one recording and applies edits to its details and its credits. Every change
+// Loads one recording and applies edits to its details, credits and genres. Every change
 // answers with the recording as it now stands; saved credits become the clean draft.
 import type { RecordingDetail } from "../../contracts/recordings/recordingDetailSchema.ts";
 import { updateRecordingRequestOf } from "../../forms/updateRecordingRequestOf.ts";
 import type { Route } from "../../routing/parseRoute.ts";
 import * as remote from "../server-api/recordingRequests.ts";
 import { replaceCreditsRequestOf } from "../state/credits/creditDraftReducer.ts";
+import { genreAssignmentOf, type GenreAssignmentControls } from "./genreAssignmentOf.ts";
 import { useCatalogEditor, type CatalogEditorControls, type CatalogEditorRequests } from "./useCatalogEditor.ts";
 import { useCreditDraft, type CreditDraftControls } from "./useCreditDraft.ts";
 import type { FormValues } from "./formValuesOf.ts";
@@ -15,6 +16,7 @@ export type RecordingEditorControls = CatalogEditorControls<RecordingDetail> & {
   readonly save: (values: FormValues) => void;
   readonly credits: CreditDraftControls;
   readonly saveCredits: () => void;
+  readonly genres: GenreAssignmentControls;
 };
 
 export function useRecordingEditor(libraryId: string, recordingId: string, navigate: (route: Route) => void): RecordingEditorControls {
@@ -28,5 +30,6 @@ export function useRecordingEditor(libraryId: string, recordingId: string, navig
   const saveCredits = (): void => {
     editor.apply(remote.putRecordingCredits(libraryId, recordingId, replaceCreditsRequestOf(credits.state)), (saved) => credits.reset(saved.credits));
   };
-  return { ...editor, save, credits, saveCredits };
+  const genres = genreAssignmentOf(editor.state.entity?.genres, (genreIds) => editor.apply(remote.putRecordingGenres(libraryId, recordingId, { genreIds })));
+  return { ...editor, save, credits, saveCredits, genres };
 }

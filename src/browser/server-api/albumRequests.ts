@@ -10,7 +10,7 @@ import type { ReplaceGenresRequest } from "../../contracts/genres/replaceGenresR
 import { fetchCatalogPage } from "./catalogPageRequest.ts";
 import { requestJson, type ApiResult } from "./requestJson.ts";
 
-type AlbumFilter = { readonly performerId: string } | { readonly recordingId: string } | { readonly genreId: string };
+export type AlbumFilter = { readonly performerId: string } | { readonly recordingId: string } | { readonly genreId: string };
 
 const albums = (libraryId: string): string => `/api/libraries/${libraryId}/albums`;
 const album = (libraryId: string, albumId: string): string => `${albums(libraryId)}/${albumId}`;
