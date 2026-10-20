@@ -10,6 +10,7 @@ import * as remote from "../server-api/albumRequests.ts";
 import { postEdition } from "../server-api/editionRequests.ts";
 import { replaceCreditsRequestOf } from "../state/credits/creditDraftReducer.ts";
 import { albumTracksRequestOf } from "../state/tracks/trackListRequests.ts";
+import { externalIdAssignmentOf, type ExternalIdAssignmentControls } from "./externalIdAssignmentOf.ts";
 import { genreAssignmentOf, type GenreAssignmentControls } from "./genreAssignmentOf.ts";
 import { useCatalogEditor, type CatalogEditorControls, type CatalogEditorRequests } from "./useCatalogEditor.ts";
 import { useCreditDraft, type CreditDraftControls } from "./useCreditDraft.ts";
@@ -27,6 +28,7 @@ export type AlbumEditorControls = CatalogEditorControls<AlbumDetail> & {
   readonly saveTracks: () => void;
   readonly createEdition: (values: FormValues) => void;
   readonly genres: GenreAssignmentControls;
+  readonly externalIds: ExternalIdAssignmentControls;
 };
 
 function trackAdder(tracks: TrackListDraftControls<AlbumTrack>) {
@@ -64,5 +66,6 @@ export function useAlbumEditor(libraryId: string, albumId: string, navigate: (ro
     saveTracks: () => apply(remote.putAlbumTracks(libraryId, albumId, albumTracksRequestOf(tracks.state)), (saved) => tracks.reset(saved.tracks)),
     createEdition: editionCreator(libraryId, albumId, navigate, editor.refuse),
     genres: genreAssignmentOf(editor.state.entity?.genres, (genreIds) => apply(remote.putAlbumGenres(libraryId, albumId, { genreIds }))),
+    externalIds: externalIdAssignmentOf(editor.state.entity?.externalIds, (externalIds) => apply(remote.putAlbumExternalIds(libraryId, albumId, { externalIds }))),
   };
 }

@@ -5,6 +5,7 @@ import { updateRecordingRequestOf } from "../../forms/updateRecordingRequestOf.t
 import type { Route } from "../../routing/parseRoute.ts";
 import * as remote from "../server-api/recordingRequests.ts";
 import { replaceCreditsRequestOf } from "../state/credits/creditDraftReducer.ts";
+import { externalIdAssignmentOf, type ExternalIdAssignmentControls } from "./externalIdAssignmentOf.ts";
 import { genreAssignmentOf, type GenreAssignmentControls } from "./genreAssignmentOf.ts";
 import { useCatalogEditor, type CatalogEditorControls, type CatalogEditorRequests } from "./useCatalogEditor.ts";
 import { useCreditDraft, type CreditDraftControls } from "./useCreditDraft.ts";
@@ -17,6 +18,7 @@ export type RecordingEditorControls = CatalogEditorControls<RecordingDetail> & {
   readonly credits: CreditDraftControls;
   readonly saveCredits: () => void;
   readonly genres: GenreAssignmentControls;
+  readonly externalIds: ExternalIdAssignmentControls;
 };
 
 export function useRecordingEditor(libraryId: string, recordingId: string, navigate: (route: Route) => void): RecordingEditorControls {
@@ -31,5 +33,6 @@ export function useRecordingEditor(libraryId: string, recordingId: string, navig
     editor.apply(remote.putRecordingCredits(libraryId, recordingId, replaceCreditsRequestOf(credits.state)), (saved) => credits.reset(saved.credits));
   };
   const genres = genreAssignmentOf(editor.state.entity?.genres, (genreIds) => editor.apply(remote.putRecordingGenres(libraryId, recordingId, { genreIds })));
-  return { ...editor, save, credits, saveCredits, genres };
+  const externalIds = externalIdAssignmentOf(editor.state.entity?.externalIds, (ids) => editor.apply(remote.putRecordingExternalIds(libraryId, recordingId, { externalIds: ids })));
+  return { ...editor, save, credits, saveCredits, genres, externalIds };
 }

@@ -1,5 +1,5 @@
-// Loads one edition and applies edits to its details and its track list. Deleting an edition
-// returns to its album.
+// Loads one edition and applies edits to its details, its track list and its identifiers.
+// Deleting an edition returns to its album.
 import type { EditionDetail } from "../../contracts/editions/editionDetailSchema.ts";
 import type { EditionTrack } from "../../contracts/editions/editionTrackSchema.ts";
 import type { RecordingSummary } from "../../contracts/recordings/recordingSummarySchema.ts";
@@ -7,6 +7,7 @@ import { updateEditionRequestOf } from "../../forms/updateEditionRequestOf.ts";
 import type { Route } from "../../routing/parseRoute.ts";
 import * as remote from "../server-api/editionRequests.ts";
 import { editionTracksRequestOf } from "../state/tracks/trackListRequests.ts";
+import { externalIdAssignmentOf, type ExternalIdAssignmentControls } from "./externalIdAssignmentOf.ts";
 import { useCatalogEditor, type CatalogEditorControls, type CatalogEditorRequests } from "./useCatalogEditor.ts";
 import { useTrackListDraft, type TrackListDraftControls } from "./useTrackListDraft.ts";
 import type { FormValues } from "./formValuesOf.ts";
@@ -18,6 +19,7 @@ export type EditionEditorControls = CatalogEditorControls<EditionDetail> & {
   readonly tracks: TrackListDraftControls<EditionTrack>;
   readonly addTrack: (values: FormValues, choices: readonly RecordingSummary[]) => void;
   readonly saveTracks: () => void;
+  readonly externalIds: ExternalIdAssignmentControls;
 };
 
 function trackAdder(tracks: TrackListDraftControls<EditionTrack>) {
@@ -43,5 +45,6 @@ export function useEditionEditor(libraryId: string, editionId: string, navigate:
     tracks,
     addTrack: trackAdder(tracks),
     saveTracks: () => apply(remote.putEditionTracks(libraryId, editionId, editionTracksRequestOf(tracks.state)), (saved) => tracks.reset(saved.tracks)),
+    externalIds: externalIdAssignmentOf(editor.state.entity?.externalIds, (externalIds) => apply(remote.putEditionExternalIds(libraryId, editionId, { externalIds }))),
   };
 }

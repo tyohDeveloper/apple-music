@@ -6,6 +6,7 @@ import { createPerformerRelationRequestOf } from "../../forms/createPerformerRel
 import { updatePerformerRequestOf } from "../../forms/updatePerformerRequestOf.ts";
 import type { Route } from "../../routing/parseRoute.ts";
 import * as remote from "../server-api/performerRequests.ts";
+import { externalIdAssignmentOf, type ExternalIdAssignmentControls } from "./externalIdAssignmentOf.ts";
 import { genreAssignmentOf, type GenreAssignmentControls } from "./genreAssignmentOf.ts";
 import { useCatalogEditor, type CatalogEditorControls, type CatalogEditorRequests } from "./useCatalogEditor.ts";
 import type { FormValues } from "./formValuesOf.ts";
@@ -20,6 +21,7 @@ export type PerformerEditorControls = CatalogEditorControls<PerformerDetail> & {
   readonly addRelation: (values: FormValues) => void;
   readonly removeRelation: (relationId: string) => void;
   readonly genres: GenreAssignmentControls;
+  readonly externalIds: ExternalIdAssignmentControls;
 };
 
 export function usePerformerEditor(libraryId: string, performerId: string, navigate: (route: Route) => void): PerformerEditorControls {
@@ -34,5 +36,6 @@ export function usePerformerEditor(libraryId: string, performerId: string, navig
     addRelation: (values) => apply(remote.postPerformerRelation(libraryId, performerId, createPerformerRelationRequestOf(values))),
     removeRelation: (relationId) => apply(remote.deletePerformerRelation(libraryId, performerId, relationId)),
     genres: genreAssignmentOf(editor.state.entity?.genres, (genreIds) => apply(remote.putPerformerGenres(libraryId, performerId, { genreIds }))),
+    externalIds: externalIdAssignmentOf(editor.state.entity?.externalIds, (externalIds) => apply(remote.putPerformerExternalIds(libraryId, performerId, { externalIds }))),
   };
 }
