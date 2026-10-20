@@ -11,6 +11,7 @@ import { outerColumn } from "../outerColumn.ts";
 import { albumCredits, creditLinesOf, creditsOf, type CreditRow } from "../credits/creditQueries.ts";
 import { editionsOfAlbum, type EditionSummary } from "../editions/editionQueries.ts";
 import { albumGenres, carriesGenre, genresOf, type GenreReference } from "../genres/genreAssignments.ts";
+import { albumExternalIds, externalIdsOf, type ExternalIdRow } from "../identifiers/externalIds.ts";
 import { albumTracksOf, type AlbumTrackRow } from "./albumTrackQueries.ts";
 
 export type AlbumFilters = { readonly performerId?: string | undefined; readonly recordingId?: string | undefined; readonly genreId?: string | undefined };
@@ -30,6 +31,7 @@ export type AlbumDetail = Omit<AlbumSummary, "trackCount" | "editionCount"> & {
   readonly tracks: AlbumTrackRow[];
   readonly editions: EditionSummary[];
   readonly genres: GenreReference[];
+  readonly externalIds: ExternalIdRow[];
 };
 
 const creditedOnAlbum = (performerMatch: SQL): SQL => sql`(exists (select 1 from album_credit c join performer_name n
@@ -78,5 +80,6 @@ export async function getAlbumDetail(tx: ScopedTransaction, albumId: string): Pr
   if (row === undefined) return null;
   const credited = await creditsOf(tx, albumCredits, albumId);
   const tracks = await albumTracksOf(tx, albumId);
-  return { ...row, ...credited, tracks, editions: await editionsOfAlbum(tx, albumId), genres: await genresOf(tx, albumGenres, albumId) };
+  const [editions, genres] = [await editionsOfAlbum(tx, albumId), await genresOf(tx, albumGenres, albumId)];
+  return { ...row, ...credited, tracks, editions, genres, externalIds: await externalIdsOf(tx, albumExternalIds, albumId) };
 }

@@ -1,5 +1,6 @@
-// One edition with its album and its track list.
+// One edition with its album, its track list and its external identifiers.
 import Type from "typebox";
+import { externalIdSchema } from "../identifiers/externalIdSchema.ts";
 import { editionTrackSchema } from "./editionTrackSchema.ts";
 
 const nullableText = Type.Union([Type.String(), Type.Null()]);
@@ -13,6 +14,7 @@ export const editionDetailSchema = Type.Object(
     released: nullableText,
     notes: nullableText,
     tracks: Type.Array(editionTrackSchema),
+    externalIds: Type.Array(externalIdSchema),
   },
   { additionalProperties: false },
 );

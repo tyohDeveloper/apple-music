@@ -8,6 +8,7 @@ import { performer, performerName, performerRelation } from "../../schema/perfor
 import type { ScopedTransaction } from "../../withUserScope.ts";
 import type { CatalogPage, PageRequest } from "../catalogPage.ts";
 import { carriesGenre, genresOf, performerGenres, type GenreReference } from "../genres/genreAssignments.ts";
+import { externalIdsOf, performerExternalIds, type ExternalIdRow } from "../identifiers/externalIds.ts";
 
 export type PerformerSummary = {
   readonly id: string;
@@ -45,6 +46,7 @@ export type PerformerDetail = Omit<PerformerSummary, "name" | "sortName"> & {
   readonly names: PerformerNameRow[];
   readonly relations: PerformerRelationRow[];
   readonly genres: GenreReference[];
+  readonly externalIds: ExternalIdRow[];
 };
 
 const preferredName = and(
@@ -112,5 +114,6 @@ export async function getPerformerDetail(tx: ScopedTransaction, performerId: str
   const [row] = await tx.select({ id, kind, began, ended, area, disambiguation, notes }).from(performer).where(eq(id, performerId));
   if (row === undefined) return null;
   const names = await namesOf(tx, performerId);
-  return { ...row, names, relations: await relationsOf(tx, performerId), genres: await genresOf(tx, performerGenres, performerId) };
+  const [relations, genres] = [await relationsOf(tx, performerId), await genresOf(tx, performerGenres, performerId)];
+  return { ...row, names, relations, genres, externalIds: await externalIdsOf(tx, performerExternalIds, performerId) };
 }

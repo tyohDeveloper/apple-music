@@ -9,6 +9,7 @@ import type { ScopedTransaction } from "../../withUserScope.ts";
 import type { CatalogPage, PageRequest } from "../catalogPage.ts";
 import { creditLinesOf, creditsOf, recordingCredits, type CreditRow } from "../credits/creditQueries.ts";
 import { carriesGenre, genresOf, recordingGenres, type GenreReference } from "../genres/genreAssignments.ts";
+import { externalIdsOf, recordingExternalIds, type ExternalIdRow } from "../identifiers/externalIds.ts";
 
 export type RecordingSummary = {
   readonly id: string;
@@ -25,6 +26,7 @@ export type RecordingDetail = RecordingSummary & {
   readonly notes: string | null;
   readonly credits: CreditRow[];
   readonly genres: GenreReference[];
+  readonly externalIds: ExternalIdRow[];
 };
 export type RecordingFilters = { readonly performerId?: string | undefined; readonly genreId?: string | undefined };
 
@@ -73,5 +75,6 @@ export async function getRecordingDetail(tx: ScopedTransaction, recordingId: str
   const { id, title, versionNote, kind, recordedFrom, recordedTo, venue, durationMs, notes } = recording;
   const [row] = await tx.select({ id, title, versionNote, kind, recordedFrom, recordedTo, venue, durationMs, notes }).from(recording).where(eq(id, recordingId));
   if (row === undefined) return null;
-  return { ...row, ...(await creditsOf(tx, recordingCredits, recordingId)), genres: await genresOf(tx, recordingGenres, recordingId) };
+  const credited = await creditsOf(tx, recordingCredits, recordingId);
+  return { ...row, ...credited, genres: await genresOf(tx, recordingGenres, recordingId), externalIds: await externalIdsOf(tx, recordingExternalIds, recordingId) };
 }

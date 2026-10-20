@@ -4,6 +4,7 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { album } from "../../schema/albumTables.ts";
 import { edition, editionTrack } from "../../schema/editionTables.ts";
 import type { ScopedTransaction } from "../../withUserScope.ts";
+import { editionExternalIds, externalIdsOf, type ExternalIdRow } from "../identifiers/externalIds.ts";
 import { outerColumn } from "../outerColumn.ts";
 import { recordingReferencesOf, type RecordingReference } from "../recordings/recordingQueries.ts";
 
@@ -19,6 +20,7 @@ export type EditionDetail = Omit<EditionSummary, "trackCount"> & {
   readonly album: { readonly id: string; readonly title: string };
   readonly notes: string | null;
   readonly tracks: EditionTrackRow[];
+  readonly externalIds: ExternalIdRow[];
 };
 
 const trackCount = sql<number>`(select count(*)::int from edition_track t where t.library_id = ${outerColumn(edition.libraryId)} and t.edition_id = ${outerColumn(edition.id)})`;
@@ -44,5 +46,6 @@ export async function getEditionDetail(tx: ScopedTransaction, editionId: string)
     .where(eq(id, editionId));
   if (row === undefined) return null;
   const { albumId, albumTitle, ...fields } = row;
-  return { ...fields, album: { id: albumId, title: albumTitle }, tracks: await editionTracksOf(tx, editionId) };
+  const tracks = await editionTracksOf(tx, editionId);
+  return { ...fields, album: { id: albumId, title: albumTitle }, tracks, externalIds: await externalIdsOf(tx, editionExternalIds, editionId) };
 }
