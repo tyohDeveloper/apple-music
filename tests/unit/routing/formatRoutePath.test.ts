@@ -15,6 +15,7 @@ const routes: readonly Route[] = [
   { name: "edition", libraryId: "03ad7794-f502-4777-883e-c20232d55880", editionId: "9b2d4f6a-1c3e-4a5b-8d7f-0e2c4a6b8d00" },
   { name: "genres", libraryId: "03ad7794-f502-4777-883e-c20232d55880" },
   { name: "genre", libraryId: "03ad7794-f502-4777-883e-c20232d55880", genreId: "9b2d4f6a-1c3e-4a5b-8d7f-0e2c4a6b8d00" },
+  { name: "apple-music", libraryId: "03ad7794-f502-4777-883e-c20232d55880" },
 ];
 
 describe("formatRoutePath", () => {

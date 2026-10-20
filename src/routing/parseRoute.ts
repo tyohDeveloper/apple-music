@@ -1,5 +1,6 @@
 // Maps a URL path to the screen it names. Library and catalog ids are UUIDs. Editions are
-// listed on their album, so /editions alone names no screen.
+// listed on their album, so /editions alone names no screen; /apple-music is a library's
+// Apple Music connection and takes no id.
 export type Route =
   | { readonly name: "sign-in" }
   | { readonly name: "libraries" }
@@ -13,10 +14,11 @@ export type Route =
   | { readonly name: "edition"; readonly libraryId: string; readonly editionId: string }
   | { readonly name: "genres"; readonly libraryId: string }
   | { readonly name: "genre"; readonly libraryId: string; readonly genreId: string }
+  | { readonly name: "apple-music"; readonly libraryId: string }
   | { readonly name: "not-found" };
 
 const uuid = "([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})";
-const libraryPath = new RegExp(`^/libraries/${uuid}(?:/(performers|recordings|albums|editions|genres)(?:/${uuid})?)?/?$`, "u");
+const libraryPath = new RegExp(`^/libraries/${uuid}(?:/(performers|recordings|albums|editions|genres|apple-music)(?:/${uuid})?)?/?$`, "u");
 
 function entityRoute(libraryId: string, section: string, id: string): Route {
   switch (section) {
@@ -34,6 +36,7 @@ function entityRoute(libraryId: string, section: string, id: string): Route {
 }
 
 function sectionRoute(libraryId: string, section: string, id: string | undefined): Route {
+  if (section === "apple-music") return id === undefined ? { name: "apple-music", libraryId } : { name: "not-found" };
   if (id !== undefined) return entityRoute(libraryId, section, id);
   if (section === "performers" || section === "recordings" || section === "albums" || section === "genres") return { name: section, libraryId };
   return { name: "not-found" };

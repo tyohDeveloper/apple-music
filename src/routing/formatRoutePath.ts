@@ -11,6 +11,7 @@ function sectionPathOf(route: LibraryRoute): string {
     case "recordings":
     case "albums":
     case "genres":
+    case "apple-music":
       return `/${route.name}`;
     case "performer":
       return `/performers/${route.performerId}`;

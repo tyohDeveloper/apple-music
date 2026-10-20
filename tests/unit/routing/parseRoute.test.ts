@@ -32,6 +32,8 @@ describe("parseRoute", () => {
     const genreId = "9b2d4f6a-1c3e-4a5b-8d7f-0e2c4a6b8d00";
     expect(parseRoute(`/libraries/${id}/genres`)).toEqual({ name: "genres", libraryId: id });
     expect(parseRoute(`/libraries/${id}/genres/${genreId}`)).toEqual({ name: "genre", libraryId: id, genreId });
+    expect(parseRoute(`/libraries/${id}/apple-music`)).toEqual({ name: "apple-music", libraryId: id });
+    expect(parseRoute(`/libraries/${id}/apple-music/${genreId}`)).toEqual({ name: "not-found" });
     expect(parseRoute(`/libraries/${id}/genre`)).toEqual({ name: "not-found" });
   });
   it("rejects malformed ids and unknown paths", () => {
