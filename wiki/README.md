@@ -2,7 +2,7 @@
 
 A web application for maintaining an Apple Music library as a curated catalog. It keeps its own records of albums, recordings and performers, imports what Apple Music knows, and changes Apple Music only in the ways Apple's API allows.
 
-**Status:** the foundation is done; the curated catalog is being built. Performers and recordings with their credits can be edited now; albums and editions come next. See the [Roadmap](Roadmap.md).
+**Status:** the foundation is done; the curated catalog is being built. Performers, recordings and albums, with their credits, intended track lists and editions, can be edited now; genres and external identifiers come next. See the [Roadmap](Roadmap.md).
 
 ## Why it exists
 
@@ -22,6 +22,7 @@ This application models those things directly. See [Concepts](Concepts.md).
 | [Concepts](Concepts.md) | Albums, editions, recordings and tracks; performers, names, relations and credits |
 | [Editing performers](Editing-Performers.md) | Finding, naming, relating and deleting performers |
 | [Editing recordings](Editing-Recordings.md) | Recordings, their credits and the credit line |
+| [Editing albums](Editing-Albums.md) | Albums, their intended track lists, and editions with classified tracks |
 | [Cleanup workflows](Cleanup-Workflows.md) | How the common cleanups are done |
 | [Apple Music integration](Apple-Music-Integration.md) | What is read, what can be changed, what cannot, and how tokens are protected |
 | [Getting started](Getting-Started.md) | Requirements and setup |

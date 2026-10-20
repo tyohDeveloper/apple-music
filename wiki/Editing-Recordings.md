@@ -15,7 +15,7 @@ Create a recording with its title, its kind (studio, live, demo, rehearsal, alte
 - **Duration** as `m:ss` or `h:mm:ss`, with optional milliseconds (`9:22`, `1:02:03`, `9:22.347`).
 - **Notes**.
 
-**Delete recording** asks for confirmation, then removes the recording with its credits.
+**Delete recording** asks for confirmation, then removes the recording with its credits. A recording on an album's or an edition's track list cannot be deleted; the **On albums** list at the foot of the page shows the albums that play it.
 
 ## Credits
 
