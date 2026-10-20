@@ -1,5 +1,6 @@
 // Performer screens: each binds a view to its controllers for one library.
 import type { Route } from "../../routing/parseRoute.ts";
+import { useGenrePicker } from "../controllers/useGenrePicker.ts";
 import { useLinkedAlbums } from "../controllers/useLinkedAlbums.ts";
 import { useLinkedRecordings } from "../controllers/useLinkedRecordings.ts";
 import type { Messages } from "../controllers/useMessages.ts";
@@ -23,10 +24,14 @@ export function PerformerScreen({ messages, libraryId, performerId, navigate }: 
   const picker = usePerformerPicker(libraryId);
   const credited = useLinkedRecordings(libraryId, { performerId });
   const albums = useLinkedAlbums(libraryId, { performerId });
-  const onBack = (): void => navigate({ name: "performers", libraryId });
-  const onOpenPerformer = (otherId: string): void => navigate({ name: "performer", libraryId, performerId: otherId });
-  const onOpenRecording = (recordingId: string): void => navigate({ name: "recording", libraryId, recordingId });
-  const onOpenAlbum = (albumId: string): void => navigate({ name: "album", libraryId, albumId });
-  const opening = { onBack, onOpenPerformer, onOpenRecording, onOpenAlbum };
-  return <PerformerEditorView messages={messages} controls={controls} picker={picker} credited={credited} albums={albums} {...opening} />;
+  const genrePicker = useGenrePicker(libraryId);
+  const opening = {
+    onBack: () => navigate({ name: "performers", libraryId }),
+    onOpenPerformer: (otherId: string) => navigate({ name: "performer", libraryId, performerId: otherId }),
+    onOpenRecording: (recordingId: string) => navigate({ name: "recording", libraryId, recordingId }),
+    onOpenAlbum: (albumId: string) => navigate({ name: "album", libraryId, albumId }),
+    onOpenGenre: (genreId: string) => navigate({ name: "genre", libraryId, genreId }),
+  };
+  const lists = { credited, albums };
+  return <PerformerEditorView messages={messages} controls={controls} picker={picker} genrePicker={genrePicker} {...lists} {...opening} />;
 }

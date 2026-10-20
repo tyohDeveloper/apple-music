@@ -1,9 +1,11 @@
 import { preferredNameOf } from "../../names/preferredNameOf.ts";
 import type { LinkedAlbumsControls } from "../controllers/useLinkedAlbums.ts";
+import type { GenrePickerControls } from "../controllers/useGenrePicker.ts";
 import type { LinkedRecordingsControls } from "../controllers/useLinkedRecordings.ts";
 import type { Messages } from "../controllers/useMessages.ts";
 import type { PerformerEditorControls } from "../controllers/usePerformerEditor.ts";
 import type { PerformerPickerControls } from "../controllers/usePerformerPicker.ts";
+import { GenresPanel } from "./GenresPanel.tsx";
 import { LinkedAlbumsPanel } from "./LinkedAlbumsPanel.tsx";
 import { LinkedRecordingsPanel } from "./LinkedRecordingsPanel.tsx";
 import { PerformerDetailsForm } from "./PerformerDetailsForm.tsx";
@@ -14,15 +16,18 @@ type PerformerEditorViewProps = {
   readonly messages: Messages;
   readonly controls: PerformerEditorControls;
   readonly picker: PerformerPickerControls;
+  readonly genrePicker: GenrePickerControls;
   readonly credited: LinkedRecordingsControls;
   readonly albums: LinkedAlbumsControls;
   readonly onBack: () => void;
   readonly onOpenPerformer: (performerId: string) => void;
   readonly onOpenRecording: (recordingId: string) => void;
   readonly onOpenAlbum: (albumId: string) => void;
+  readonly onOpenGenre: (genreId: string) => void;
 };
 
-export function PerformerEditorView({ messages, controls, picker, credited, albums, onBack, onOpenPerformer, onOpenRecording, onOpenAlbum }: PerformerEditorViewProps) {
+export function PerformerEditorView(props: PerformerEditorViewProps) {
+  const { messages, controls, picker, credited, albums, onBack, onOpenPerformer, onOpenRecording, onOpenAlbum } = props;
   const { t } = messages;
   const { state } = controls;
   const performer = state.entity;
@@ -44,6 +49,7 @@ export function PerformerEditorView({ messages, controls, picker, credited, albu
           <PerformerDetailsForm messages={messages} performer={performer} controls={controls} />
           <PerformerNamesPanel messages={messages} names={performer.names} controls={controls} />
           <PerformerRelationsPanel messages={messages} relations={performer.relations} controls={controls} picker={picker} onOpenPerformer={onOpenPerformer} />
+          <GenresPanel messages={messages} genres={performer.genres} saving={state.saving} controls={controls.genres} picker={props.genrePicker} onOpenGenre={props.onOpenGenre} />
           <LinkedRecordingsPanel messages={messages} heading={t("performer.recordings.heading")} empty={t("performer.recordings.empty")} controls={credited} onOpenRecording={onOpenRecording} />
           <LinkedAlbumsPanel messages={messages} heading={t("performer.albums.heading")} empty={t("performer.albums.empty")} controls={albums} onOpenAlbum={onOpenAlbum} />
         </>

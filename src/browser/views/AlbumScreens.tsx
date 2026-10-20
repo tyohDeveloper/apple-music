@@ -3,6 +3,7 @@ import type { Route } from "../../routing/parseRoute.ts";
 import { useAlbumEditor } from "../controllers/useAlbumEditor.ts";
 import { useAlbumList } from "../controllers/useAlbumList.ts";
 import { useEditionEditor } from "../controllers/useEditionEditor.ts";
+import { useGenrePicker } from "../controllers/useGenrePicker.ts";
 import type { Messages } from "../controllers/useMessages.ts";
 import { usePerformerPicker } from "../controllers/usePerformerPicker.ts";
 import { useRecordingPicker } from "../controllers/useRecordingPicker.ts";
@@ -22,13 +23,16 @@ export function AlbumScreen({ messages, libraryId, albumId, navigate }: ScreenPr
   const controls = useAlbumEditor(libraryId, albumId, navigate);
   const performerPicker = usePerformerPicker(libraryId);
   const recordingPicker = useRecordingPicker(libraryId);
+  const genrePicker = useGenrePicker(libraryId);
+  const pickers = { performerPicker, recordingPicker, genrePicker };
   const navigation = {
     onBack: () => navigate({ name: "albums", libraryId }),
     onOpenPerformer: (performerId: string) => navigate({ name: "performer", libraryId, performerId }),
     onOpenRecording: (recordingId: string) => navigate({ name: "recording", libraryId, recordingId }),
     onOpenEdition: (editionId: string) => navigate({ name: "edition", libraryId, editionId }),
+    onOpenGenre: (genreId: string) => navigate({ name: "genre", libraryId, genreId }),
   };
-  return <AlbumEditorView messages={messages} controls={controls} performerPicker={performerPicker} recordingPicker={recordingPicker} {...navigation} />;
+  return <AlbumEditorView messages={messages} controls={controls} {...pickers} {...navigation} />;
 }
 
 export function EditionScreen({ messages, libraryId, editionId, navigate }: ScreenProps & { readonly editionId: string }) {
