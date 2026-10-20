@@ -7,6 +7,7 @@ import { registerEditionRoutes } from "./editions/registerEditionRoutes.ts";
 import { registerGenreAliasRoutes } from "./genres/registerGenreAliasRoutes.ts";
 import { registerGenreAssignmentRoutes } from "./genres/registerGenreAssignmentRoutes.ts";
 import { registerGenreRoutes } from "./genres/registerGenreRoutes.ts";
+import { registerExternalIdRoutes } from "./identifiers/registerExternalIdRoutes.ts";
 import { registerPerformerNameRoutes } from "./performers/registerPerformerNameRoutes.ts";
 import { registerPerformerRelationRoutes } from "./performers/registerPerformerRelationRoutes.ts";
 import { registerPerformerRoutes } from "./performers/registerPerformerRoutes.ts";
@@ -27,4 +28,5 @@ export function registerCatalogRoutes(scope: FastifyInstance, db: NodePgDatabase
   registerGenreRoutes(app, db);
   registerGenreAliasRoutes(app, db);
   registerGenreAssignmentRoutes(app, db);
+  registerExternalIdRoutes(app, db);
 }
