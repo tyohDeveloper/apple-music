@@ -4,6 +4,9 @@ import type { FastifyInstance } from "fastify";
 import { registerAlbumListRoutes } from "./albums/registerAlbumListRoutes.ts";
 import { registerAlbumRoutes } from "./albums/registerAlbumRoutes.ts";
 import { registerEditionRoutes } from "./editions/registerEditionRoutes.ts";
+import { registerGenreAliasRoutes } from "./genres/registerGenreAliasRoutes.ts";
+import { registerGenreAssignmentRoutes } from "./genres/registerGenreAssignmentRoutes.ts";
+import { registerGenreRoutes } from "./genres/registerGenreRoutes.ts";
 import { registerPerformerNameRoutes } from "./performers/registerPerformerNameRoutes.ts";
 import { registerPerformerRelationRoutes } from "./performers/registerPerformerRelationRoutes.ts";
 import { registerPerformerRoutes } from "./performers/registerPerformerRoutes.ts";
@@ -21,4 +24,7 @@ export function registerCatalogRoutes(scope: FastifyInstance, db: NodePgDatabase
   registerAlbumRoutes(app, db);
   registerAlbumListRoutes(app, db);
   registerEditionRoutes(app, db);
+  registerGenreRoutes(app, db);
+  registerGenreAliasRoutes(app, db);
+  registerGenreAssignmentRoutes(app, db);
 }

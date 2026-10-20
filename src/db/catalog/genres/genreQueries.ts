@@ -9,7 +9,7 @@ import type { CatalogPage, PageRequest } from "../catalogPage.ts";
 
 type Reference = { readonly id: string; readonly name: string };
 export type GenreSummary = { readonly id: string; readonly name: string; readonly path: string[]; readonly subgenreCount: number; readonly useCount: number };
-export type GenreUses = { readonly albums: number; readonly recordings: number; readonly performers: number };
+type GenreUses = { readonly albums: number; readonly recordings: number; readonly performers: number };
 export type GenreDetail = Reference & {
   readonly notes: string | null;
   readonly path: Reference[];
