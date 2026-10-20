@@ -15,8 +15,10 @@ export function fetchRecordingPage(libraryId: string, query: string, offset: num
   return fetchCatalogPage<RecordingSummary>(recordings(libraryId), query, offset);
 }
 
-export function fetchCreditedRecordingPage(libraryId: string, performerId: string, offset: number): Promise<ApiResult<CatalogPage<RecordingSummary>>> {
-  return fetchCatalogPage<RecordingSummary>(recordings(libraryId), "", offset, { performerId });
+export type RecordingFilter = { readonly performerId: string };
+
+export function fetchLinkedRecordingPage(libraryId: string, filter: RecordingFilter, offset: number): Promise<ApiResult<CatalogPage<RecordingSummary>>> {
+  return fetchCatalogPage<RecordingSummary>(recordings(libraryId), "", offset, filter);
 }
 
 export function postRecording(libraryId: string, body: CreateRecordingRequest): Promise<ApiResult<RecordingDetail>> {

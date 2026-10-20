@@ -61,13 +61,13 @@ test("owner credits performers on a recording", async ({ page }) => {
 
   await page.getByTestId("button-credit-performer-0").click();
   await expect(page.getByTestId("text-performer-name")).toHaveText("Miles Davis");
-  await expect(page.getByTestId("panel-credited-results")).toContainText("So What");
+  await expect(page.getByTestId("panel-linkedrecordings-results")).toContainText("So What");
   await page.getByTestId("button-delete-request").click();
   await page.getByTestId("button-delete-confirm").click();
   await expect(page.getByTestId("display-performer-save-error")).toContainText("still in use");
   await expectUniqueTestIds(page);
 
-  await page.getByTestId("panel-credited-results").getByRole("button", { name: /So What/u }).click();
+  await page.getByTestId("panel-linkedrecordings-results").getByRole("button", { name: /So What/u }).click();
   await page.getByTestId("button-recording-back").click();
   await page.getByTestId("input-recordings-query").fill("trane");
   await page.getByTestId("button-recordings-search").click();
