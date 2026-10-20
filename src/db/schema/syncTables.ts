@@ -11,11 +11,14 @@ import { libraryRowPolicies } from "./libraryRowPolicies.ts";
 
 const count = (name: string) => integer(name).notNull().default(0);
 
+export type SyncStatus = "running" | "succeeded" | "failed" | "interrupted" | "needs-confirmation" | "cancelled";
+export type SyncPhase = "songs" | "albums" | "artists" | "playlists" | "catalog-songs" | "catalog-albums" | "removals";
+
 export const syncRun = pgTable("sync_run", {
   libraryId: libraryIdColumn(),
   id: uuid("id").notNull().defaultRandom(),
-  status: text("status").notNull().default("running"),
-  phase: text("phase").notNull().default("songs"),
+  status: text("status").$type<SyncStatus>().notNull().default("running"),
+  phase: text("phase").$type<SyncPhase>().notNull().default("songs"),
   replaceMirror: boolean("replace_mirror").notNull().default(false),
   startedBy: text("started_by").references(() => authUser.id, { onDelete: "set null" }),
   startedAt: instant("started_at").notNull().defaultNow(),

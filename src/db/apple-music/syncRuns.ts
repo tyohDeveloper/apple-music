@@ -4,17 +4,13 @@
 // cancellation and the end of the task cannot both win.
 import { and, desc, eq, sql } from "drizzle-orm";
 import type { PgUpdateSetSource } from "drizzle-orm/pg-core";
-import { syncRun } from "../schema/syncTables.ts";
+import { syncRun, type SyncPhase, type SyncStatus } from "../schema/syncTables.ts";
 import type { ScopedTransaction } from "../withUserScope.ts";
 
 export type SyncRunRow = typeof syncRun.$inferSelect;
 export type RunIds = { readonly libraryId: string; readonly runId: string };
-export type SyncPhase = "songs" | "albums" | "artists" | "playlists" | "catalog-songs" | "catalog-albums" | "removals";
 export type SyncCount = "songs" | "albums" | "artists" | "playlists" | "catalogSongs" | "catalogAlbums";
-export type SyncEnd = {
-  readonly status: "succeeded" | "failed" | "interrupted" | "needs-confirmation" | "cancelled";
-  readonly errorCode: string | null;
-};
+export type SyncEnd = { readonly status: Exclude<SyncStatus, "running">; readonly errorCode: string | null };
 export type MirrorChanges = { readonly added: number; readonly changed: number; readonly removed: number };
 
 const runIs = (ids: RunIds) => and(eq(syncRun.libraryId, ids.libraryId), eq(syncRun.id, ids.runId));
