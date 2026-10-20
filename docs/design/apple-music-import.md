@@ -4,7 +4,7 @@ Plan of record for Phase 3, checkpointed before building. The boundary is fixed 
 
 Exit criteria ([PLAN.md](../PLAN.md)): sync exercised against a contract-faithful Apple Music fake in CI; a live check by the owner with real credentials.
 
-**Progress:** slices G (connection) and H (mirror) are built; slice I (import) is next. [Slice G as built](#slice-g-as-built) and [Slice H as built](#slice-h-as-built) record where the build settled details this plan left open or changed them.
+**Progress:** slices G (connection) and H (mirror) are built; slice I (import) is next, planned in [Slice I plan](#slice-i-plan). [Slice G as built](#slice-g-as-built) and [Slice H as built](#slice-h-as-built) record where the build settled details this plan left open or changed them.
 
 ## What Apple provides
 
@@ -75,6 +75,32 @@ Read 2026-10-19.
 | Known limit | Offset paging can skip or repeat an item when the Apple Music library changes during a read; a skipped item is marked removed and the next read restores it |
 | Fake | `tests/support/appleMusicFake.ts` with `appleMusicFakeLibrary.ts` (routes) and `appleMusicFixture.ts`: five songs (one uploaded, without a catalog id), four albums, three artists, one playlist, four catalog songs and three catalog albums, with invented names and codes. `next` carries only `offset`; relationships appear only when included; another storefront answers nothing; a test can swap the library, or hold the next request to test cancellation and shutdown |
 | Slice G follow-up | Connecting now asks Apple for the storefront between two short transactions instead of inside one |
+
+## Slice I plan
+
+Recorded 2026-10-19 before building slice I. The mapping rules are in [Mapping into the curated catalog](#mapping-into-the-curated-catalog); these decisions settle how the import runs and what it may reuse.
+
+| Question | Options | Choice and reason |
+|---|---|---|
+| When the import runs | (a) As the last phase of every successful read; (b) a separate action after a read, with a preview that plans without writing | (b): a first import of a large library creates thousands of entries that cannot be removed in bulk. The preview shows what would be created and lists Apple genre names that no genre alias maps, so the owner can add aliases first. Later imports add only Apple items not linked yet, through the same action |
+| Where an import is recorded | (a) `sync_run` with a `kind` of `read`, `preview` or `import`; (b) a separate `import_run` table | (a): one runner, one "at most one running per library" rule across reads and imports, one progress display. `sync_run` gains the import counts (performers, recordings, albums, editions and tracks created, items linked to existing entries) and the unmapped genre names |
+| What a link holds when its entry is deleted | (a) The link is deleted with the entry; (b) the link stays, naming no entry | (b): deleting an imported interview or demo must not bring it back on the next import. A link without an entry marks its Apple item as dismissed |
+| Reusing curated entries | (a) Always create; (b) link to an existing entry when one match is certain | (b), narrowly: an Apple artist links to the one existing performer whose name has the same match key; a song links to the one existing recording with the same ISRC; a library album becomes a new edition of the one existing album with the same base title and primary performer. Two or more candidates create a new entry instead, with a note naming the ambiguity for review |
+| Transactions | (a) One for the whole import; (b) one per album group, with the links it writes | (b): an album with its editions, tracks, recordings, credits, the new performers they need, genres and identifiers, then its links, commit together. A failed or cancelled import keeps what it committed, and the next import skips what is linked |
+| Classification evidence | (a) Keep only the inclusion; (b) keep the title marker that set it | (b), as [DOMAIN-MODEL.md](../DOMAIN-MODEL.md) requires: `edition_track.inclusion_marker` holds the marker an import matched, or null. Curated changes are never reverted because imports never change linked entries |
+| Rule data | (a) `data/import/`; (b) `data/classification/` (the path DOMAIN-MODEL.md names) | (a), and DOMAIN-MODEL.md is updated: `title-markers.json` (edition, version and track markers), `credit-separators.json` (featuring words and name separators) and `performer-kinds.json` (ensemble words), each with a JSON Schema in `data/schemas/` and checked by `npm run check:standards` |
+
+| Part | Role and place |
+|---|---|
+| Name splitting, featured credits, performer kind from words | PURE-CORE, `src/names/` |
+| Credits from `artistName`, `composerName` and a title's `(feat. …)` | PURE-CORE, `src/credits/` |
+| Edition and version markers, base titles, track inclusion | PURE-CORE, `src/editions/` |
+| The plan: album groups, recordings by ISRC or title, primary artist and duration, intended track lists, genres, identifiers, links, counts | PURE, `src/library-sync/`, one function per file |
+| Reading the mirror and the curated entries the plan may reuse; applying a plan in batches | MODEL, `src/db/apple-music/` |
+| Preview and import as run kinds | CONTROLLER, the sync runner |
+| Preview and import buttons, import counts, unmapped genre names | VIEW, the reading panel |
+
+Tables: `apple_import_link` (library, Apple kind and id, the performer, recording or edition it created or reused, or none once that entry is deleted, and the run); `sync_run` gains `kind` and the import counts; `edition_track` gains `inclusion_marker`. The fixture library grows to the cases listed under the mapping rules. Exit: integration tests import the fixture library and check every rule's outcome, a second import creates nothing, and a deleted entry stays deleted; an end-to-end test previews and imports, then opens an imported album.
 
 ## Tables
 
