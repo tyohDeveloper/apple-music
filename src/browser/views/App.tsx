@@ -76,7 +76,7 @@ function SignedInScreen({ messages, route, navigate }: SignedInScreenProps) {
     case "library": {
       const library = libraries.state.libraries.find((candidate) => candidate.id === route.libraryId) ?? null;
       const onOpen = (section: LibrarySection): void => navigate({ name: section, libraryId: route.libraryId });
-      return <LibraryHomeView messages={messages} library={library} onBack={toLibraries} onOpen={onOpen} />;
+      return <LibraryHomeView messages={messages} library={library} exportHref={libraries.exportHrefOf(route.libraryId)} onBack={toLibraries} onOpen={onOpen} />;
     }
     default:
       return <CatalogScreen messages={messages} route={route} navigate={navigate} />;

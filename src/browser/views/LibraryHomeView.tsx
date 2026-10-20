@@ -4,13 +4,28 @@ import type { Messages } from "../controllers/useMessages.ts";
 type LibraryHomeViewProps = {
   readonly messages: Messages;
   readonly library: LibrarySummary | null;
+  readonly exportHref: string;
   readonly onBack: () => void;
   readonly onOpen: (section: LibrarySection) => void;
 };
 
 export type LibrarySection = "albums" | "performers" | "recordings" | "genres";
 
-export function LibraryHomeView({ messages, library, onBack, onOpen }: LibraryHomeViewProps) {
+// The library's JSON export, downloaded by the browser under the name the server gives it.
+function LibraryExportSection({ messages, href }: { readonly messages: Messages; readonly href: string }) {
+  const { t } = messages;
+  return (
+    <div class="panel-section">
+      <h2>{t("library.export")}</h2>
+      <p>{t("library.export.summary")}</p>
+      <a href={href} download data-testid="button-library-export">
+        {t("library.export.download")}
+      </a>
+    </div>
+  );
+}
+
+export function LibraryHomeView({ messages, library, exportHref, onBack, onOpen }: LibraryHomeViewProps) {
   const { t } = messages;
   return (
     <section class="panel" aria-labelledby="library-heading">
@@ -45,6 +60,7 @@ export function LibraryHomeView({ messages, library, onBack, onOpen }: LibraryHo
           </button>
         </li>
       </ul>
+      {library === null ? null : <LibraryExportSection messages={messages} href={exportHref} />}
     </section>
   );
 }
