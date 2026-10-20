@@ -5,7 +5,7 @@
 import { importPKCS8, SignJWT } from "jose";
 
 export type AppleCredentials = { readonly teamId: string; readonly keyId: string; readonly privateKey: string };
-export type DeveloperToken = { readonly token: string; readonly expiresAt: Date };
+type DeveloperToken = { readonly token: string; readonly expiresAt: Date };
 export type DeveloperTokens = {
   readonly forServer: () => Promise<DeveloperToken>;
   readonly forBrowser: (origin: string) => Promise<DeveloperToken>;

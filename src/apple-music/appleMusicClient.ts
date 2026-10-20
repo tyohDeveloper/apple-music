@@ -4,7 +4,7 @@
 // 5xx answer or no answer. Other failures are not retried.
 import { AppleMusicFailure } from "./appleMusicFailure.ts";
 
-export type AppleMusicRequest = { readonly path: string; readonly musicUserToken: string | null };
+type AppleMusicRequest = { readonly path: string; readonly musicUserToken: string | null };
 export type AppleMusicClient = { readonly get: (request: AppleMusicRequest) => Promise<unknown> };
 export type AppleMusicClientSettings = {
   readonly baseUrl: string;

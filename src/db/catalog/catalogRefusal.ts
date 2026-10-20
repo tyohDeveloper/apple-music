@@ -8,7 +8,8 @@ export type RefusalCode =
   | "conflict-duplicate"
   | "conflict-preferred-name"
   | "conflict-genre-cycle"
-  | "invalid-external-id";
+  | "invalid-external-id"
+  | "apple-music-not-configured";
 
 export class CatalogRefusal extends Error {
   readonly code: RefusalCode;
