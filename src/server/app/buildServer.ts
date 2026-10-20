@@ -36,7 +36,7 @@ export async function buildServer(deps: ServerDependencies): Promise<FastifyInst
   await app.register(async (scope) => {
     registerSessionGuard(scope, auth);
     registerLibraryRoutes(scope, deps.pools.app);
-    registerCatalogRoutes(scope, deps.pools.app);
+    registerCatalogRoutes(scope, deps.pools.app, deps.config.application);
   });
   if (deps.serveClientAssets) await registerClientAssets(app, deps.config.clientAssetsDir);
   return app;
