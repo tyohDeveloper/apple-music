@@ -26,7 +26,8 @@
     "db:bootstrap": "tsx --env-file-if-exists=.env scripts/bootstrap-database.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --env-file-if-exists=.env scripts/migrate-database.ts",
-    "seed": "tsx --env-file-if-exists=.env scripts/seed.ts"
+    "seed": "tsx --env-file-if-exists=.env scripts/seed.ts",
+    "write:export-schema": "tsx scripts/write-export-schema.ts"
   },
   "dependencies": {
     "@fastify/helmet": "13.2.0",
@@ -47,6 +48,7 @@
     "@types/node": "24.19.2",
     "@types/pg": "8.23.1",
     "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "drizzle-kit": "0.31.11",
     "knip": "6.42.1",
     "tsx": "4.23.15",
