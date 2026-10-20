@@ -1,0 +1,17 @@
+{
+  "taxonomy": "trackInclusion",
+  "entries": [
+    { "id": "core", "family": "intended" },
+    { "id": "hidden", "family": "intended" },
+    { "id": "bonus", "family": "extra" },
+    { "id": "demo", "family": "extra" },
+    { "id": "live", "family": "extra" },
+    { "id": "alternate", "family": "extra" },
+    { "id": "interview", "family": "extra" },
+    { "id": "commentary", "family": "extra" },
+    { "id": "remix", "family": "extra" },
+    { "id": "instrumental", "family": "extra" },
+    { "id": "single-edit", "family": "extra" },
+    { "id": "unknown", "family": "unclassified" }
+  ]
+}

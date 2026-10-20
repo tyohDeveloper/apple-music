@@ -1,0 +1,14 @@
+{
+  "taxonomy": "albumKind",
+  "entries": [
+    { "id": "album" },
+    { "id": "ep" },
+    { "id": "single" },
+    { "id": "compilation" },
+    { "id": "live" },
+    { "id": "soundtrack" },
+    { "id": "broadcast" },
+    { "id": "spoken-word" },
+    { "id": "other" }
+  ]
+}

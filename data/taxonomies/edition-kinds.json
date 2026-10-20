@@ -1,0 +1,16 @@
+{
+  "taxonomy": "editionKind",
+  "entries": [
+    { "id": "original" },
+    { "id": "remaster" },
+    { "id": "deluxe" },
+    { "id": "expanded" },
+    { "id": "anniversary" },
+    { "id": "super-deluxe" },
+    { "id": "reissue" },
+    { "id": "regional" },
+    { "id": "clean" },
+    { "id": "explicit" },
+    { "id": "unknown" }
+  ]
+}
