@@ -16,6 +16,10 @@ Create an album with its title, its kind (album, EP, single, compilation, live a
 
 Album credits work as [recording credits](Editing-Recordings.md#credits) do: an ordered list of performers and roles, each with the name it was credited as and the text joining it to the next. Credit the album's artists here and leave the details to the recordings: a soloist's album drawn from sessions with different orchestras is one album credited to the soloist, while each recording keeps its own orchestra and conductor.
 
+## Genres
+
+The **Genres** panel holds the album's genres in order, the first being its main genre; see [Editing genres](Editing-Genres.md#giving-genres-to-albums-recordings-and-performers).
+
 ## The intended track list
 
 The intended track list is the album as its artists made it, disc by disc. Every track plays a recording from the library. To add one, find the recording, choose it and a disc, and choose **Add track**; a new disc is started by choosing **New disc**. Each track can then be given:

@@ -26,6 +26,10 @@ A relation says how two performers stand to each other: member of, conductor of,
 
 Dates can be a year, a year and month, or a full date: `1969`, `1969-07` or `1969-07-20`. Impossible days such as `1933-02-30` are refused.
 
+## Genres
+
+The **Genres** panel holds the performer's genres in order, the first being its main genre; see [Editing genres](Editing-Genres.md#giving-genres-to-albums-recordings-and-performers).
+
 ## Deleting
 
 **Delete performer** asks for confirmation, then removes the performer with its names and relations. A performer that is still credited, on a recording or an album, cannot be deleted, and neither can a name a credit uses; the **Credited on** and **Albums** lists at the foot of the page show where the performer is credited.

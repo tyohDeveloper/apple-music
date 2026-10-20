@@ -46,3 +46,7 @@ The line at the top of the credits, and in search results, is made from the perf
 | Paul Simon (primary, `" & "`), Art Garfunkel (primary) | Paul Simon & Art Garfunkel |
 | Santana (primary, `" feat. "`), Rob Thomas (featured) | Santana feat. Rob Thomas |
 | Itzhak Perlman (soloist), Chicago Symphony Orchestra (orchestra), Carlo Maria Giulini (conductor) | Itzhak Perlman, Chicago Symphony Orchestra, Carlo Maria Giulini |
+
+## Genres
+
+The **Genres** panel holds the recording's genres in order, the first being its main genre; see [Editing genres](Editing-Genres.md#giving-genres-to-albums-recordings-and-performers).
