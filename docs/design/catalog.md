@@ -9,8 +9,8 @@ Each slice is migrations, MODEL functions, contracts, routes, client screens and
 | Slice | Contents | Status |
 |---|---|---|
 | A | Performers, names, relations | done 2026-10-19 |
-| B | Recordings and recording credits | next |
-| C | Albums, album credits, intended track lists, editions, edition tracks | planned |
+| B | Recordings and recording credits | done 2026-10-19 |
+| C | Albums, album credits, intended track lists, editions, edition tracks | next |
 | D | Genres, aliases and assignments; external identifiers | planned |
 | E | JSON export of a library | planned |
 
@@ -30,8 +30,9 @@ All paths are under `/api/libraries/{libraryId}` and require a session. Lists ta
 | `DELETE /performers/{id}/names/{nameId}` | Remove a name; `409` if preferred or credited | A |
 | `POST /performers/{id}/relations` | Relate this performer (subject) to another (object); answers with the performer | A |
 | `DELETE /performers/{id}/relations/{relationId}` | Remove a relation; answers with the performer | A |
-| `GET /recordings`, `POST /recordings`, `GET`/`PATCH`/`DELETE /recordings/{id}` | Recordings | B |
-| `PUT /recordings/{id}/credits` | Replace the ordered credit list | B |
+| `GET /recordings` | Search recordings by title or by any name of a credited performer; `performerId` limits the list to recordings crediting that performer | B |
+| `POST /recordings`, `GET`/`PATCH`/`DELETE /recordings/{id}` | Create, read with credits and credit line, edit, delete with its credits; `409` while on a track list (from slice C) | B |
+| `PUT /recordings/{id}/credits` | Replace the ordered credit list; answers with the recording. A credited name must be one of the credited performer's names | B |
 | `GET /albums`, `POST /albums`, `GET`/`PATCH`/`DELETE /albums/{id}` | Albums | C |
 | `PUT /albums/{id}/credits`, `PUT /albums/{id}/tracks` | Replace album credits; replace the intended track list | C |
 | `POST /albums/{id}/editions`, `GET`/`PATCH`/`DELETE /editions/{id}`, `PUT /editions/{id}/tracks` | Editions and their tracks with inclusion | C |
@@ -40,7 +41,9 @@ All paths are under `/api/libraries/{libraryId}` and require a session. Lists ta
 | `PUT /{albums,editions,recordings,performers}/{id}/external-ids` | Replace external identifiers | D |
 | `GET /export` | The library as one JSON document (`data/schemas/library-export.schema.json`) | E |
 
-Errors use the Phase 1 envelope `{ error: { code } }`; new codes are `conflict-in-use`, `conflict-duplicate`, `conflict-preferred-name` (409) and `forbidden` (403, a viewer or non-member writing). A foreign key that names a missing row answers `404 not-found`.
+Errors use the Phase 1 envelope `{ error: { code } }`; new codes are `conflict-in-use`, `conflict-duplicate`, `conflict-preferred-name` (409) and `forbidden` (403). Every write first checks for the owner or editor role, so a viewer or non-member writing gets `403` rather than a `404` from rows that row-level security hides. A foreign key that names a missing row answers `404 not-found`.
+
+The credit line shown for a recording joins its performing credits (roles in the `performer` family of `data/taxonomies/credit-roles.json`) in order, each under its credited name, with its join phrase; a credit without one is followed by a comma, and the last credit's join phrase is dropped (`src/credits/creditLineOf.ts`). Credit rows are keyed by position: the list is replaced whole, so a credit has no identity of its own.
 
 ## Screens
 

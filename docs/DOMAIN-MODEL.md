@@ -77,10 +77,11 @@ One captured performance. A recording is first-class: the same recording can app
 | `kind` | Taxonomy key: `studio`, `live`, `demo`, `rehearsal`, `alternate-take`, `remix`, `edit`, `session`, `interview`, `spoken-word` |
 | `recorded_from`, `recorded_to`, `venue` | When and where it was recorded |
 | `duration_ms` | Duration |
+| `notes` | Free text |
 
 ### Credits
 
-`recording_credit` and `album_credit` link a performer to a recording or album with a role, an order and an optional join phrase. `credited_name_id` records which of the performer's names appeared on that credit, so "John R. Cash" on one album and "Johnny Cash" on another remain one performer.
+`recording_credit` and `album_credit` link a performer to a recording or album with a role, an order, an optional join phrase and optional instruments or parts (`violin`, `lead vocals`). `credited_name_id` records which of the performer's names appeared on that credit, so "John R. Cash" on one album and "Johnny Cash" on another remain one performer; without it the credit shows the performer's preferred name.
 
 Roles are a declared taxonomy in `data/taxonomies/credit-roles.json`: `primary`, `featured`, `soloist`, `accompanist`, `conductor`, `orchestra`, `choir`, `ensemble`, `composer`, `lyricist`, `arranger`, `producer`, `remixer`.
 

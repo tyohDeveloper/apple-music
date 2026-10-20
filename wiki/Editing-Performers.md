@@ -28,4 +28,4 @@ Dates can be a year, a year and month, or a full date: `1969`, `1969-07` or `196
 
 ## Deleting
 
-**Delete performer** asks for confirmation, then removes the performer with its names and relations. Once recordings arrive, a performer that is still credited cannot be deleted.
+**Delete performer** asks for confirmation, then removes the performer with its names and relations. A performer that is still credited cannot be deleted, and neither can a name a credit uses; the **Credited on** list at the foot of the page shows where the performer is credited.
