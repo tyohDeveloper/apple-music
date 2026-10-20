@@ -1,6 +1,8 @@
-// Requests for performers, their names, relations and genres (docs/design/catalog.md).
+// Requests for performers, their names, relations, genres and identifiers
+// (docs/design/catalog.md).
 import type { CatalogPage } from "../../contracts/catalog/catalogPage.ts";
 import type { ReplaceGenresRequest } from "../../contracts/genres/replaceGenresRequestSchema.ts";
+import type { ReplaceExternalIdsRequest } from "../../contracts/identifiers/replaceExternalIdsRequestSchema.ts";
 import type { CreatePerformerNameRequest } from "../../contracts/performers/createPerformerNameRequestSchema.ts";
 import type { CreatePerformerRelationRequest } from "../../contracts/performers/createPerformerRelationRequestSchema.ts";
 import type { CreatePerformerRequest } from "../../contracts/performers/createPerformerRequestSchema.ts";
@@ -69,4 +71,8 @@ export function deletePerformerRelation(libraryId: string, performerId: string, 
 
 export function putPerformerGenres(libraryId: string, performerId: string, body: ReplaceGenresRequest): Promise<ApiResult<PerformerDetail>> {
   return requestJson<PerformerDetail>(`${performer(libraryId, performerId)}/genres`, { method: "PUT", body });
+}
+
+export function putPerformerExternalIds(libraryId: string, performerId: string, body: ReplaceExternalIdsRequest): Promise<ApiResult<PerformerDetail>> {
+  return requestJson<PerformerDetail>(`${performer(libraryId, performerId)}/external-ids`, { method: "PUT", body });
 }

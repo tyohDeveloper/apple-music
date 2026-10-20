@@ -1,4 +1,5 @@
-// Requests for albums, their credits, intended track lists and genres (docs/design/catalog.md).
+// Requests for albums, their credits, intended track lists, genres and identifiers
+// (docs/design/catalog.md).
 import type { AlbumDetail } from "../../contracts/albums/albumDetailSchema.ts";
 import type { AlbumSummary } from "../../contracts/albums/albumSummarySchema.ts";
 import type { CreateAlbumRequest } from "../../contracts/albums/createAlbumRequestSchema.ts";
@@ -7,6 +8,7 @@ import type { UpdateAlbumRequest } from "../../contracts/albums/updateAlbumReque
 import type { CatalogPage } from "../../contracts/catalog/catalogPage.ts";
 import type { ReplaceCreditsRequest } from "../../contracts/credits/replaceCreditsRequestSchema.ts";
 import type { ReplaceGenresRequest } from "../../contracts/genres/replaceGenresRequestSchema.ts";
+import type { ReplaceExternalIdsRequest } from "../../contracts/identifiers/replaceExternalIdsRequestSchema.ts";
 import { fetchCatalogPage } from "./catalogPageRequest.ts";
 import { requestJson, type ApiResult } from "./requestJson.ts";
 
@@ -49,4 +51,8 @@ export function putAlbumTracks(libraryId: string, albumId: string, body: Replace
 
 export function putAlbumGenres(libraryId: string, albumId: string, body: ReplaceGenresRequest): Promise<ApiResult<AlbumDetail>> {
   return requestJson<AlbumDetail>(`${album(libraryId, albumId)}/genres`, { method: "PUT", body });
+}
+
+export function putAlbumExternalIds(libraryId: string, albumId: string, body: ReplaceExternalIdsRequest): Promise<ApiResult<AlbumDetail>> {
+  return requestJson<AlbumDetail>(`${album(libraryId, albumId)}/external-ids`, { method: "PUT", body });
 }

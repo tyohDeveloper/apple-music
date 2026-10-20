@@ -1,7 +1,8 @@
-// Requests for recordings, their credits and genres (docs/design/catalog.md).
+// Requests for recordings, their credits, genres and identifiers (docs/design/catalog.md).
 import type { CatalogPage } from "../../contracts/catalog/catalogPage.ts";
 import type { ReplaceCreditsRequest } from "../../contracts/credits/replaceCreditsRequestSchema.ts";
 import type { ReplaceGenresRequest } from "../../contracts/genres/replaceGenresRequestSchema.ts";
+import type { ReplaceExternalIdsRequest } from "../../contracts/identifiers/replaceExternalIdsRequestSchema.ts";
 import type { CreateRecordingRequest } from "../../contracts/recordings/createRecordingRequestSchema.ts";
 import type { RecordingDetail } from "../../contracts/recordings/recordingDetailSchema.ts";
 import type { RecordingSummary } from "../../contracts/recordings/recordingSummarySchema.ts";
@@ -44,4 +45,8 @@ export function putRecordingCredits(libraryId: string, recordingId: string, body
 
 export function putRecordingGenres(libraryId: string, recordingId: string, body: ReplaceGenresRequest): Promise<ApiResult<RecordingDetail>> {
   return requestJson<RecordingDetail>(`${recording(libraryId, recordingId)}/genres`, { method: "PUT", body });
+}
+
+export function putRecordingExternalIds(libraryId: string, recordingId: string, body: ReplaceExternalIdsRequest): Promise<ApiResult<RecordingDetail>> {
+  return requestJson<RecordingDetail>(`${recording(libraryId, recordingId)}/external-ids`, { method: "PUT", body });
 }
