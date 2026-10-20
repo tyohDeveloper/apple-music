@@ -1,6 +1,7 @@
-// One recording with its ordered credits and the credit line they make.
+// One recording with its ordered credits, the credit line they make, and its genres.
 import Type from "typebox";
 import { creditSchema } from "../credits/creditSchema.ts";
+import { genreReferenceSchema } from "../genres/genreReferenceSchema.ts";
 
 const nullableText = Type.Union([Type.String(), Type.Null()]);
 
@@ -17,6 +18,7 @@ export const recordingDetailSchema = Type.Object(
     notes: nullableText,
     creditLine: Type.String(),
     credits: Type.Array(creditSchema),
+    genres: Type.Array(genreReferenceSchema),
   },
   { additionalProperties: false },
 );

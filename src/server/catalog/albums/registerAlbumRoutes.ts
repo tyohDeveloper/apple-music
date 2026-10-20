@@ -25,8 +25,8 @@ function fieldsOf(body: CreateAlbumRequest): AlbumFields {
 function registerList(app: CatalogApp, db: NodePgDatabase): void {
   const schema = { params: libraryParamsSchema, querystring: albumPageQuerySchema, response: { 200: albumPageSchema } };
   app.get(collection, { schema }, (request) => {
-    const { performerId, recordingId } = request.query;
-    return runInLibrary(db, libraryScopeOf(request, request.params), (tx) => listAlbums(tx, pageRequestOf(request.query), { performerId, recordingId }));
+    const { performerId, recordingId, genreId } = request.query;
+    return runInLibrary(db, libraryScopeOf(request, request.params), (tx) => listAlbums(tx, pageRequestOf(request.query), { performerId, recordingId, genreId }));
   });
 }
 

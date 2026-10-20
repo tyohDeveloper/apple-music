@@ -1,7 +1,7 @@
 // Reads of albums (DOMAIN-MODEL.md): search by title or by any name of a performer credited
 // on the album or on one of its intended tracks, optionally only the albums crediting one
-// performer or playing one recording, and one album with its credits, intended track list
-// and editions.
+// performer, playing one recording or carrying one genre, and one album with its credits,
+// intended track list, editions and genres.
 import { and, asc, count, eq, sql, type SQL } from "drizzle-orm";
 import { matchKeyOf } from "../../../names/matchKeyOf.ts";
 import { album } from "../../schema/albumTables.ts";
@@ -10,9 +10,10 @@ import type { CatalogPage, PageRequest } from "../catalogPage.ts";
 import { outerColumn } from "../outerColumn.ts";
 import { albumCredits, creditLinesOf, creditsOf, type CreditRow } from "../credits/creditQueries.ts";
 import { editionsOfAlbum, type EditionSummary } from "../editions/editionQueries.ts";
+import { albumGenres, carriesGenre, genresOf, type GenreReference } from "../genres/genreAssignments.ts";
 import { albumTracksOf, type AlbumTrackRow } from "./albumTrackQueries.ts";
 
-export type AlbumFilters = { readonly performerId?: string | undefined; readonly recordingId?: string | undefined };
+export type AlbumFilters = { readonly performerId?: string | undefined; readonly recordingId?: string | undefined; readonly genreId?: string | undefined };
 export type AlbumSummary = {
   readonly id: string;
   readonly title: string;
@@ -28,6 +29,7 @@ export type AlbumDetail = Omit<AlbumSummary, "trackCount" | "editionCount"> & {
   readonly credits: CreditRow[];
   readonly tracks: AlbumTrackRow[];
   readonly editions: EditionSummary[];
+  readonly genres: GenreReference[];
 };
 
 const creditedOnAlbum = (performerMatch: SQL): SQL => sql`(exists (select 1 from album_credit c join performer_name n
@@ -48,7 +50,7 @@ function albumFilter(filters: AlbumFilters): SQL | undefined {
   const crediting = filters.performerId === undefined ? undefined : creditedOnAlbum(sql`n.performer_id = ${filters.performerId}`);
   const playing = filters.recordingId === undefined ? undefined : sql`exists (select 1 from album_track t where t.library_id = ${album.libraryId}
     and t.album_id = ${album.id} and t.recording_id = ${filters.recordingId})`;
-  return and(crediting, playing);
+  return and(crediting, playing, carriesGenre(albumGenres, album.id, filters.genreId));
 }
 
 const [outerLibraryId, outerAlbumId] = [outerColumn(album.libraryId), outerColumn(album.id)];
@@ -75,5 +77,6 @@ export async function getAlbumDetail(tx: ScopedTransaction, albumId: string): Pr
   const [row] = await tx.select({ id, title, kind, released, label, notes }).from(album).where(eq(id, albumId));
   if (row === undefined) return null;
   const credited = await creditsOf(tx, albumCredits, albumId);
-  return { ...row, ...credited, tracks: await albumTracksOf(tx, albumId), editions: await editionsOfAlbum(tx, albumId) };
+  const tracks = await albumTracksOf(tx, albumId);
+  return { ...row, ...credited, tracks, editions: await editionsOfAlbum(tx, albumId), genres: await genresOf(tx, albumGenres, albumId) };
 }

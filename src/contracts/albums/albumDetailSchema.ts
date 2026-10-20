@@ -1,7 +1,8 @@
-// One album with its ordered credits, intended track list and editions.
+// One album with its ordered credits, intended track list, editions and genres.
 import Type from "typebox";
 import { creditSchema } from "../credits/creditSchema.ts";
 import { editionSummarySchema } from "../editions/editionSummarySchema.ts";
+import { genreReferenceSchema } from "../genres/genreReferenceSchema.ts";
 import { albumTrackSchema } from "./albumTrackSchema.ts";
 
 const nullableText = Type.Union([Type.String(), Type.Null()]);
@@ -18,6 +19,7 @@ export const albumDetailSchema = Type.Object(
     credits: Type.Array(creditSchema),
     tracks: Type.Array(albumTrackSchema),
     editions: Type.Array(editionSummarySchema),
+    genres: Type.Array(genreReferenceSchema),
   },
   { additionalProperties: false },
 );

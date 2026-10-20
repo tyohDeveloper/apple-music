@@ -1,12 +1,13 @@
-// Reads of performers (DOMAIN-MODEL.md): search by any of their names, and one performer
-// with its names and its relations in both directions. Row-level security limits every
-// query to the scoped library.
+// Reads of performers (DOMAIN-MODEL.md): search by any of their names, optionally only the
+// performers carrying one genre, and one performer with its names, its relations in both
+// directions and its genres. Row-level security limits every query to the scoped library.
 import { and, asc, count, desc, eq, or, sql, type SQL } from "drizzle-orm";
 import { alias, type AnyPgColumn } from "drizzle-orm/pg-core";
 import { matchKeyOf } from "../../../names/matchKeyOf.ts";
 import { performer, performerName, performerRelation } from "../../schema/performerTables.ts";
 import type { ScopedTransaction } from "../../withUserScope.ts";
 import type { CatalogPage, PageRequest } from "../catalogPage.ts";
+import { carriesGenre, genresOf, performerGenres, type GenreReference } from "../genres/genreAssignments.ts";
 
 export type PerformerSummary = {
   readonly id: string;
@@ -43,6 +44,7 @@ export type PerformerDetail = Omit<PerformerSummary, "name" | "sortName"> & {
   readonly notes: string | null;
   readonly names: PerformerNameRow[];
   readonly relations: PerformerRelationRow[];
+  readonly genres: GenreReference[];
 };
 
 const preferredName = and(
@@ -60,8 +62,8 @@ function anyNameMatches(query: string): SQL | undefined {
     and n.performer_id = ${performer.id} and n.match_key like ${`%${key}%`})`;
 }
 
-export async function listPerformers(tx: ScopedTransaction, page: PageRequest): Promise<CatalogPage<PerformerSummary>> {
-  const matches = anyNameMatches(page.query);
+export async function listPerformers(tx: ScopedTransaction, page: PageRequest, genreId?: string): Promise<CatalogPage<PerformerSummary>> {
+  const matches = and(anyNameMatches(page.query), carriesGenre(performerGenres, performer.id, genreId));
   const items = await tx
     .select({ id: performer.id, kind: performer.kind, name: performerName.name, sortName: performerName.sortName, disambiguation: performer.disambiguation })
     .from(performer)
@@ -109,5 +111,6 @@ export async function getPerformerDetail(tx: ScopedTransaction, performerId: str
   const { id, kind, began, ended, area, disambiguation, notes } = performer;
   const [row] = await tx.select({ id, kind, began, ended, area, disambiguation, notes }).from(performer).where(eq(id, performerId));
   if (row === undefined) return null;
-  return { ...row, names: await namesOf(tx, performerId), relations: await relationsOf(tx, performerId) };
+  const names = await namesOf(tx, performerId);
+  return { ...row, names, relations: await relationsOf(tx, performerId), genres: await genresOf(tx, performerGenres, performerId) };
 }

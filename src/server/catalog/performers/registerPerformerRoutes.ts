@@ -1,10 +1,10 @@
 // Performer routes (docs/design/catalog.md, slice A): search, create, read, edit, delete.
 // Each runs in the library scope; refusals become 4xx replies (registerErrorReplies.ts).
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { catalogPageQuerySchema } from "../../../contracts/catalog/catalogPageQuerySchema.ts";
 import { libraryParamsSchema } from "../../../contracts/catalog/libraryParamsSchema.ts";
 import { createPerformerRequestSchema, type CreatePerformerRequest } from "../../../contracts/performers/createPerformerRequestSchema.ts";
 import { performerDetailSchema } from "../../../contracts/performers/performerDetailSchema.ts";
+import { performerPageQuerySchema } from "../../../contracts/performers/performerPageQuerySchema.ts";
 import { performerPageSchema } from "../../../contracts/performers/performerPageSchema.ts";
 import { performerParamsSchema } from "../../../contracts/performers/performerParamsSchema.ts";
 import { updatePerformerRequestSchema } from "../../../contracts/performers/updatePerformerRequestSchema.ts";
@@ -23,9 +23,9 @@ function fieldsOf(body: CreatePerformerRequest): PerformerFields {
 }
 
 function registerList(app: CatalogApp, db: NodePgDatabase): void {
-  const schema = { params: libraryParamsSchema, querystring: catalogPageQuerySchema, response: { 200: performerPageSchema } };
+  const schema = { params: libraryParamsSchema, querystring: performerPageQuerySchema, response: { 200: performerPageSchema } };
   app.get(collection, { schema }, (request) =>
-    runInLibrary(db, libraryScopeOf(request, request.params), (tx) => listPerformers(tx, pageRequestOf(request.query))),
+    runInLibrary(db, libraryScopeOf(request, request.params), (tx) => listPerformers(tx, pageRequestOf(request.query), request.query.genreId)),
   );
 }
 

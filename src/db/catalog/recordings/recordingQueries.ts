@@ -1,12 +1,14 @@
 // Reads of recordings (DOMAIN-MODEL.md): search by title or by any name of a credited
-// performer, optionally only the recordings crediting one performer, and one recording
-// with its credits. Row-level security limits every query to the scoped library.
+// performer, optionally only the recordings crediting one performer or carrying one genre,
+// and one recording with its credits and genres. Row-level security limits every query to
+// the scoped library.
 import { and, asc, count, eq, inArray, sql, type SQL } from "drizzle-orm";
 import { matchKeyOf } from "../../../names/matchKeyOf.ts";
 import { recording } from "../../schema/recordingTables.ts";
 import type { ScopedTransaction } from "../../withUserScope.ts";
 import type { CatalogPage, PageRequest } from "../catalogPage.ts";
 import { creditLinesOf, creditsOf, recordingCredits, type CreditRow } from "../credits/creditQueries.ts";
+import { carriesGenre, genresOf, recordingGenres, type GenreReference } from "../genres/genreAssignments.ts";
 
 export type RecordingSummary = {
   readonly id: string;
@@ -22,7 +24,9 @@ export type RecordingDetail = RecordingSummary & {
   readonly venue: string | null;
   readonly notes: string | null;
   readonly credits: CreditRow[];
+  readonly genres: GenreReference[];
 };
+export type RecordingFilters = { readonly performerId?: string | undefined; readonly genreId?: string | undefined };
 
 function titleOrCreditMatches(query: string): SQL | undefined {
   const key = matchKeyOf(query);
@@ -39,8 +43,8 @@ function creditsPerformer(performerId: string | undefined): SQL | undefined {
     and c.recording_id = ${recording.id} and c.performer_id = ${performerId})`;
 }
 
-export async function listRecordings(tx: ScopedTransaction, page: PageRequest, performerId?: string): Promise<CatalogPage<RecordingSummary>> {
-  const where = and(titleOrCreditMatches(page.query), creditsPerformer(performerId));
+export async function listRecordings(tx: ScopedTransaction, page: PageRequest, filters: RecordingFilters = {}): Promise<CatalogPage<RecordingSummary>> {
+  const where = and(titleOrCreditMatches(page.query), creditsPerformer(filters.performerId), carriesGenre(recordingGenres, recording.id, filters.genreId));
   const { id, title, versionNote, kind, recordedFrom, durationMs, matchKey } = recording;
   const rows = await tx
     .select({ id, title, versionNote, kind, recordedFrom, durationMs })
@@ -69,5 +73,5 @@ export async function getRecordingDetail(tx: ScopedTransaction, recordingId: str
   const { id, title, versionNote, kind, recordedFrom, recordedTo, venue, durationMs, notes } = recording;
   const [row] = await tx.select({ id, title, versionNote, kind, recordedFrom, recordedTo, venue, durationMs, notes }).from(recording).where(eq(id, recordingId));
   if (row === undefined) return null;
-  return { ...row, ...(await creditsOf(tx, recordingCredits, recordingId)) };
+  return { ...row, ...(await creditsOf(tx, recordingCredits, recordingId)), genres: await genresOf(tx, recordingGenres, recordingId) };
 }

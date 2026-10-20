@@ -1,5 +1,6 @@
-// One performer with all of its names and its relations in both directions.
+// One performer with all of its names, its relations in both directions and its genres.
 import Type from "typebox";
+import { genreReferenceSchema } from "../genres/genreReferenceSchema.ts";
 import { performerNameSchema } from "./performerNameSchema.ts";
 import { performerRelationSchema } from "./performerRelationSchema.ts";
 
@@ -16,6 +17,7 @@ export const performerDetailSchema = Type.Object(
     notes: nullableText,
     names: Type.Array(performerNameSchema),
     relations: Type.Array(performerRelationSchema),
+    genres: Type.Array(genreReferenceSchema),
   },
   { additionalProperties: false },
 );

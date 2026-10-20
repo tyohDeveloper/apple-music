@@ -25,7 +25,7 @@ function fieldsOf(body: CreateRecordingRequest): RecordingFields {
 function registerList(app: CatalogApp, db: NodePgDatabase): void {
   const schema = { params: libraryParamsSchema, querystring: recordingPageQuerySchema, response: { 200: recordingPageSchema } };
   app.get(collection, { schema }, (request) =>
-    runInLibrary(db, libraryScopeOf(request, request.params), (tx) => listRecordings(tx, pageRequestOf(request.query), request.query.performerId)),
+    runInLibrary(db, libraryScopeOf(request, request.params), (tx) => listRecordings(tx, pageRequestOf(request.query), { performerId: request.query.performerId, genreId: request.query.genreId })),
   );
 }
 
