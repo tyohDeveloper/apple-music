@@ -1,5 +1,6 @@
-// Bridges /api/auth/* to Better Auth's Fetch API handler. Sign-in is rate-limited
-// more strictly than the rest of the API (hosted-Postgres profile).
+// Bridges /api/auth/* to Better Auth's Fetch API handler. Sign-in is rate-limited more
+// strictly than the rest of the API (hosted-Postgres profile); the session check every page
+// load makes keeps the ordinary limit.
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import type { AppAuth } from "./createAuth.ts";
 import { forwardHeaders } from "./forwardHeaders.ts";
@@ -25,10 +26,7 @@ async function sendFetchResponse(reply: FastifyReply, response: Response): Promi
 }
 
 export function registerAuthRoutes(app: FastifyInstance, auth: AppAuth): void {
-  app.route({
-    method: ["GET", "POST"],
-    url: "/api/auth/*",
-    config: { rateLimit: { max: 20, timeWindow: "1 minute" } },
-    handler: async (request, reply) => sendFetchResponse(reply, await auth.handler(toFetchRequest(request))),
-  });
+  const handler = async (request: FastifyRequest, reply: FastifyReply): Promise<void> => sendFetchResponse(reply, await auth.handler(toFetchRequest(request)));
+  app.route({ method: "POST", url: "/api/auth/sign-in/*", config: { rateLimit: { max: 20, timeWindow: "1 minute" } }, handler });
+  app.route({ method: ["GET", "POST"], url: "/api/auth/*", handler });
 }
