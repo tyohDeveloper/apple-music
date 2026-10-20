@@ -3,6 +3,7 @@ import type { Messages } from "../controllers/useMessages.ts";
 import type { PerformerListControls } from "../controllers/usePerformerList.ts";
 import { pageRangeOf } from "../state/catalog/catalogListReducer.ts";
 import { CatalogPager } from "./CatalogPager.tsx";
+import { PerformerCard } from "./PerformerCard.tsx";
 import { PerformerCreateForm } from "./PerformerCreateForm.tsx";
 
 type PerformersViewProps = {
@@ -24,11 +25,7 @@ function PerformerResults({ messages, controls, onOpen }: Omit<PerformersViewPro
       <ul class="card-list" data-testid="panel-performers-results">
         {state.items.map((performer) => (
           <li key={performer.id}>
-            <button type="button" class="card" data-testid={`button-performers-open-${performer.id}`} onClick={() => onOpen(performer.id)}>
-              <span class="card-title">{performer.name}</span>
-              <span class="card-meta">{messages.displayName("performerKind", performer.kind)}</span>
-              {performer.disambiguation !== null && <span class="card-meta">{performer.disambiguation}</span>}
-            </button>
+            <PerformerCard messages={messages} performer={performer} onOpen={onOpen} />
           </li>
         ))}
       </ul>
