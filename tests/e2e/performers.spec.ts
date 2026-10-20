@@ -1,16 +1,9 @@
 // Flow: create a band and a member, give the member a birth name, relate the member to the
 // band, follow the relation, find the member by the birth name, and keep the preferred name.
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { createPerformer } from "./support/createPerformer.ts";
 import { expectUniqueTestIds } from "./support/expectUniqueTestIds.ts";
 import { openSeededLibrary, signInAsOwner } from "./support/signInAsOwner.ts";
-
-async function createPerformer(page: Page, kind: string, name: string, sortName = ""): Promise<void> {
-  await page.getByTestId("select-performers-kind").selectOption(kind);
-  await page.getByTestId("input-performers-name").fill(name);
-  await page.getByTestId("input-performers-sortname").fill(sortName);
-  await page.getByTestId("button-performers-create").click();
-  await expect(page.getByTestId("text-performer-name")).toHaveText(name);
-}
 
 test("owner curates performers with names and relations", async ({ page }) => {
   await signInAsOwner(page);
@@ -68,7 +61,7 @@ test("a performer keeps its preferred name and can be deleted", async ({ page })
   await page.getByTestId("button-performer-save").click();
   await expect(page.getByTestId("display-performer-save-error")).toHaveCount(0);
 
-  await page.getByTestId("button-performer-delete").click();
-  await page.getByTestId("button-performer-delete-confirm").click();
+  await page.getByTestId("button-delete-request").click();
+  await page.getByTestId("button-delete-confirm").click();
   await expect(page.getByTestId("panel-performers-results")).not.toContainText("Nina Simone");
 });

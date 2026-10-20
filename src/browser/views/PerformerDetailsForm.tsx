@@ -3,6 +3,7 @@ import type { PerformerDetail } from "../../contracts/performers/performerDetail
 import { formValuesOf } from "../controllers/formValuesOf.ts";
 import type { Messages } from "../controllers/useMessages.ts";
 import type { PerformerEditorControls } from "../controllers/usePerformerEditor.ts";
+import { DeleteConfirmation } from "./DeleteConfirmation.tsx";
 import { TaxonomyOptions } from "./TaxonomyOptions.tsx";
 
 type PerformerDetailsFormProps = {
@@ -10,27 +11,6 @@ type PerformerDetailsFormProps = {
   readonly performer: PerformerDetail;
   readonly controls: PerformerEditorControls;
 };
-
-function DeleteButtons({ messages, controls }: Omit<PerformerDetailsFormProps, "performer">) {
-  const { t } = messages;
-  if (!controls.state.confirmingDelete) {
-    return (
-      <button type="button" class="danger" data-testid="button-performer-delete" onClick={controls.requestDelete}>
-        {t("performer.delete")}
-      </button>
-    );
-  }
-  return (
-    <span class="confirm">
-      <button type="button" class="danger" disabled={controls.state.saving} data-testid="button-performer-delete-confirm" onClick={controls.confirmDelete}>
-        {t("performer.delete.confirm")}
-      </button>
-      <button type="button" class="secondary" data-testid="button-performer-delete-cancel" onClick={controls.cancelDelete}>
-        {t("performer.delete.cancel")}
-      </button>
-    </span>
-  );
-}
 
 export function PerformerDetailsForm({ messages, performer, controls }: PerformerDetailsFormProps) {
   const { t } = messages;
@@ -68,7 +48,7 @@ export function PerformerDetailsForm({ messages, performer, controls }: Performe
       </label>
       <div class="actions">
         <button type="submit" disabled={controls.state.saving} data-testid="button-performer-save">{t("performer.save")}</button>
-        <DeleteButtons messages={messages} controls={controls} />
+        <DeleteConfirmation labels={{ request: t("performer.delete"), confirm: t("performer.delete.confirm"), cancel: t("performer.delete.cancel") }} controls={controls} />
       </div>
     </form>
   );
