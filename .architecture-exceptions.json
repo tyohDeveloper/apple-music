@@ -3,10 +3,10 @@
   "exceptions": [
     {
       "id": "EXC-0001",
-      "section": "§9.2",
+      "section": "\u00a79.2 / C-24",
       "policyVersion": "2.2",
       "scope": "Runtime library preact 11.0.1 (preact, preact/hooks, preact/jsx-runtime) in the browser bundle dist/client",
-      "rationale": "Preact is the smallest maintained component library that keeps the form-heavy editing interface declarative (ADR-0006). Its measured marginal cost is 5,350 bytes gzip, 350 bytes over the 5,000-byte per-library ceiling. Plain DOM code would replace it with more application code (§9.4).",
+      "rationale": "Preact is the smallest maintained component library that keeps the form-heavy editing interface declarative (ADR-0006). Its measured marginal cost is 5,350 bytes gzip, 350 bytes over the 5,000-byte per-library ceiling. Plain DOM code would replace it with more application code (\u00a79.4).",
       "measurement": {
         "method": "vite build of the client with and without preact externalized; gzip level 9 over dist/client/assets/*.js; 2026-10-19",
         "beforeGzipBytes": 4155,
@@ -18,7 +18,31 @@
       "approved": "2026-10-19",
       "expires": "2027-04-19",
       "removal": "Remove when a Preact release or a replacement renderer measures at or under 5,000 bytes gzip by the same method; otherwise renew with a fresh measurement.",
-      "enforcement": "npm run check:standards fails after the expiry date; npm run verify:build holds the whole bundle to scripts/build-baseline.json × 1.05."
+      "enforcement": "npm run check:standards fails after the expiry date; npm run verify:build holds the whole bundle to scripts/build-baseline.json \u00d7 1.05."
+    },
+    {
+      "id": "EXC-0002",
+      "section": "C-10",
+      "policyVersion": "1.0.1.0",
+      "scope": "Per-library scoping of catalog, mirror, sync and change rows",
+      "rationale": "Scoping is enforced by Postgres row-level security (integration-tested) and by library_id predicates in MODEL queries. 1.0.1.0 C-10 additionally requires the invariant in STATE or PURE with unit tests so the same code is correct where RLS is unavailable. No PURE scoping predicate exists yet.",
+      "owner": "@tyohDeveloper",
+      "approved": "2026-10-30",
+      "expires": "2027-04-30",
+      "removal": "Add a PURE scope predicate (or query-builder guard) used by every library-scoped MODEL query, with scope-* unit tests; then remove.",
+      "enforcement": "RLS integration tests continue to run; manual review of new MODEL queries until then."
+    },
+    {
+      "id": "EXC-0003",
+      "section": "C-31",
+      "policyVersion": "1.0.1.0",
+      "scope": "Repository-wide secret scanning in CI",
+      "rationale": "verify:build checks the browser bundle for secrets and connection strings; no scanner covers the repository tree (server source, tests, fixtures, workflows).",
+      "owner": "@tyohDeveloper",
+      "approved": "2026-10-30",
+      "expires": "2027-04-30",
+      "removal": "Add secretlint (recommended preset) or gitleaks to npm run build or the CI workflow; then remove.",
+      "enforcement": "None until added."
     }
   ]
 }
