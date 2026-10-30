@@ -1,25 +1,141 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "status": "adopted",
   "applicationRepository": "tyohDeveloper/apple-music",
-  "policyVersion": "2.2",
+  "policyVersion": "1.0.1.0",
   "sourceRepository": "https://github.com/tyohDeveloper/engineering-standards",
-  "sourceCommit": "f30e6e09b436024a00bbc4f89982db3696fb97c3",
-  "approvedBy": "tyohDeveloper",
-  "adoptedOn": "2026-10-19",
+  "sourceTag": "standards-1.0.1.0",
+  "sourceCommit": "bb876dd97747e1940aa41ea480eac85044b737aa",
+  "previousPolicy": {
+    "policyVersion": "2.2",
+    "sourceCommit": "f30e6e09b436024a00bbc4f89982db3696fb97c3",
+    "adoptedOn": "2026-10-19"
+  },
+  "approvedBy": "David Hoyt",
+  "adoptedOn": "2026-10-30",
   "roleMappingDocument": "docs/ARCHITECTURE.md",
   "standardsDocument": "docs/CODING-STANDARDS.md",
   "exceptionsDocument": ".architecture-exceptions.json",
+  "profile": {
+    "state": "hosted-durable",
+    "packaging": "hosted-web",
+    "store": "sql+json+blob",
+    "identity": "authenticated",
+    "network": "required",
+    "compute": "interactive",
+    "localization": {
+      "scope": [
+        "language"
+      ],
+      "mode": "dynamic",
+      "domains": [
+        "interface",
+        "display-names"
+      ],
+      "locales": [
+        "en"
+      ]
+    },
+    "ports": [
+      {
+        "name": "Store",
+        "implementation": "default"
+      },
+      {
+        "name": "Secrets",
+        "implementation": "environment",
+        "reason": "Server environment variables with a committed .env.example (profiles section 2.5); no KMS yet"
+      },
+      {
+        "name": "Jobs",
+        "implementation": "in-process",
+        "reason": "Sync runs execute as background jobs inside the server process with progress and one run per library; no external queue"
+      },
+      {
+        "name": "Identity",
+        "implementation": "default"
+      },
+      {
+        "name": "Files",
+        "implementation": "default"
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "language": "typescript",
+      "class": "application"
+    },
+    {
+      "language": "sql",
+      "class": "schema"
+    }
+  ],
   "checks": [
-    { "requirement": "§0 role mapping coverage; §1 roles, import direction, purity and ambient identifiers; §3 function and file limits, one export per PURE file, naming, barrels; §4.1–§4.3 test identifiers; §5.2 data schemas; §5.6 and §15 localization; §8.1, §8.2 test coverage scans; §10 license and attributions; §11 exception expiry", "command": "npm run check:standards", "enforcement": "automated" },
-    { "requirement": "Strict TypeScript across server, client, scripts and tests", "command": "npm run typecheck", "enforcement": "automated" },
-    { "requirement": "§3.6 dead code", "command": "npm run check:dead-code", "enforcement": "automated" },
-    { "requirement": "Hosted profile: migration names, rollback blocks, immutability, one migration per commit", "command": "npm run check:migrations", "enforcement": "automated" },
-    { "requirement": "§8.1, §8.2 unit and reducer tests; standards checker controls", "command": "npm run test:unit", "enforcement": "automated" },
-    { "requirement": "Hosted profile: migrations and row-level security against Postgres", "command": "npm run test:integration", "enforcement": "automated" },
-    { "requirement": "§18 mandated bindings", "command": "npm run check:bindings", "enforcement": "automated" },
-    { "requirement": "§7.6 gzip baseline; §4.3, §4.4 test identifiers in the artifact; hosted profile: CSP, inline script, secrets", "command": "npm run verify:build", "enforcement": "automated" },
-    { "requirement": "§8.3 end-to-end flows against the built server", "command": "npm run test:e2e", "enforcement": "automated" },
-    { "requirement": "§1.6, §1.9 ports, §2, §6, §9 library selection, §12, §13 single-sourcing, state discipline, positions, repository and documentation conventions", "command": null, "enforcement": "manual-review" }
+    {
+      "requirement": "C-1, C-2, C-4, C-6, C-8, C-11, C-12, C-14, C-15, C-18, C-26, C-27 via architecture.json role mapping, import direction and library restrictions, ambient identifiers, limits, one export, naming, barrels, data schemas, test identifiers, license attribution, exception expiry",
+      "command": "npm run check:standards",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "C-19 strict TypeScript across server, client, scripts and tests",
+      "command": "npm run typecheck",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "C-20 dead code",
+      "command": "npm run check:dead-code",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "profiles 2.5 migrations: timestamp names, rollback blocks, immutability, one per commit (schema class)",
+      "command": "npm run check:migrations",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "C-22, C-23 unit and reducer tests; standards checker controls",
+      "command": "npm run test:unit",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "profiles 2.5 row-level security on every library table; migrations against Postgres",
+      "command": "npm run test:integration",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "C-25 mandated bindings match .architecture-bindings.json",
+      "command": "npm run check:bindings",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "C-21 gzip baseline; C-18 identifiers in the artifact; profiles 2.5 CSP, no inline script, no secret in the bundle",
+      "command": "npm run verify:build",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "C-22 end-to-end flows against the built server",
+      "command": "npm run test:e2e",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "C-32 to C-40 locale keys complete and used (interface, display-names)",
+      "command": "npm run check:standards && npm run test:unit",
+      "enforcement": "automated"
+    },
+    {
+      "requirement": "C-10 scoping as an application-layer invariant unit-tested in STATE/PURE (EXC-0002)",
+      "command": null,
+      "enforcement": "manual-review"
+    },
+    {
+      "requirement": "C-31 secret scanner over the repository (EXC-0003)",
+      "command": null,
+      "enforcement": "manual-review"
+    },
+    {
+      "requirement": "C-3, C-5, C-7, C-9, C-24, C-30, C-45 to C-49: purity, single sourcing, state discipline, library selection, one schema source, data rules",
+      "command": null,
+      "enforcement": "manual-review"
+    }
   ]
 }

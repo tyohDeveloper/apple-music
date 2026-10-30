@@ -2,32 +2,57 @@
 
 ## Adopted release
 
+> **Source of truth.** `tyohDeveloper/engineering-standards`, release `1.0.1.0` (tag `standards-1.0.1.0`, commit `bb876dd97747e1940aa41ea480eac85044b737aa`). If this copy and the tagged release disagree, the release wins. Do not amend this file to propose a standards change; open a proposal in the hub.
+
 | Item | Value |
 |---|---|
-| Policy | Engineering Standards v2.2, portable edition |
-| Source | [tyohDeveloper/engineering-standards](https://github.com/tyohDeveloper/engineering-standards) at `f30e6e09b436024a00bbc4f89982db3696fb97c3` |
-| Source path | `references/source-snapshots/history-and-prehistory/CODING-STANDARDS.md` (origin: `history-and-prehistory` at `62c721d9b269bd6b25e202d0dbc8d94edf1e5d3b`) |
-| Local copy | [standards/portable-v2.2.md](standards/portable-v2.2.md), byte-identical, SHA-256 `f5d3916eb6877ce8e7d0e4d1108b4707e7579f74643906194faced62abdad2f2` |
-| Provenance record | [standards/source-manifest.json](standards/source-manifest.json) |
-| Approval | Owner request of 2026-10-19: "It inherits the standards the Engineering Standards architecture, coding, and other standards" |
-| Decision record | [ADR-0001](adr/0001-adopt-engineering-standards.md) |
+| Policy | Engineering Standards release 1.0.1.0 (hub-authored; supersedes the v2.2 portable edition adopted 2026-10-19) |
+| Source | [tyohDeveloper/engineering-standards](https://github.com/tyohDeveloper/engineering-standards) at tag `standards-1.0.1.0`, commit `bb876dd97747e1940aa41ea480eac85044b737aa` |
+| Policy text | Retrieved from the hub at that tag (retrieval step below). The v2.2 copy stays at [standards/portable-v2.2.md](standards/portable-v2.2.md) as the superseded predecessor; its wiki-authority clause is void (hub ADR-0004) |
+| Adoption record | [STANDARDS-ADOPTION.json](../STANDARDS-ADOPTION.json), schema 2 |
+| Approval | Owner, 2026-10-30; [ADR-0010](adr/0010-readopt-at-release-1.0.1.0.md) |
+| Decision records | [ADR-0001](adr/0001-adopt-engineering-standards.md) (v2.2 adoption), [ADR-0010](adr/0010-readopt-at-release-1.0.1.0.md) (this release) |
 
-The local copy is retained in full so every agent reads the same text from the checkout. Its §0 path mapping and its references to a standalone single-file artifact belong to History & Prehistory and do not apply here; this repository's mapping is [ARCHITECTURE.md](ARCHITECTURE.md). The copy is never edited; the standards check verifies its hash.
+### Retrieval step
 
-## Companion profiles
+| Hub document | Governs here |
+|---|---|
+| `standards/coding-core.md` | Core rules C-1 to C-49; language classes `application` (TypeScript) and `schema` (SQL) |
+| `standards/bindings/typescript.md`, `standards/bindings/sql.md` | How each rule is checked; TS-1 to TS-7 |
+| `standards/profiles.md` | Delivery profile rules: §2.5 hosted-durable, §3.2 store, §3.3 identity and scoping, §3.6 ports, §3.7 localization |
+| `standards/architecture.md` | Role model |
+| `reviews/` | Review procedures |
 
-The baseline delegates target-specific rules to companion pages in the programming Project wiki that the hub has not yet exported. They were read on 2026-10-19; [standards/hosted-postgres-profile.md](standards/hosted-postgres-profile.md) records how each applicable rule is met here.
+### Delivery profile
 
-| Profile | Applies | Notes |
-|---|---|---|
-| Hosted Postgres | Yes | The deployment target |
-| PLATFORM, MODEL and REMOTE roles | Yes | MODEL for this repository's datastore; REMOTE for Apple Music and for the browser's access to this server |
-| Data layer | Yes | Taxonomies, classification markers, locale strings |
-| Localization | Yes | English only at first; two translation domains |
-| Repository conventions | Yes | |
-| Architecture-review lessons | Yes | |
-| Standalone HTML5 and artifact contract | No | A standard multi-file web app served by its server: not a single HTML file, and no offline or downloadable copy ([R-28](PLAN.md#requirements)) |
-| Native wrappers | Later | When a native target is added |
+`state = hosted-durable`, `packaging = hosted-web`, `store = sql+json+blob`, `identity = authenticated` (Better Auth, owner account seeded, sign-up closed; [ADR-0008](adr/0008-access-model.md)), `network = required`, `compute = interactive`; localization `scope = [language]`, `mode = dynamic`, domains `interface` and `display-names`, locale `en`. Ports: `Store` (Postgres via Drizzle, default), `Secrets` (environment, recorded substitution), `Jobs` (in-process background sync, recorded substitution), `Identity` (default), `Files` (default). Bindings `typescript:application`, `sql:schema`.
+
+The companion wiki pages summarised in [standards/hosted-postgres-profile.md](standards/hosted-postgres-profile.md) were exported verbatim into the hub and reconciled there; their rules now appear as profiles §2.5, §3.6 and the SQL binding. That file is retained as the rule-by-rule compliance statement.
+
+### Core rule mapping
+
+The enforcement matrix below keeps the v2.2 section numbering that `check:standards` emits. Correspondence to 1.0.1.0 core rules:
+
+| v2.2 section | Core rule |
+|---|---|
+| §1 roles, import direction, purity, PLATFORM allowlist, datastore ownership | C-1, C-2, C-3, C-4, C-25 |
+| §1.6, §3.5 single sourcing | C-5 |
+| §2 state | C-7, C-8, C-9 |
+| §3.1–§3.4 limits | C-11, C-12, C-13 |
+| §3.2, §3.8, §3.9 one export, names, barrels | C-6, TS-7 |
+| §3.6 dead code | C-20 |
+| §3.7, §11 exceptions | C-27 |
+| §4 test identifiers | C-18 |
+| §5 data | C-14, C-15, C-45–C-49 |
+| §6 indexing | C-16a |
+| §7 gating, §7.6 size | C-19, C-21 |
+| §8 tests | C-22, C-23 |
+| §9 libraries | C-24 |
+| §10 license | C-26 |
+| §15 localization | C-32–C-43 |
+| §18 bindings | C-25 |
+| Hosted profile | profiles §2.5; SQL binding |
+| New in 1.0.x without a v2.2 counterpart | C-10 (EXC-0002), C-30 (met: `src/contracts/**` is the one schema source for the HTTP boundary; Drizzle schema for SQL), C-31 (EXC-0003), CI runner pinning under C-19 (done) |
 
 ## Application mapping
 
