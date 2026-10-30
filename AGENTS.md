@@ -7,7 +7,7 @@ Instructions for any coding agent working in this repository.
 1. [README.md](README.md)
 2. [docs/PLAN.md](docs/PLAN.md) — requirements, decisions, the active phase, open questions
 3. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — role and path mapping, boundaries, contracts
-4. [docs/CODING-STANDARDS.md](docs/CODING-STANDARDS.md) — the adopted standards release, enforcement matrix and local interpretations; the policy text is [docs/standards/portable-v2.2.md](docs/standards/portable-v2.2.md)
+4. [docs/CODING-STANDARDS.md](docs/CODING-STANDARDS.md) — the adopted standards release (engineering-standards 1.0.1.0, tag `standards-1.0.1.0`), delivery profile, enforcement matrix and local interpretations; the policy text is retrieved from the hub at that tag. [docs/standards/portable-v2.2.md](docs/standards/portable-v2.2.md) is the superseded predecessor
 5. [docs/DOMAIN-MODEL.md](docs/DOMAIN-MODEL.md)
 6. [docs/adr/](docs/adr/), [.architecture-exceptions.json](.architecture-exceptions.json), `.architecture-bindings.json`, [datastore-ownership.json](datastore-ownership.json)
 
